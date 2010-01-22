@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with CakePHP Filter Plugin. If not, see <http://www.gnu.org/licenses/>.
 */
 
+App::import('Core', 'Sanitize');
+
 class FilteredBehavior extends ModelBehavior
 {
 	/**
