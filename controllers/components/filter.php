@@ -35,7 +35,7 @@ class FilterComponent extends Object
 			return;
 		}
 
-		$this->__updatePersistance($controller, $settings);
+		$this->__updatePersistence($controller, $settings);
 		$this->settings[$controller->name] = $controller->filters;
 
 		if (!isset($this->settings[$controller->name][$controller->action]))
@@ -262,7 +262,7 @@ class FilterComponent extends Object
 		$controller->set('viewFilterParams', $viewFilterParams);
 	}
 
-	function __updatePersistance(&$controller, $settings)
+	function __updatePersistence(&$controller, $settings)
 	{
 		if ($this->Session->check('FilterPlugin.NoPersist'))
 		{
