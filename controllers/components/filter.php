@@ -234,7 +234,7 @@ class FilterComponent extends Object
 							);
 						break;
 					case 'checkbox':
-						$options['checkbox'] = 'checkbox';
+						$options['type'] = 'checkbox';
 
 						if (isset($options['value']))
 						{
