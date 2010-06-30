@@ -103,51 +103,106 @@ class FilteredBehavior extends ModelBehavior
 				return;
 			}
 
-			//if (!$options['required'] && (!isset($values[$fieldModel][$fieldName]) || is_null($values[$fieldModel][$fieldName])))
 			if (!isset($values[$fieldModel][$fieldName]) || is_null($values[$fieldModel][$fieldName]))
 			{
-				continue; // TODO: recosider this..
+				// no value to filter with, just skip this field
+				continue;
 			}
 
-			// allow for cross-database filters..
+			// the value we get as condition and where it comes from is not the same as the
+			// model and field we're using to filter the data
+			$filterByField = $fieldName;
+			$filterByModel = $Model->alias;
+
+			if ($fieldModel != $Model->name && isset($Model->hasMany) && isset($Model->hasMany[$fieldModel]))
+			{
+				$filterByModel = $fieldModel;
+			}
+
 			if (isset($options['filterField']))
 			{
-				$field = $options['filterField'];
-			}
-
-			// TODO: handle NULLs?
-			if ($options['type'] == 'text')
-			{
-				if (strlen(trim(strval($values[$fieldModel][$fieldName]))) == 0)
+				if (strpos($options['filterField'], '.') !== false)
 				{
-					continue;
-				}
-
-				if ($options['condition'] == 'like')
-				{
-					$query['conditions'][$field.' like'] = '%'.$values[$fieldModel][$fieldName].'%';
-				}
-				else if ($options['condition'] == '=')
-				{
-					$query['conditions'][$field] = $values[$fieldModel][$fieldName];
+					list($tmpFieldModel, $tmpFieldName) = explode('.', $options['filterField']);
+					$filterByField = $tmpFieldName;
 				}
 				else
 				{
-					$query['conditions'][$field.' '.$options['condition']] = $values[$fieldModel][$fieldName];
+					$filterByField = $options['filterField'];
 				}
 			}
-			else if ($options['type'] == 'select')
-			{
-				if (strlen(trim(strval($values[$fieldModel][$fieldName]))) == 0)
-				{
-					continue;
-				}
 
-				$query['conditions'][$field] = $values[$fieldModel][$fieldName];
-			}
-			else if ($options['type'] == 'checkbox')
+			$realFilterField = sprintf('%s.%s', $filterByModel, $filterByField);
+
+			if (isset($Model->hasMany) && isset($Model->hasMany[$fieldModel]))
+				//|| isset($Model->hasAndBelongsToMany) && isset($Model->hasAndBelongsToMany[$fieldModel]))
 			{
-				$query['conditions'][$field] = $values[$fieldModel][$fieldName];
+				$relatedModel = $Model->$fieldModel;
+
+				if (!Set::check(sprintf('/joins[alias=%s]', $relatedModel->alias), $query))
+				{
+					$conditions = array();
+
+					if (isset($Model->hasMany[$fieldModel]['foreignKey'])
+						&& $Model->hasMany[$fieldModel]['foreignKey'])
+					{
+						$conditions[] = sprintf
+							(
+								'%s.%s = %s.%s',
+								$Model->alias, $Model->primaryKey,
+								$relatedModel->alias, $Model->hasMany[$fieldModel]['foreignKey']
+							);
+					}
+
+					if (isset($Model->hasMany[$fieldModel]['conditions']) && is_array($Model->hasMany[$fieldModel]['conditions']))
+					{
+						$conditions = array_merge($conditions, $Model->hasMany[$fieldModel]['conditions']);
+					}
+
+					$query['joins'][] = array
+						(
+							'table' => $relatedModel->table,
+							'alias' => $relatedModel->alias,
+							'type' => 'INNER',
+							'conditions' => $conditions,
+							'fields' => false
+						);
+				}
+			}
+
+			// TODO: handle NULLs?
+			switch ($options['type'])
+			{
+				case 'text':
+					if (strlen(trim(strval($values[$fieldModel][$fieldName]))) == 0)
+					{
+						continue;
+					}
+
+					if ($options['condition'] == 'like')
+					{
+						$query['conditions'][$realFilterField.' like'] = '%'.$values[$fieldModel][$fieldName].'%';
+					}
+					else if ($options['condition'] == '=')
+					{
+						$query['conditions'][$realFilterField] = $values[$fieldModel][$fieldName];
+					}
+					else
+					{
+						$query['conditions'][$realFilterField.' '.$options['condition']] = $values[$fieldModel][$fieldName];
+					}
+					break;
+				case 'select':
+					if (strlen(trim(strval($values[$fieldModel][$fieldName]))) == 0)
+					{
+						continue;
+					}
+
+					$query['conditions'][$realFilterField] = $values[$fieldModel][$fieldName];
+					break;
+				case 'checkbox':
+					$query['conditions'][$realFilterField] = $values[$fieldModel][$fieldName];
+					break;
 			}
 		}
 
@@ -167,7 +222,7 @@ class FilteredBehavior extends ModelBehavior
 		return $query;
 	}
 
-	function _setFilterValues(&$Model, $method, $values)
+	function _setFilterValues(&$Model, $method, $values = array())
 	{
 		$values = Sanitize::clean
 			(
