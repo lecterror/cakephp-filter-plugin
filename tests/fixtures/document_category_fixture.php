@@ -1,19 +1,14 @@
 <?php
-/*
-This file is part of CakePHP Filter Plugin.
+/**
+	CakePHP Filter Plugin
 
-CakePHP Filter Plugin is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+	Copyright (C) 2009-3827 dr. Hannibal Lecter / lecterror
+	<http://lecterror.com/>
 
-CakePHP Filter Plugin is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with CakePHP Filter Plugin. If not, see <http://www.gnu.org/licenses/>.
+	Multi-licensed under:
+		MPL <http://www.mozilla.org/MPL/MPL-1.1.html>
+		LGPL <http://www.gnu.org/licenses/lgpl.html>
+		GPL <http://www.gnu.org/licenses/gpl.html>
 */
 
 class DocumentCategoryFixture extends CakeTestFixture
@@ -36,4 +31,3 @@ class DocumentCategoryFixture extends CakeTestFixture
 			array('id' => 5, 'title' => 'Father Ted', 'description' => 'Feck! Drink! Arse! Girls!')
 		);
 }
-
