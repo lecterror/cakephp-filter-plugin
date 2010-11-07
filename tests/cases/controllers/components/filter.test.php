@@ -16,7 +16,13 @@ require_once(dirname(dirname(dirname(__FILE__))) . DS . 'mock_objects.php');
 
 class FilterTestCase extends CakeTestCase
 {
-	var $fixtures = array('plugin.filter.document_category', 'plugin.filter.document', 'plugin.filter.item');
+	var $fixtures = array
+		(
+			'plugin.filter.document_category',
+			'plugin.filter.document',
+			'plugin.filter.item',
+			'plugin.filter.metadata',
+		);
 
 	var $Controller = null;
 

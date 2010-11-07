@@ -78,27 +78,27 @@ class FilteredBehavior extends ModelBehavior
 
 		foreach ($settings as $field => $options)
 		{
-			$fieldModel = $Model->alias;
+			$fieldModelName = $Model->alias;
 			$fieldName = $field;
 
 			if (strpos($field, '.') !== false)
 			{
-				list($fieldModel, $fieldName) = explode('.', $field);
+				list($fieldModelName, $fieldName) = explode('.', $field);
 			}
 
-			if (!isset($values[$fieldModel][$fieldName]) && isset($options['default']))
+			if (!isset($values[$fieldModelName][$fieldName]) && isset($options['default']))
 			{
-				$values[$fieldModel][$fieldName] = $options['default'];
+				$values[$fieldModelName][$fieldName] = $options['default'];
 			}
 
-			if ($options['required'] && !isset($values[$fieldModel][$fieldName]))
+			if ($options['required'] && !isset($values[$fieldModelName][$fieldName]))
 			{
 				// TODO: implement a bit of a user friendly handling of this scenario..
 				trigger_error(sprintf(__('No value present for required field %s and default value not present', true), $field));
 				return;
 			}
 
-			if (!isset($values[$fieldModel][$fieldName]) || is_null($values[$fieldModel][$fieldName]))
+			if (!isset($values[$fieldModelName][$fieldName]) || is_null($values[$fieldModelName][$fieldName]))
 			{
 				// no value to filter with, just skip this field
 				continue;
@@ -108,10 +108,21 @@ class FilteredBehavior extends ModelBehavior
 			// model and field we're using to filter the data
 			$filterByField = $fieldName;
 			$filterByModel = $Model->alias;
+			$relationType = null;
 
-			if ($fieldModel != $Model->name && isset($Model->hasMany) && isset($Model->hasMany[$fieldModel]))
+			if ($fieldModelName != $Model->name)
 			{
-				$filterByModel = $fieldModel;
+				$relationTypes = array('hasMany', 'hasOne');
+
+				foreach ($relationTypes as $type)
+				{
+					if (isset($Model->{$type}) && isset($Model->{$type}[$fieldModelName]))
+					{
+						$filterByModel = 'Filter'.$fieldModelName;
+						$relationType = $type;
+						break;
+					}
+				}
 			}
 
 			if (isset($options['filterField']))
@@ -129,38 +140,47 @@ class FilteredBehavior extends ModelBehavior
 
 			$realFilterField = sprintf('%s.%s', $filterByModel, $filterByField);
 
-			if (isset($Model->hasMany) && isset($Model->hasMany[$fieldModel]))
-				//|| isset($Model->hasAndBelongsToMany) && isset($Model->hasAndBelongsToMany[$fieldModel]))
+			if (isset($Model->{$relationType}) && isset($Model->{$relationType}[$fieldModelName]))
 			{
-				$relatedModel = $Model->$fieldModel;
+				$relatedModel = $Model->$fieldModelName;
+				$relatedModelAlias = 'Filter'.$relatedModel->alias;
 
-				if (!Set::check(sprintf('/joins[alias=%s]', $relatedModel->alias), $query))
+				if (!Set::matches(sprintf('/joins[alias=%s]', $relatedModelAlias), $query))
 				{
 					$conditions = array();
 
-					if (isset($Model->hasMany[$fieldModel]['foreignKey'])
-						&& $Model->hasMany[$fieldModel]['foreignKey'])
+					if (isset($Model->{$relationType}[$fieldModelName]['foreignKey'])
+						&& $Model->{$relationType}[$fieldModelName]['foreignKey'])
 					{
 						$conditions[] = sprintf
 							(
 								'%s.%s = %s.%s',
 								$Model->alias, $Model->primaryKey,
-								$relatedModel->alias, $Model->hasMany[$fieldModel]['foreignKey']
+								$relatedModelAlias, $Model->{$relationType}[$fieldModelName]['foreignKey']
 							);
 					}
 
-					if (isset($Model->hasMany[$fieldModel]['conditions']) && is_array($Model->hasMany[$fieldModel]['conditions']))
+					// merge any custom conditions from the relation, but change
+					// the alias to our $relatedModelAlias
+					if (isset($Model->{$relationType}[$fieldModelName]['conditions']) && !empty($Model->{$relationType}[$fieldModelName]['conditions']))
 					{
-						$conditions = array_merge($conditions, $Model->hasMany[$fieldModel]['conditions']);
+						$customConditions = $Model->{$relationType}[$fieldModelName]['conditions'];
+
+						if (!is_array($Model->{$relationType}[$fieldModelName]['conditions']))
+						{
+							$customConditions = array($customConditions);
+						}
+
+						$filterConditions = str_replace($relatedModel->alias, $relatedModelAlias, $customConditions);
+						$conditions = array_merge($conditions, $filterConditions);
 					}
 
 					$query['joins'][] = array
 						(
 							'table' => $relatedModel->table,
-							'alias' => $relatedModel->alias,
+							'alias' => $relatedModelAlias,
 							'type' => 'INNER',
 							'conditions' => $conditions,
-							'fields' => false
 						);
 				}
 			}
@@ -169,34 +189,34 @@ class FilteredBehavior extends ModelBehavior
 			switch ($options['type'])
 			{
 				case 'text':
-					if (strlen(trim(strval($values[$fieldModel][$fieldName]))) == 0)
+					if (strlen(trim(strval($values[$fieldModelName][$fieldName]))) == 0)
 					{
 						continue;
 					}
 
 					if ($options['condition'] == 'like')
 					{
-						$query['conditions'][$realFilterField.' like'] = '%'.$values[$fieldModel][$fieldName].'%';
+						$query['conditions'][$realFilterField.' like'] = '%'.$values[$fieldModelName][$fieldName].'%';
 					}
 					else if ($options['condition'] == '=')
 					{
-						$query['conditions'][$realFilterField] = $values[$fieldModel][$fieldName];
+						$query['conditions'][$realFilterField] = $values[$fieldModelName][$fieldName];
 					}
 					else
 					{
-						$query['conditions'][$realFilterField.' '.$options['condition']] = $values[$fieldModel][$fieldName];
+						$query['conditions'][$realFilterField.' '.$options['condition']] = $values[$fieldModelName][$fieldName];
 					}
 					break;
 				case 'select':
-					if (strlen(trim(strval($values[$fieldModel][$fieldName]))) == 0)
+					if (strlen(trim(strval($values[$fieldModelName][$fieldName]))) == 0)
 					{
 						continue;
 					}
 
-					$query['conditions'][$realFilterField] = $values[$fieldModel][$fieldName];
+					$query['conditions'][$realFilterField] = $values[$fieldModelName][$fieldName];
 					break;
 				case 'checkbox':
-					$query['conditions'][$realFilterField] = $values[$fieldModel][$fieldName];
+					$query['conditions'][$realFilterField] = $values[$fieldModelName][$fieldName];
 					break;
 			}
 		}

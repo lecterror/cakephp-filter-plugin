@@ -17,7 +17,13 @@ require_once(dirname(dirname(dirname(__FILE__))) . DS . 'mock_objects.php');
 
 class FilteredTestCase extends CakeTestCase
 {
-	var $fixtures = array('plugin.filter.document_category', 'plugin.filter.document', 'plugin.filter.item');
+	var $fixtures = array
+		(
+			'plugin.filter.document_category',
+			'plugin.filter.document',
+			'plugin.filter.item',
+			'plugin.filter.metadata',
+		);
 
 	var $Document = null;
 
@@ -247,7 +253,7 @@ class FilteredTestCase extends CakeTestCase
 
 	/**
 	 * Test filtering with conditions on current model, the belongsTo model
-	 * and hasMany model (behavior adds an INNER JOIN in query.
+	 * and hasMany model (behavior adds an INNER JOIN in query).
 	 */
 	function testFilteringBelongsToAndHasMany()
 	{
@@ -274,6 +280,7 @@ class FilteredTestCase extends CakeTestCase
 				(
 					'Document' => array('id' => 2, 'title' => 'Imaginary Spec', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0, 'created' => '2010-03-28 12:19:13', 'updated' => '2010-04-29 11:23:44'),
 					'DocumentCategory' => array('id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'),
+					'Metadata' => array('id' => 2, 'document_id' => 2, 'weight' => 0, 'size' => 45, 'permissions' => 'rw-------'),
 					'Item' => array
 						(
 							array('id' => 4, 'document_id' => 2, 'code' => 'The item #01'),
@@ -293,8 +300,15 @@ class FilteredTestCase extends CakeTestCase
 				(
 					'Document' => array('id' => 2, 'title' => 'Imaginary Spec', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0, 'created' => '2010-03-28 12:19:13', 'updated' => '2010-04-29 11:23:44'),
 					'DocumentCategory' => array('id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'),
+					'Metadata' => array('id' => 2, 'document_id' => 2, 'weight' => 0, 'size' => 45, 'permissions' => 'rw-------'),
 				)
 			);
+
+		$result = $this->Document->find('all', array('recursive' => 0));
+		$this->assertEqual($result, $expected);
+
+		$this->Document->unbindModel(array('hasMany' => array('Item')), false);
+		$this->Document->bindModel(array('hasMany' => array('Item')), false);
 
 		$result = $this->Document->find('all', array('recursive' => 0));
 		$this->assertEqual($result, $expected);
@@ -309,36 +323,49 @@ class FilteredTestCase extends CakeTestCase
 
 		$result = $this->Document->find('all', array('recursive' => -1));
 		$this->assertEqual($result, $expected);
+	}
 
-		$this->Document->unbindModel(array('hasMany' => array('Item')), false);
-		$this->Document->bindModel
+	/**
+	 * Test filtering with join which has some custom
+	 * condition in the relation (both string and array).
+	 */
+	function testCustomJoinConditions()
+	{
+		$testOptions = array
+			(
+				'Metadata.weight'	=> array('type' => 'text', 'condition' => '>'),
+			);
+		$this->_reattachBehavior($testOptions);
+
+		$filterValues = array
+			(
+				'Metadata'			=> array('weight' => 3),
+			);
+		$this->Document->setFilterValues($filterValues);
+
+		$expected = array
 			(
 				array
 				(
-					'hasMany' => array('Item' => array('foreignKey' => false, 'conditions' => array('Document.id = Item.document_id')))
-				),
-				false
+					'Document' => array('id' => 5, 'title' => 'Father Ted', 'document_category_id' => 2, 'owner_id' => 2, 'is_private' => 0, 'created' => '2009-01-13 05:15:03', 'updated' => '2010-12-05 03:24:15'),
+					'Metadata' => array('id' => 5, 'document_id' => 5, 'weight' => 4, 'size' => 790, 'permissions' => 'rw-rw-r--'),
+				)
 			);
 
-		$result = $this->Document->find('all', array('recursive' => -1));
+		$this->Document->recursive = -1;
+		$oldConditions = $this->Document->hasOne['Metadata']['conditions'];
+		$this->Document->hasOne['Metadata']['conditions'] = array('Metadata.size > 500');
+		$this->Document->Behaviors->attach('Containable');
+
+		$result = $this->Document->find('all', array('contain' => array('Metadata')));
 		$this->assertEqual($result, $expected);
 
-		$this->Document->unbindModel(array('hasMany' => array('Item')), false);
-		$this->Document->bindModel
-			(
-				array
-				(
-					'hasMany' => array
-					(
-						'Item' => array
-						(
-							'className' => 'Item',
-							'foreignKey' => 'document_id',
-						)
-					)
-				),
-				false
-			);
+		$this->Document->hasOne['Metadata']['conditions'] = 'Metadata.size > 500';
+		$result = $this->Document->find('all', array('contain' => array('Metadata')));
+		$this->assertEqual($result, $expected);
+
+		$this->Document->hasOne['Metadata']['conditions'] = $oldConditions;
+		$this->Document->Behaviors->detach('Containable');
 	}
 
 	/**
@@ -408,6 +435,146 @@ class FilteredTestCase extends CakeTestCase
 		$this->assertEqual($result, $expected);
 
 		$this->Document->Behaviors->detach('Containable');
+	}
+
+	/**
+	 * Test filtering by text input with hasOne relation.
+	 */
+	function testHasOneAndHasManyWithTextSearch()
+	{
+		$testOptions = array
+			(
+				'title'					=> array('type' => 'text', 'condition' => 'like', 'required' => true),
+				'Item.code'				=> array('type' => 'text'),
+				'Metadata.size'			=> array('type' => 'text', 'condition' => '='),
+			);
+
+		$filterValues = array
+			(
+				'Document'			=> array('title' => 'in'),
+				'Item'				=> array('code' => '04'),
+				'Metadata'			=> array('size' => 45),
+			);
+
+		$expected = array
+			(
+				array
+				(
+					'Document' => array('id' => 2, 'title' => 'Imaginary Spec'),
+				)
+			);
+
+		$this->_reattachBehavior($testOptions);
+		$this->Document->setFilterValues($filterValues);
+
+		$this->Document->recursive = -1;
+		$result = $this->Document->find('all', array('fields' => array('Document.id', 'Document.title')));
+		$this->assertEqual($result, $expected);
+	}
+
+	/**
+	 * Test filtering with Containable and hasOne Model.field.
+	 */
+	function testHasOneWithContainable()
+	{
+		$testOptions = array
+			(
+				'title'					=> array('type' => 'text', 'condition' => 'like', 'required' => true),
+				'Item.code'				=> array('type' => 'text'),
+				'Metadata.size'			=> array('type' => 'text', 'condition' => '='),
+			);
+
+		$filterValues = array
+			(
+				'Document'			=> array('title' => 'in'),
+				'Item'				=> array('code' => '04'),
+				'Metadata'			=> array('size' => 45),
+			);
+
+		$expected = array
+			(
+				array
+				(
+					'Document' => array('id' => 2, 'title' => 'Imaginary Spec', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0, 'created' => '2010-03-28 12:19:13', 'updated' => '2010-04-29 11:23:44'),
+					'Metadata' => array('id' => 2, 'document_id' => 2, 'weight' => 0, 'size' => 45, 'permissions' => 'rw-------'),
+					'Item' => array
+						(
+							array('id' => 4, 'document_id' => 2, 'code' => 'The item #01'),
+							array('id' => 5, 'document_id' => 2, 'code' => 'The item #02'),
+							array('id' => 6, 'document_id' => 2, 'code' => 'The item #03'),
+							array('id' => 7, 'document_id' => 2, 'code' => 'The item #04')
+						)
+				)
+			);
+
+		// containable first, filtered second
+		$this->Document->Behaviors->attach('Containable');
+		$this->_reattachBehavior($testOptions);
+		$this->Document->setFilterValues($filterValues);
+		$result = $this->Document->find('all', array('contain' => array('Metadata', 'Item')));
+		$this->assertEqual($result, $expected);
+		$this->Document->Behaviors->detach('Containable');
+
+		// filtered first, containable second
+		$this->_reattachBehavior($testOptions);
+		$this->Document->setFilterValues($filterValues);
+		$this->Document->Behaviors->attach('Containable');
+		$result = $this->Document->find('all', array('contain' => array('Metadata', 'Item')));
+		$this->assertEqual($result, $expected);
+		$this->Document->Behaviors->detach('Containable');
+	}
+
+	/**
+	 * Test filtering when a join is already present in the query,
+	 * this should prevent duplicate joins and query errors.
+	 */
+	function testJoinAlreadyPresent()
+	{
+		$testOptions = array
+			(
+				'title'					=> array('type' => 'text', 'condition' => 'like', 'required' => true),
+				'Item.code'				=> array('type' => 'text'),
+				'Metadata.size'			=> array('type' => 'text', 'condition' => '='),
+			);
+
+		$filterValues = array
+			(
+				'Document'			=> array('title' => 'in'),
+				'Item'				=> array('code' => '04'),
+				'Metadata'			=> array('size' => 45),
+			);
+
+		$expected = array
+			(
+				array
+				(
+					'Document' => array('id' => 2, 'title' => 'Imaginary Spec', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0, 'created' => '2010-03-28 12:19:13', 'updated' => '2010-04-29 11:23:44'),
+					'DocumentCategory' => array('id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'),
+					'Metadata' => array('id' => 2, 'document_id' => 2, 'weight' => 0, 'size' => 45, 'permissions' => 'rw-------'),
+					'Item' => array
+						(
+							array('id' => 4, 'document_id' => 2, 'code' => 'The item #01'),
+							array('id' => 5, 'document_id' => 2, 'code' => 'The item #02'),
+							array('id' => 6, 'document_id' => 2, 'code' => 'The item #03'),
+							array('id' => 7, 'document_id' => 2, 'code' => 'The item #04')
+						)
+				)
+			);
+
+		$customJoin = array();
+		$customJoin[] = array
+			(
+				'table' => 'items',
+				'alias' => 'FilterItem',
+				'type' => 'INNER',
+				'conditions' => 'Document.id = FilterItem.document_id',
+			);
+
+		$this->_reattachBehavior($testOptions);
+		$this->Document->setFilterValues($filterValues);
+		$result = $this->Document->find('all', array('joins' => $customJoin, 'recursive' => 1));
+		$this->assertEqual($result, $expected);
+		$arse = false;
 	}
 
 	/**

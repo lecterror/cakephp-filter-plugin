@@ -24,6 +24,7 @@ class Document extends CakeTestModel
 	var $name = 'Document';
 	var $belongsTo = array('DocumentCategory');
 	var $hasMany = array('Item');
+	var $hasOne = array('Metadata');
 }
 
 class Document2 extends CakeTestModel
@@ -64,6 +65,12 @@ class Document3 extends CakeTestModel
 
 		return $query;
 	}
+}
+
+class Metadata extends CakeTestModel
+{
+	var $name = 'Metadata';
+	var $hasOne = array('Document');
 }
 
 class Item extends CakeTestModel
