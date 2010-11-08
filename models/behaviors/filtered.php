@@ -171,7 +171,7 @@ class FilteredBehavior extends ModelBehavior
 							$customConditions = array($customConditions);
 						}
 
-						$filterConditions = str_replace($relatedModel->alias, $relatedModelAlias, $customConditions);
+						$filterConditions = preg_replace(sprintf('#(?<![A-Za-z])%s(?![A-Za-z])#', $relatedModel->alias), $relatedModelAlias, $customConditions);
 						$conditions = array_merge($conditions, $filterConditions);
 					}
 
