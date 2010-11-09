@@ -204,4 +204,40 @@ class FilterTestCase extends CakeTestCase
 			);
 	}
 
+	/**
+	 * Test loading filter data from a post request.
+	 */
+	function testPostStartupData()
+	{
+		$_SERVER['REQUEST_METHOD'] = 'POST';
+
+		$testSettings = array
+			(
+				'index' => array
+				(
+					'Document' => array
+					(
+						'Document.title' => array('type' => 'text')
+					),
+				)
+			);
+
+		$this->Controller->filters = $testSettings;
+
+		$filterValues = array('Document' => array('title' => 'in'), 'Filter' => array('filterFormId' => 'Document'));
+		$this->Controller->data = $filterValues;
+
+		$this->Controller->Component->initialize($this->Controller);
+		$this->Controller->Component->startup($this->Controller);
+
+		$sessionKey = sprintf('FilterPlugin.Filters.%s.%s', $this->Controller->name, $this->Controller->action);
+		$sessionData = $this->Controller->Session->read($sessionKey);
+		$this->assertEqual($filterValues, $sessionData);
+
+		$this->assertEqual
+			(
+				$this->Controller->Document->Behaviors->Filtered->_filterValues[$this->Controller->Document->alias],
+				$filterValues
+			);
+	}
 }
