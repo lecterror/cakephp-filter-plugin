@@ -17,6 +17,14 @@ class DocumentCategory extends CakeTestModel
 {
 	var $name = 'DocumentCategory';
 	var $hasMany = array('Document');
+
+	function customSelector($options = array())
+	{
+		$options['conditions']['DocumentCategory.title LIKE'] = '%T%';
+		$options['nofilter'] = true;
+
+		return $this->find('list', $options);
+	}
 }
 
 class Document extends CakeTestModel

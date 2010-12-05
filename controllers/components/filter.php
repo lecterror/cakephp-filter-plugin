@@ -42,7 +42,7 @@ class FilterComponent extends Object
 
 		foreach ($settings as $model => $filter)
 		{
-			if (!isset($controller->$model))
+			if (!isset($controller->{$model}))
 			{
 				trigger_error(sprintf(__('Filter model not found: %s', true), $model));
 				continue;
@@ -92,7 +92,7 @@ class FilterComponent extends Object
 
 		foreach ($settings as $model => $options)
 		{
-			if (!isset($controller->$model))
+			if (!isset($controller->{$model}))
 			{
 				trigger_error(sprintf(__('Filter model not found: %s', true), $model));
 				continue;
@@ -140,16 +140,16 @@ class FilterComponent extends Object
 
 				$options = array();
 
+				$fieldName = $field;
+				$fieldModel = $model;
+
+				if (strpos($field, '.') !== false)
+				{
+					list($fieldModel, $fieldName) = explode('.', $field);
+				}
+
 				if (!empty($this->formData))
 				{
-					$fieldName = $field;
-					$fieldModel = $model;
-
-					if (strpos($field, '.'))
-					{
-						list($fieldModel, $fieldName) = explode('.', $field);
-					}
-
 					if (isset($this->formData[$fieldModel][$fieldName]))
 					{
 						$options['value'] = $this->formData[$fieldModel][$fieldName];
@@ -178,23 +178,15 @@ class FilterComponent extends Object
 
 						$viewFilterParams[] = array
 							(
-								'name' => $field,
+								'name' => sprintf('%s.%s', $fieldModel, $fieldName),
 								'options' => $options
 							);
 						break;
 					case 'select':
 						$options['type'] = 'select';
 
-						$fieldModel = $model;
-
-						if (strpos($field, '.') !== false)
-						{
-							list($fieldModel, $fieldName) = explode('.', $field);
-						}
-
-						$workingModel =& ClassRegistry::init($fieldModel);
-
 						$selectOptions = array();
+						$workingModel =& ClassRegistry::init($fieldModel);
 
 						if (isset($settings['selectOptions']))
 						{
@@ -292,7 +284,7 @@ class FilterComponent extends Object
 				{
 					if ($this->Session->check(sprintf('FilterPlugin.Filters.%s', $nopersistController)))
 					{
-						$this->Session->del(sprintf('FilterPlugin.Filters.%s', $nopersistController));
+						$this->Session->delete(sprintf('FilterPlugin.Filters.%s', $nopersistController));
 						continue;
 					}
 				}
@@ -306,7 +298,7 @@ class FilterComponent extends Object
 
 					if ($this->Session->check(sprintf('FilterPlugin.Filters.%s.%s', $nopersistController, $action)))
 					{
-						$this->Session->del(sprintf('FilterPlugin.Filters.%s.%s', $nopersistController, $action));
+						$this->Session->delete(sprintf('FilterPlugin.Filters.%s.%s', $nopersistController, $action));
 					}
 				}
 			}
