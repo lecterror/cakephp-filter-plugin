@@ -237,16 +237,16 @@ class FilterComponent extends Object
 				}
 
 				// if no value has been set, show the default one
-				if(!isset($options['value']))
+				if (!isset($options['value']) && isset($settings['default']))
 				{
 					$options['value'] = $settings['default'];
 				}
 
 				$viewFilterParams[] = array
-				(
-					'name' => $field,
-					'options' => $options
-				);
+					(
+						'name' => $field,
+						'options' => $options
+					);
 			}
 		}
 
