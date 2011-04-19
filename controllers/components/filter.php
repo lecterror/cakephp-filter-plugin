@@ -175,13 +175,8 @@ class FilterComponent extends Object
 				{
 					case 'text':
 						$options['type'] = 'text';
-
-						$viewFilterParams[] = array
-							(
-								'name' => sprintf('%s.%s', $fieldModel, $fieldName),
-								'options' => $options
-							);
 						break;
+
 					case 'select':
 						$options['type'] = 'select';
 
@@ -213,13 +208,8 @@ class FilterComponent extends Object
 						{
 							$options['empty'] = '';
 						}
-
-						$viewFilterParams[] = array
-							(
-								'name' => $field,
-								'options' => $options
-							);
 						break;
+
 					case 'checkbox':
 						$options['type'] = 'checkbox';
 
@@ -232,17 +222,25 @@ class FilterComponent extends Object
 						{
 							$options['checked'] = !!$settings['default'];
 						}
-
-						$viewFilterParams[] = array
-							(
-								'name' => $field,
-								'options' => $options
-							);
 						break;
+
 					default:
 						continue;
 				}
 
+				// if no value has been set, show the default one
+				if (!isset($options['value']) &&
+					isset($settings['default']) &&
+					$options['type'] != 'checkbox')
+				{
+					$options['value'] = $settings['default'];
+				}
+
+				$viewFilterParams[] = array
+					(
+						'name' => sprintf('%s.%s', $fieldModel, $fieldName),
+						'options' => $options
+					);
 			}
 		}
 
