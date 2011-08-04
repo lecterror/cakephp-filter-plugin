@@ -88,6 +88,7 @@ class FilterComponent extends Object
 		{
 			$this->formData = $controller->data;
 			$this->Session->write($sessionKey, $this->formData);
+			$controller->redirect($controller->referer());
 		}
 
 		foreach ($settings as $model => $options)
