@@ -94,4 +94,10 @@ class DocumentTestsController extends Controller
 	function index()
 	{
 	}
+
+	// must override this or the tests never complete..
+	// @TODO: mock partial?
+	function redirect()
+	{
+	}
 }

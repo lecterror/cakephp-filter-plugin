@@ -194,18 +194,36 @@ class FilteredBehavior extends ModelBehavior
 						continue;
 					}
 
-					if ($options['condition'] == 'like')
+					switch ($options['condition'])
 					{
-						$query['conditions'][$realFilterField.' like'] = '%'.$values[$fieldModelName][$fieldName].'%';
+						case 'like':
+						case 'contains':
+							{
+								$query['conditions'][$realFilterField.' like'] = '%'.$values[$fieldModelName][$fieldName].'%';
+							}
+							break;
+						case 'startswith':
+							{
+								$query['conditions'][$realFilterField.' like'] = $values[$fieldModelName][$fieldName].'%';
+							}
+							break;
+						case 'endswith':
+							{
+								$query['conditions'][$realFilterField.' like'] = '%'.$values[$fieldModelName][$fieldName];
+							}
+							break;
+						case '=':
+							{
+								$query['conditions'][$realFilterField] = $values[$fieldModelName][$fieldName];
+							}
+							break;
+						default:
+							{
+								$query['conditions'][$realFilterField.' '.$options['condition']] = $values[$fieldModelName][$fieldName];
+							}
+							break;
 					}
-					else if ($options['condition'] == '=')
-					{
-						$query['conditions'][$realFilterField] = $values[$fieldModelName][$fieldName];
-					}
-					else
-					{
-						$query['conditions'][$realFilterField.' '.$options['condition']] = $values[$fieldModelName][$fieldName];
-					}
+
 					break;
 				case 'select':
 					if (strlen(trim(strval($values[$fieldModelName][$fieldName]))) == 0)
