@@ -21,20 +21,27 @@ App::import('Behavior', 'Filter.Filtered');
 
 class FilterComponent extends Component
 {
-	var $components = array('Session', 'RequestHandler');
+	var $components = array('Session');
 
 	var $settings = array();
 	var $nopersist = array();
 	var $formData = array();
+	var $_request_settings = array();
 
-	function initialize(&$controller, $settings=null)
+	public function __construct(ComponentCollection $collection, $settings = array())
+	{
+		parent::__construct($collection, $settings);
+		$this->_request_settings = $settings;
+	}
+
+	function initialize($controller)
 	{
 		if (!isset($controller->filters))
 		{
 			return;
 		}
 
-		$this->__updatePersistence($controller, $settings);
+		$this->__updatePersistence($controller, $this->_request_settings);
 		$this->settings[$controller->name] = $controller->filters;
 
 		if (!isset($this->settings[$controller->name][$controller->action]))
@@ -56,7 +63,7 @@ class FilterComponent extends Component
 		}
 	}
 
-	function startup(&$controller)
+	function startup($controller)
 	{
 		if (!isset($this->settings[$controller->name][$controller->action]))
 		{
@@ -72,7 +79,7 @@ class FilterComponent extends Component
 
 		$sessionKey = sprintf('FilterPlugin.Filters.%s.%s', $controller->name, $controller->action);
 
-		if (!$this->RequestHandler->isPost() || !isset($controller->data['Filter']['filterFormId']))
+		if (!$controller->request->is('post') || !isset($controller->request->data['Filter']['filterFormId']))
 		{
 			$persistedData = array();
 
@@ -90,7 +97,7 @@ class FilterComponent extends Component
 		}
 		else
 		{
-			$this->formData = $controller->data;
+			$this->formData = $controller->request->data;
 			$this->Session->write($sessionKey, $this->formData);
 			$controller->redirect($controller->referer());
 		}
@@ -107,7 +114,7 @@ class FilterComponent extends Component
 		}
 	}
 
-	function beforeRender(&$controller)
+	function beforeRender($controller)
 	{
 		if (!isset($this->settings[$controller->name][$controller->action]))
 		{
@@ -252,7 +259,7 @@ class FilterComponent extends Component
 		$controller->set('viewFilterParams', $viewFilterParams);
 	}
 
-	function __updatePersistence(&$controller, $settings)
+	function __updatePersistence($controller, $settings)
 	{
 		if ($this->Session->check('FilterPlugin.NoPersist'))
 		{
@@ -307,5 +314,8 @@ class FilterComponent extends Component
 			}
 		}
 	}
-	function shutdown(){}
+
+	function shutdown()
+	{
+	}
 }

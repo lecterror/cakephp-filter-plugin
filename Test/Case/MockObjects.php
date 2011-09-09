@@ -11,7 +11,8 @@
 		GPL <http://www.gnu.org/licenses/gpl.html>
 */
 
-App::import('Behavior', 'Filter.Filtered');
+App::uses('Behavior', 'Filter.Filtered');
+App::uses('Controller', 'Controller');
 
 class DocumentCategory extends CakeTestModel
 {

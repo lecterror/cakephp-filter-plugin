@@ -12,7 +12,7 @@
 */
 
 App::import('Core', array('AppModel', 'Model'));
-require_once(dirname(dirname(dirname(__FILE__))) . DS . 'mock_objects.php');
+require_once(dirname(dirname(dirname(__FILE__))) . DS . 'MockObjects.php');
 
 
 class FilteredTestCase extends CakeTestCase
@@ -27,12 +27,12 @@ class FilteredTestCase extends CakeTestCase
 
 	var $Document = null;
 
-	function startCase()
+	function startTest()
 	{
-		$this->Document = ClassRegistry::init('Document');
+		$this->Document =& ClassRegistry::init('Document');
 	}
 
-	function endCase()
+	function endTest()
 	{
 		$this->Document = null;
 	}
