@@ -14,36 +14,90 @@
 class FilterHelper extends AppHelper
 {
 	var $_view = null;
-	function __construct(View $View, $settings = array())
+
+	function __construct(View $view, $settings = array())
 	{
-	  $this->_view = $View;
+		$this->_view = $View;
 	}
 
 	function filterForm($modelName, $options)
 	{
 		$view =& $this->_view;
-		$output = $view->element('filter_form_begin', array('plugin' => 'Filter', 'modelName' => $modelName, 'options' => $options), array('plugin' => 'Filter'));
-		$output .= $view->element('filter_form_fields', array('plugin' => 'Filter'), array('plugin' => 'Filter'));
-		$output .= $view->element('filter_form_end', array('plugin' => 'Filter'), array('plugin' => 'Filter'));
 
-		return $this->output($output);
+		$output = $view->element
+			(
+				'filter_form_begin',
+				array
+				(
+					'plugin' => 'Filter',
+					'modelName' => $modelName,
+					'options' => $options
+				),
+				array('plugin' => 'Filter')
+			);
+
+		$output .= $view->element
+			(
+				'filter_form_fields',
+				array('plugin' => 'Filter'),
+				array('plugin' => 'Filter')
+			);
+
+		$output .= $view->element
+			(
+				'filter_form_end',
+				array('plugin' => 'Filter'),
+				array('plugin' => 'Filter')
+			);
+
+		return $output;
 	}
 
 	function beginForm($modelName, $options)
 	{
 		$view =& $this->_view;
-		return $this->output($view->element('filter_form_begin', array('plugin' => 'Filter', 'modelName' => $modelName, 'options' => $options)), array('plugin' => 'Filter'));
+		$output = $view->element
+			(
+				'filter_form_begin',
+				array
+				(
+					'plugin' => 'Filter',
+					'modelName' => $modelName,
+					'options' => $options
+				),
+				array('plugin' => 'Filter')
+			);
+
+		return $output;
 	}
 
 	function inputFields($fields = array())
 	{
 		$view =& $this->_view;
-		return $this->output($view->element('filter_form_fields', array('plugin' => 'Filter', 'includeFields' => $fields)), array('plugin' => 'Filter'));
+		$output = $view->element
+			(
+				'filter_form_fields',
+				array
+				(
+					'plugin' => 'Filter',
+					'includeFields' => $fields
+				),
+				array('plugin' => 'Filter')
+			);
+
+		return $output;
 	}
 
 	function endForm()
 	{
 		$view = $this->_view;
-		return $this->output($view->element('filter_form_end', array('plugin' => 'Filter')));
+		$output = $view->element
+			(
+				'filter_form_end',
+				array(),
+				array('plugin' => 'Filter')
+			);
+
+		return $output;
 	}
 }
