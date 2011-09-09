@@ -12,7 +12,7 @@
 */
 ?>
 <div class="filterForm">
-	<?php echo $form->create(false, array('url' => '/'.$this->params['url']['url'], 'id' => $modelName.'Filter')); ?>
+	<?php echo $this->Form->create(false, array('url' => '/'.$this->request->url, 'id' => $modelName.'Filter')); ?>
 		<fieldset>
 			<?php
 			if (isset($options['legend']))
@@ -20,4 +20,4 @@
 				?><legend><?php echo $options['legend']; ?></legend><?php
 			}
 			?>
-			<?php echo $form->input('Filter.filterFormId', array('type' => 'hidden', 'value' => $modelName)); ?>
+			<?php echo $this->Form->input('Filter.filterFormId', array('type' => 'hidden', 'value' => $modelName)); ?>

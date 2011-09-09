@@ -12,6 +12,6 @@
 */
 ?>
 		</fieldset>
-		<?php echo $form->submit(__('Submit', true)); ?>
-	<?php echo $form->end(); ?>
+		<?php echo $this->Form->submit(__('Submit', true)); ?>
+	<?php echo $this->Form->end(); ?>
 </div>

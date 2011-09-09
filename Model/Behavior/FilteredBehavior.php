@@ -11,7 +11,7 @@
 		GPL <http://www.gnu.org/licenses/gpl.html>
 */
 
-App::import('Core', 'Sanitize');
+App::uses('Sanitize', 'Utility');
 
 class FilteredBehavior extends ModelBehavior
 {

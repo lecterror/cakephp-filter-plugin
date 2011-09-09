@@ -17,13 +17,13 @@ if (isset($viewFilterParams))
 	{
 		if(empty($includeFields))
 		{
-			echo $form->input($field['name'], $field['options']);
+			echo $this->Form->input($field['name'], $field['options']);
 		}
 		else
 		{
 			if (in_array($field['name'], $includeFields))
 			{
-				echo $form->input($field['name'], $field['options']);
+				echo $this->Form->input($field['name'], $field['options']);
 			}
 		}
 	}

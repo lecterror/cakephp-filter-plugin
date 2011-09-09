@@ -15,15 +15,19 @@
  * @property RequestHandlerComponent $RequestHandler
  * @property SessionComponent $Session
  */
-class FilterComponent extends Object
+
+App::import('Component', 'Session');
+App::import('Behavior', 'Filter.Filtered');
+
+class FilterComponent extends Component
 {
-	var $components = array('RequestHandler', 'Session');
+	var $components = array('Session', 'RequestHandler');
 
 	var $settings = array();
 	var $nopersist = array();
 	var $formData = array();
 
-	function initialize(&$controller, $settings)
+	function initialize(&$controller, $settings=null)
 	{
 		if (!isset($controller->filters))
 		{
@@ -303,4 +307,5 @@ class FilterComponent extends Object
 			}
 		}
 	}
+	function shutdown(){}
 }
