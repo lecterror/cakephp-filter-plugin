@@ -94,7 +94,7 @@ class FilteredBehavior extends ModelBehavior
 			if ($options['required'] && !isset($values[$fieldModelName][$fieldName]))
 			{
 				// TODO: implement a bit of a user friendly handling of this scenario..
-				trigger_error(sprintf(__('No value present for required field %s and default value not present', true), $field));
+				trigger_error(__('No value present for required field %s and default value not present', $field));
 				return;
 			}
 

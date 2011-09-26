@@ -55,7 +55,7 @@ class FilterComponent extends Component
 		{
 			if (!isset($controller->{$model}))
 			{
-				trigger_error(sprintf(__('Filter model not found: %s', true), $model));
+				trigger_error(__('Filter model not found: %s', $model));
 				continue;
 			}
 
@@ -106,7 +106,7 @@ class FilterComponent extends Component
 		{
 			if (!isset($controller->{$model}))
 			{
-				trigger_error(sprintf(__('Filter model not found: %s', true), $model));
+				trigger_error(__('Filter model not found: %s', $model));
 				continue;
 			}
 
@@ -128,7 +128,7 @@ class FilterComponent extends Component
 		{
 			if (!isset($controller->$model))
 			{
-				trigger_error(sprintf(__('Filter model not found: %s', true), $model));
+				trigger_error(__('Filter model not found: %s', $model));
 				continue;
 			}
 
@@ -204,7 +204,15 @@ class FilterComponent extends Component
 						{
 							if (!method_exists($workingModel, $settings['selector']))
 							{
-								trigger_error(sprintf(__('Selector method "%s" not found in model "%s" for field "%s"!', true), $settings['selector'], $fieldModel, $fieldName));
+								trigger_error
+									(
+										__(
+											'Selector method "%s" not found in model "%s" for field "%s"!',
+											$settings['selector'],
+											$fieldModel,
+											$fieldName
+										)
+									);
 								return;
 							}
 
