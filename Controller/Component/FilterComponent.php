@@ -193,7 +193,8 @@ class FilterComponent extends Component
 						$options['type'] = 'select';
 
 						$selectOptions = array();
-						$workingModel =& ClassRegistry::init($fieldModel);
+						App::import('Model', $fieldModel); 
+						$workingModel =& new $fieldModel;
 
 						if (isset($settings['selectOptions']))
 						{
@@ -204,7 +205,7 @@ class FilterComponent extends Component
 						{
 							if (!method_exists($workingModel, $settings['selector']))
 							{
-								trigger_error(sprintf(__('Selector method "%s" not found in model "%s" for field "%s"!', true), $settings['selector'], $fieldModel, $fieldName));
+								trigger_error(__('Selector method "%s" not found in model "%s" for field "%s"!', $settings['selector'], $fieldModel, $fieldName));
 								return;
 							}
 
