@@ -17,7 +17,7 @@ class FilterHelper extends AppHelper
 
 	function __construct(View $view, $settings = array())
 	{
-		$this->_view = $View;
+		$this->_view = $view;
 	}
 
 	function filterForm($modelName, $options)
