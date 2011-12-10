@@ -17,7 +17,7 @@ class AllFilterTests extends PHPUnit_Framework_TestSuite
 	{
 		$suite = new PHPUnit_Framework_TestSuite('All FilterPlugin tests');
 
-		$suite->addTestFile(dirname(__FILE__).DS.'Controller'.DS.'Component'.DS.'FilterTest.php');
+		$suite->addTestFile(dirname(__FILE__).DS.'Controller'.DS.'Component'.DS.'FilterComponentTest.php');
 		$suite->addTestFile(dirname(__FILE__).DS.'Model'.DS.'Behaviors'.DS.'FilteredTest.php');
 
 		return $suite;
