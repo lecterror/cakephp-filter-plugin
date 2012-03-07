@@ -93,7 +93,7 @@ class FilterTestCase extends CakeTestCase
 				)
 			);
 
-		$this->expectError();
+		$this->setExpectedException('PHPUnit_Framework_Error_Notice');
 		$this->Controller->filters = $testSettings;
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
 
@@ -202,10 +202,10 @@ class FilterTestCase extends CakeTestCase
 
 		$filterValues = array();
 		$this->Controller->Session->write($sessionKey, $filterValues);
-		$this->expectError();
+		$this->setExpectedException('PHPUnit_Framework_Error_Notice');
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
 
-		$this->expectError();
+		$this->setExpectedException('PHPUnit_Framework_Error_Notice');
 		$this->Controller->Components->trigger('startup', array($this->Controller));
 		$this->assertEqual
 			(
@@ -315,13 +315,13 @@ class FilterTestCase extends CakeTestCase
 				$this->Controller->name => $testSettings
 			);
 
-		$this->expectError();
+		$this->setExpectedException('PHPUnit_Framework_Error_Notice');
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
 
 		//$this->expectError();
 		$this->Controller->Components->trigger('startup', array($this->Controller));
 
-		$this->expectError();
+		$this->setExpectedException('PHPUnit_Framework_Error_Notice');
 		$this->Controller->Components->trigger('beforeRender', array($this->Controller));
 	}
 

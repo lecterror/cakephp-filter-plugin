@@ -138,7 +138,7 @@ class FilteredTestCase extends CakeTestCase
 			);
 		$this->Document->setFilterValues($filterValues);
 
-		$this->expectError();
+		$this->setExpectedException('PHPUnit_Framework_Error_Notice');
 		$this->Document->find('first');
 	}
 
