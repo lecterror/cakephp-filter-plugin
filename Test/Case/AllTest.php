@@ -11,14 +11,13 @@
 		GPL <http://www.gnu.org/licenses/gpl.html>
 */
 
-class AllFilterTests extends PHPUnit_Framework_TestSuite
+class AllFilterTests extends CakeTestSuite
 {
 	public static function suite()
 	{
-		$suite = new PHPUnit_Framework_TestSuite('All FilterPlugin tests');
+		$suite = new CakeTestSuite('All FilterPlugin tests');
 
-		$suite->addTestFile(dirname(__FILE__).DS.'Controller'.DS.'Component'.DS.'FilterComponentTest.php');
-		$suite->addTestFile(dirname(__FILE__).DS.'Model'.DS.'Behaviors'.DS.'FilteredTest.php');
+		$suite->addTestDirectoryRecursive(App::pluginPath('Filter').'Test'.DS.'Case');
 
 		return $suite;
 	}
