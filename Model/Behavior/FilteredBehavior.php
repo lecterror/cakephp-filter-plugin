@@ -112,7 +112,7 @@ class FilteredBehavior extends ModelBehavior
 
 			if ($fieldModelName != $Model->name)
 			{
-				$relationTypes = array('hasMany', 'hasOne');
+				$relationTypes = array('hasMany', 'hasOne', 'belongsTo');
 
 				foreach ($relationTypes as $type)
 				{
@@ -152,12 +152,24 @@ class FilteredBehavior extends ModelBehavior
 					if (isset($Model->{$relationType}[$fieldModelName]['foreignKey'])
 						&& $Model->{$relationType}[$fieldModelName]['foreignKey'])
 					{
-						$conditions[] = sprintf
+						if($relationType == 'belongsTo') 
+						{ 
+							$conditions[] = sprintf
 							(
 								'%s.%s = %s.%s',
-								$Model->alias, $Model->primaryKey,
+								$Model->alias, $Model->{$relationType}[$fieldModelName]['foreignKey'],
+								$relatedModelAlias, $relatedModel->primaryKey
+							);
+							
+						} else {
+							
+							$conditions[] = sprintf
+							(
+								'%s.%s = %s.%s',
+								$Model->alias, $Model->foreignKey,
 								$relatedModelAlias, $Model->{$relationType}[$fieldModelName]['foreignKey']
 							);
+						}
 					}
 
 					// merge any custom conditions from the relation, but change
