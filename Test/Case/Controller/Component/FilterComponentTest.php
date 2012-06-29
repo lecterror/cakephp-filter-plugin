@@ -566,4 +566,41 @@ class FilterTestCase extends CakeTestCase
 		$expected = array($this->Controller->name => array($this->Controller->action => $filterValues));
 		$this->assertEqual($this->Controller->Session->read('FilterPlugin.Filters'), $expected);
 	}
+
+	/**
+	 * Test whether filtering by belongsTo model text field
+	 * works correctly.
+	 */
+	public function testBelongsToFilteringByText()
+	{
+		$testSettings = array
+			(
+				'index' => array
+				(
+					'Document' => array
+					(
+						'DocumentCategory.title' => array('type' => 'text')
+					),
+				)
+			);
+		$this->Controller->filters = $testSettings;
+
+		$this->Controller->Components->trigger('initialize', array($this->Controller));
+		$this->Controller->Components->trigger('startup', array($this->Controller));
+		$this->Controller->Components->trigger('beforeRender', array($this->Controller));
+
+		$expected = array
+			(
+				array
+				(
+					'name' => 'DocumentCategory.title',
+					'options' => array
+					(
+						'type' => 'text',
+					)
+				),
+			);
+
+		$this->assertEqual($this->Controller->viewVars['viewFilterParams'], $expected);
+	}
 }

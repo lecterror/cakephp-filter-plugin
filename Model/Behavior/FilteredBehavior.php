@@ -78,165 +78,7 @@ class FilteredBehavior extends ModelBehavior
 
 		foreach ($settings as $field => $options)
 		{
-			$fieldModelName = $Model->alias;
-			$fieldName = $field;
-
-			if (strpos($field, '.') !== false)
-			{
-				list($fieldModelName, $fieldName) = explode('.', $field);
-			}
-
-			if (!isset($values[$fieldModelName][$fieldName]) && isset($options['default']))
-			{
-				$values[$fieldModelName][$fieldName] = $options['default'];
-			}
-
-			if ($options['required'] && !isset($values[$fieldModelName][$fieldName]))
-			{
-				// TODO: implement a bit of a user friendly handling of this scenario..
-				trigger_error(__('No value present for required field %s and default value not present', $field));
-				return;
-			}
-
-			if (!isset($values[$fieldModelName][$fieldName]) || is_null($values[$fieldModelName][$fieldName]))
-			{
-				// no value to filter with, just skip this field
-				continue;
-			}
-
-			// the value we get as condition and where it comes from is not the same as the
-			// model and field we're using to filter the data
-			$filterByField = $fieldName;
-			$filterByModel = $Model->alias;
-			$relationType = null;
-
-			if ($fieldModelName != $Model->name)
-			{
-				$relationTypes = array('hasMany', 'hasOne');
-
-				foreach ($relationTypes as $type)
-				{
-					if (isset($Model->{$type}) && isset($Model->{$type}[$fieldModelName]))
-					{
-						$filterByModel = 'Filter'.$fieldModelName;
-						$relationType = $type;
-						break;
-					}
-				}
-			}
-
-			if (isset($options['filterField']))
-			{
-				if (strpos($options['filterField'], '.') !== false)
-				{
-					list($tmpFieldModel, $tmpFieldName) = explode('.', $options['filterField']);
-					$filterByField = $tmpFieldName;
-				}
-				else
-				{
-					$filterByField = $options['filterField'];
-				}
-			}
-
-			$realFilterField = sprintf('%s.%s', $filterByModel, $filterByField);
-
-			if (isset($Model->{$relationType}) && isset($Model->{$relationType}[$fieldModelName]))
-			{
-				$relatedModel = $Model->$fieldModelName;
-				$relatedModelAlias = 'Filter'.$relatedModel->alias;
-
-				if (!Set::matches(sprintf('/joins[alias=%s]', $relatedModelAlias), $query))
-				{
-					$conditions = array();
-
-					if (isset($Model->{$relationType}[$fieldModelName]['foreignKey'])
-						&& $Model->{$relationType}[$fieldModelName]['foreignKey'])
-					{
-						$conditions[] = sprintf
-							(
-								'%s.%s = %s.%s',
-								$Model->alias, $Model->primaryKey,
-								$relatedModelAlias, $Model->{$relationType}[$fieldModelName]['foreignKey']
-							);
-					}
-
-					// merge any custom conditions from the relation, but change
-					// the alias to our $relatedModelAlias
-					if (isset($Model->{$relationType}[$fieldModelName]['conditions']) && !empty($Model->{$relationType}[$fieldModelName]['conditions']))
-					{
-						$customConditions = $Model->{$relationType}[$fieldModelName]['conditions'];
-
-						if (!is_array($Model->{$relationType}[$fieldModelName]['conditions']))
-						{
-							$customConditions = array($customConditions);
-						}
-
-						$filterConditions = preg_replace(sprintf('#(?<![A-Za-z])%s(?![A-Za-z])#', $relatedModel->alias), $relatedModelAlias, $customConditions);
-						$conditions = array_merge($conditions, $filterConditions);
-					}
-
-					$query['joins'][] = array
-						(
-							'table' => $relatedModel->table,
-							'alias' => $relatedModelAlias,
-							'type' => 'INNER',
-							'conditions' => $conditions,
-						);
-				}
-			}
-
-			// TODO: handle NULLs?
-			switch ($options['type'])
-			{
-				case 'text':
-					if (strlen(trim(strval($values[$fieldModelName][$fieldName]))) == 0)
-					{
-						continue;
-					}
-
-					switch ($options['condition'])
-					{
-						case 'like':
-						case 'contains':
-							{
-								$query['conditions'][$realFilterField.' like'] = '%'.$values[$fieldModelName][$fieldName].'%';
-							}
-							break;
-						case 'startswith':
-							{
-								$query['conditions'][$realFilterField.' like'] = $values[$fieldModelName][$fieldName].'%';
-							}
-							break;
-						case 'endswith':
-							{
-								$query['conditions'][$realFilterField.' like'] = '%'.$values[$fieldModelName][$fieldName];
-							}
-							break;
-						case '=':
-							{
-								$query['conditions'][$realFilterField] = $values[$fieldModelName][$fieldName];
-							}
-							break;
-						default:
-							{
-								$query['conditions'][$realFilterField.' '.$options['condition']] = $values[$fieldModelName][$fieldName];
-							}
-							break;
-					}
-
-					break;
-				case 'select':
-					if (strlen(trim(strval($values[$fieldModelName][$fieldName]))) == 0)
-					{
-						continue;
-					}
-
-					$query['conditions'][$realFilterField] = $values[$fieldModelName][$fieldName];
-					break;
-				case 'checkbox':
-					$query['conditions'][$realFilterField] = $values[$fieldModelName][$fieldName];
-					break;
-			}
+			$this->addFieldToFilter($Model, $query, $settings, $values, $field, $options);
 		}
 
 		if (method_exists($Model, 'afterDataFilter'))
@@ -253,6 +95,246 @@ class FilteredBehavior extends ModelBehavior
 		}
 
 		return $query;
+	}
+
+	protected function addFieldToFilter(&$Model, &$query, $settings, $values, $field, $field_options)
+	{
+		$configurationModelName = $Model->alias;
+		$configurationFieldName = $field;
+
+		if (strpos($field, '.') !== false)
+		{
+			list($configurationModelName, $configurationFieldName) = explode('.', $field);
+		}
+
+		if (!isset($values[$configurationModelName][$configurationFieldName]) && isset($field_options['default']))
+		{
+			$values[$configurationModelName][$configurationFieldName] = $field_options['default'];
+		}
+
+		if ($field_options['required'] && !isset($values[$configurationModelName][$configurationFieldName]))
+		{
+			// TODO: implement a bit of a user friendly handling of this scenario..
+			trigger_error(__('No value present for required field %s and default value not present', $field));
+			return;
+		}
+
+		if (!isset($values[$configurationModelName][$configurationFieldName]) || empty($values[$configurationModelName][$configurationFieldName]))
+		{
+			// no value to filter with, just skip this field
+			return;
+		}
+
+		// the value we get as condition and where it comes from is not the same as the
+		// model and field we're using to filter the data
+		$filterFieldName = $configurationFieldName;
+		$filterModelName = $configurationModelName;
+		$relationType = null;
+
+		if ($configurationModelName != $Model->alias)
+		{
+			$relationTypes = array('hasMany', 'hasOne', 'belongsTo');
+
+			foreach ($relationTypes as $type)
+			{
+				if (isset($Model->{$type}) && isset($Model->{$type}[$configurationModelName]))
+				{
+					$filterModelName = 'Filter'.$configurationModelName;
+					$relationType = $type;
+					break;
+				}
+			}
+		}
+
+		if (isset($field_options['filterField']))
+		{
+			if (strpos($field_options['filterField'], '.') !== false)
+			{
+				list($filterModelName, $filterFieldName) = explode('.', $field_options['filterField']);
+
+				if ($filterModelName != $Model->alias)
+				{
+					$filterModelName = 'Filter'.$filterModelName;
+				}
+			}
+			else
+			{
+				$filterModelName = $Model->alias;
+				$filterFieldName = $field_options['filterField'];
+			}
+		}
+
+		$realFilterField = sprintf('%s.%s', $filterModelName, $filterFieldName);
+
+		if (isset($Model->{$relationType}) && isset($Model->{$relationType}[$configurationModelName]))
+		{
+			$relatedModel = $Model->{$configurationModelName};
+			$relatedModelAlias = 'Filter'.$relatedModel->alias;
+
+			if (!Set::matches(sprintf('/joins[alias=%s]', $relatedModelAlias), $query))
+			{
+				$joinStatement = $this->buildFilterJoin($Model, $relatedModel);
+				$query['joins'][] = $joinStatement;
+			}
+		}
+
+		$this->buildFilterConditions
+			(
+				$query,
+				$realFilterField,
+				$field_options,
+				$values[$configurationModelName][$configurationFieldName]
+			);
+	}
+
+	/**
+	 * Build join conditions from Model to relatedModel.
+	 *
+	 * @param Model $Model
+	 * @param Model $relatedModel
+	 * @return array Cake join array
+	 */
+	protected function buildFilterJoin(Model &$Model, Model &$relatedModel)
+	{
+		$conditions = array();
+		$relationTypes = array('hasMany', 'hasOne', 'belongsTo');
+
+		$relatedModelAlias = null;
+		$relationType = null;
+
+		foreach ($relationTypes as $type)
+		{
+			if (isset($Model->{$type}) && isset($Model->{$type}[$relatedModel->alias]))
+			{
+				$relatedModelAlias = 'Filter'.$relatedModel->alias;
+				$relationType = $type;
+				break;
+			}
+		}
+
+		if (isset($Model->{$relationType}[$relatedModel->alias]['foreignKey'])
+			&& $Model->{$relationType}[$relatedModel->alias]['foreignKey'])
+		{
+			if ($relationType == 'belongsTo')
+			{
+				$conditions[] = sprintf
+					(
+						'%s.%s = %s.%s',
+						$Model->alias, $Model->{$relationType}[$relatedModel->alias]['foreignKey'],
+						$relatedModelAlias, $relatedModel->primaryKey
+					);
+			}
+			else if (in_array($relationType, array('hasMany', 'hasOne')))
+			{
+				$conditions[] = sprintf
+					(
+						'%s.%s = %s.%s',
+						$Model->alias, $Model->primaryKey,
+						$relatedModelAlias, $Model->{$relationType}[$relatedModel->alias]['foreignKey']
+					);
+			}
+		}
+
+		// merge any custom conditions from the relation, but change
+		// the alias to our $relatedModelAlias
+		if (isset($Model->{$relationType}[$relatedModel->alias]['conditions']) &&
+			!empty($Model->{$relationType}[$relatedModel->alias]['conditions']))
+		{
+			$customConditions = $Model->{$relationType}[$relatedModel->alias]['conditions'];
+
+			if (!is_array($Model->{$relationType}[$relatedModel->alias]['conditions']))
+			{
+				$customConditions = array($customConditions);
+			}
+
+			$filterConditions = preg_replace(sprintf('#(?<![A-Za-z])%s(?![A-Za-z])#', $relatedModel->alias), $relatedModelAlias, $customConditions);
+			$conditions = array_merge($conditions, $filterConditions);
+		}
+
+		return array
+			(
+				'table' => $relatedModel->table,
+				'alias' => $relatedModelAlias,
+				'type' => 'INNER',
+				'conditions' => $conditions,
+			);
+	}
+
+	/**
+	 * Build query conditions and add them to $query.
+	 *
+	 * @param array $query Cake query array.
+	 * @param string $field Filter field.
+	 * @param array $options Configuration options for this field.
+	 * @param mixed $value Field value.
+	 */
+	protected function buildFilterConditions(array &$query, $field, $options, $value)
+	{
+		$conditionFieldFormats = array
+			(
+				'like' => '%s like',
+				'contains' => '%s like',
+				'startswith' => '%s like',
+				'endswith' => '%s like',
+				'equal' => '%s',
+				'equals' => '%s',
+				'=' => '%s',
+			);
+		$conditionValueFormats = array
+			(
+				'like' => '%%%s%%',
+				'contains' => '%%%s%%',
+				'startswith' => '%s%%',
+				'endswith' => '%%%s',
+				'equal' => '%s',
+				'equals' => '%s',
+				'=' => '%s',
+			);
+
+		switch ($options['type'])
+		{
+			case 'text':
+				if (strlen(trim(strval($value))) == 0)
+				{
+					continue;
+				}
+
+				$condition = $options['condition'];
+
+				switch ($condition)
+				{
+					case 'like':
+					case 'contains':
+					case 'startswith':
+					case 'endswith':
+					case 'equal':
+					case 'equals':
+					case '=':
+						$formattedField = sprintf($conditionFieldFormats[$condition], $field);
+						$formattedValue = sprintf($conditionValueFormats[$condition], $value);
+
+						$query['conditions'][$formattedField] = $formattedValue;
+						break;
+					default:
+						{
+							$query['conditions'][$field.' '.$condition] = $value;
+						}
+						break;
+				}
+
+				break;
+			case 'select':
+				if (strlen(trim(strval($value))) == 0)
+				{
+					continue;
+				}
+
+				$query['conditions'][$field] = $value;
+				break;
+			case 'checkbox':
+				$query['conditions'][$field] = $value;
+				break;
+		}
 	}
 
 	function _setFilterValues(&$Model, $method, $values = array())

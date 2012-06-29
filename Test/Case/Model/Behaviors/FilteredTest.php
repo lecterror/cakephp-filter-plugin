@@ -150,7 +150,7 @@ class FilteredTestCase extends CakeTestCase
 		$testOptions = array
 			(
 				'title'					=> array('type' => 'text', 'condition' => 'like', 'required' => true),
-				'DocumentCategory.id'	=> array('type' => 'select', 'filterField' => 'document_category_id')
+				'DocumentCategory.id'	=> array('type' => 'select')
 			);
 		$this->_reattachBehavior($testOptions);
 
@@ -165,6 +165,29 @@ class FilteredTestCase extends CakeTestCase
 			(
 				array('Document' => array('id' => 1, 'title' => 'Testing Doc', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0, 'created' => '2010-06-28 10:39:23', 'updated' => '2010-06-29 11:22:48')),
 				array('Document' => array('id' => 2, 'title' => 'Imaginary Spec', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0, 'created' => '2010-03-28 12:19:13', 'updated' => '2010-04-29 11:23:44'))
+			);
+
+		$result = $this->Document->find('all', array('recursive' => -1));
+		$this->assertEqual($result, $expected);
+	}
+
+	public function testFilteringBelongsToTextField()
+	{
+		$testOptions = array
+			(
+				'DocumentCategory.title'	=> array('type' => 'text')
+			);
+		$this->_reattachBehavior($testOptions);
+
+		$filterValues = array
+			(
+				'DocumentCategory'	=> array('title' => 'spec')
+			);
+		$this->Document->setFilterValues($filterValues);
+
+		$expected = array
+			(
+				array('Document' => array('id' => 5, 'title' => 'Father Ted', 'document_category_id' => 2, 'owner_id' => 2, 'is_private' => 0, 'created' => '2009-01-13 05:15:03', 'updated' => '2010-12-05 03:24:15'))
 			);
 
 		$result = $this->Document->find('all', array('recursive' => -1));
@@ -209,7 +232,7 @@ class FilteredTestCase extends CakeTestCase
 		$testOptions = array
 			(
 				'title'					=> array('type' => 'text', 'condition' => '='),
-				'DocumentCategory.id'	=> array('type' => 'select', 'filterField' => 'Document.document_category_id')
+				'DocumentCategory.id'	=> array('type' => 'select')
 			);
 		$this->_reattachBehavior($testOptions);
 
@@ -260,7 +283,7 @@ class FilteredTestCase extends CakeTestCase
 		$testOptions = array
 			(
 				'title'					=> array('type' => 'text', 'condition' => 'like', 'required' => true),
-				'DocumentCategory.id'	=> array('type' => 'select', 'filterField' => 'document_category_id'),
+				'DocumentCategory.id'	=> array('type' => 'select'),
 				'Document.is_private'	=> array('type' => 'checkbox', 'label' => 'Private?'),
 				'Item.code'				=> array('type' => 'text'),
 			);
@@ -376,7 +399,7 @@ class FilteredTestCase extends CakeTestCase
 		$testOptions = array
 			(
 				'title'					=> array('type' => 'text', 'condition' => 'like', 'required' => true),
-				'DocumentCategory.id'	=> array('type' => 'select', 'filterField' => 'document_category_id'),
+				'DocumentCategory.id'	=> array('type' => 'select'),
 				'Document.is_private'	=> array('type' => 'checkbox', 'label' => 'Private?'),
 				'Item.code'				=> array('type' => 'text'),
 			);
@@ -585,7 +608,7 @@ class FilteredTestCase extends CakeTestCase
 		$testOptions = array
 			(
 				'Document.title'		=> array('type' => 'text', 'condition' => 'like'),
-				'DocumentCategory.id'	=> array('type' => 'select', 'filterField' => 'document_category_id'),
+				'DocumentCategory.id'	=> array('type' => 'select'),
 				'Document.is_private'	=> array('type' => 'checkbox', 'label' => 'Private?', 'default' => 0)
 			);
 		$this->_reattachBehavior($testOptions);
@@ -650,7 +673,7 @@ class FilteredTestCase extends CakeTestCase
 		$testOptions = array
 			(
 				'Document.title'		=> array('type' => 'text', 'condition' => 'like'),
-				'DocumentCategory.id'	=> array('type' => 'select', 'filterField' => 'document_category_id'),
+				'DocumentCategory.id'	=> array('type' => 'select'),
 				'Document.is_private'	=> array('type' => 'checkbox', 'label' => 'Private?')
 			);
 		$this->_reattachBehavior($testOptions);
@@ -682,12 +705,12 @@ class FilteredTestCase extends CakeTestCase
 	function testAfterDataFilterCallbackQueryChange()
 	{
 		$this->Document = ClassRegistry::init('Document3');
-		$this->Document->itemToUnset = 'Document.document_category_id';
+		$this->Document->itemToUnset = 'FilterDocumentCategory.id';
 
 		$testOptions = array
 			(
 				'Document.title'		=> array('type' => 'text', 'condition' => 'like'),
-				'DocumentCategory.id'	=> array('type' => 'select', 'filterField' => 'document_category_id'),
+				'DocumentCategory.id'	=> array('type' => 'select'),
 				'Document.is_private'	=> array('type' => 'checkbox', 'label' => 'Private?')
 			);
 		$this->_reattachBehavior($testOptions);
