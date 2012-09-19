@@ -34,7 +34,7 @@ class FilterComponent extends Component
 		$this->_request_settings = $settings;
 	}
 
-	function initialize($controller)
+	function initialize(Controller $controller)
 	{
 		if (!isset($controller->filters))
 		{
@@ -63,7 +63,7 @@ class FilterComponent extends Component
 		}
 	}
 
-	function startup($controller)
+	function startup(Controller $controller)
 	{
 		if (!isset($this->settings[$controller->name][$controller->action]))
 		{
@@ -114,7 +114,7 @@ class FilterComponent extends Component
 		}
 	}
 
-	function beforeRender($controller)
+	function beforeRender(Controller $controller)
 	{
 		if (!isset($this->settings[$controller->name][$controller->action]))
 		{
@@ -323,7 +323,7 @@ class FilterComponent extends Component
 		}
 	}
 
-	function shutdown()
+	function shutdown(Controller $controller)
 	{
 	}
 }

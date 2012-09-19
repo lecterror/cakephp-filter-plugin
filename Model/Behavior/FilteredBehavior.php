@@ -24,7 +24,7 @@ class FilteredBehavior extends ModelBehavior
 
 	var $mapMethods = array('/setFilterValues/' => '_setFilterValues');
 
-	function setup(&$Model, $settings = array())
+	function setup(Model $Model, $settings = array())
 	{
 		foreach ($settings as $key => $value)
 		{
@@ -50,7 +50,7 @@ class FilteredBehavior extends ModelBehavior
 		$this->_filterValues[$Model->alias] = array();
 	}
 
-	function beforeFind(&$Model, $query)
+	function beforeFind(Model $Model, $query)
 	{
 		if (isset($query['nofilter']) && $query['nofilter'] === true)
 		{
