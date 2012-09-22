@@ -531,6 +531,55 @@ class FilterTestCase extends CakeTestCase
 	}
 
 	/**
+	 * Test select input for the model filtered.
+	 */
+	function testSelectInputFromSameModel()
+	{
+		$testSettings = array
+			(
+				'index' => array
+				(
+					'Document' => array
+					(
+						'Document.title' => array
+						(
+							'type' => 'select',
+						),
+					)
+				)
+			);
+		$this->Controller->filters = $testSettings;
+
+		$this->Controller->Components->trigger('initialize', array($this->Controller));
+		$this->Controller->Components->trigger('startup', array($this->Controller));
+		$this->Controller->Components->trigger('beforeRender', array($this->Controller));
+
+		$expected = array
+			(
+				array
+				(
+					'name' => 'Document.title',
+					'options' => array
+					(
+						'type' => 'select',
+						'options' => array
+						(
+							'Testing Doc' => 'Testing Doc',
+							'Imaginary Spec' => 'Imaginary Spec',
+							'Nonexistant data' => 'Nonexistant data',
+							'Illegal explosives DIY' => 'Illegal explosives DIY',
+							'Father Ted' => 'Father Ted',
+							'Duplicate title' => 'Duplicate title',
+						),
+						'empty' => '',
+					)
+				),
+			);
+
+		$this->assertEqual($this->Controller->viewVars['viewFilterParams'], $expected);
+	}
+
+	/**
 	 * Test disabling persistence for single action
 	 * and for the entire controller.
 	 */

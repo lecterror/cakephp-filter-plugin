@@ -221,7 +221,26 @@ class FilterComponent extends Component
 						}
 						else
 						{
-							$options['options'] = $workingModel->find('list', array_merge($selectOptions, array('nofilter' => true)));
+							if ($fieldModel == $model)
+							{
+								$options['options'] = $workingModel->find
+									(
+										'list',
+										array_merge
+										(
+											$selectOptions,
+											array
+											(
+												'nofilter' => true,
+												'fields' => array($fieldName, $fieldName),
+											)
+										)
+									);
+							}
+							else
+							{
+								$options['options'] = $workingModel->find('list', array_merge($selectOptions, array('nofilter' => true)));
+							}
 						}
 
 						if (!$settings['required'])
