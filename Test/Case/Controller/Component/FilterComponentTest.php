@@ -531,6 +531,36 @@ class FilterTestCase extends CakeTestCase
 	}
 
 	/**
+	 * Test basic filter settings.
+	 */
+	function testSelectMultiple()
+	{
+		$testSettings = array
+			(
+				'index' => array
+				(
+					'Document' => array
+					(
+						'DocumentCategory.id' => array
+						(
+							'type' => 'select',
+							'multiple' => true,
+						)
+					)
+				)
+			);
+		$this->Controller->filters = $testSettings;
+
+		$expected = array
+			(
+				$this->Controller->name => $testSettings
+			);
+
+		$this->Controller->Components->trigger('initialize', array($this->Controller));
+		$this->assertEqual($expected, $this->Controller->Filter->settings);
+	}
+
+	/**
 	 * Test select input for the model filtered.
 	 */
 	function testSelectInputFromSameModel()

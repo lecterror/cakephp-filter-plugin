@@ -252,6 +252,12 @@ class FilterComponent extends Component
 						{
 							$options['empty'] = '';
 						}
+
+						if (isset($settings['multiple']))
+						{
+							$options['multiple'] = $settings['multiple'];
+						}
+						
 						break;
 
 					case 'checkbox':
