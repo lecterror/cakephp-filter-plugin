@@ -119,7 +119,7 @@ class FilteredBehavior extends ModelBehavior
 			return;
 		}
 
-		if (!isset($values[$configurationModelName][$configurationFieldName]) || empty($values[$configurationModelName][$configurationFieldName]))
+		if (!isset($values[$configurationModelName][$configurationFieldName]) || (empty($values[$configurationModelName][$configurationFieldName]) && $values[$configurationModelName][$configurationFieldName] != 0))
 		{
 			// no value to filter with, just skip this field
 			return;
