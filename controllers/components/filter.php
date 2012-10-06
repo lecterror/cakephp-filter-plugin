@@ -154,6 +154,11 @@ class FilterComponent extends Object
 					if (isset($this->formData[$fieldModel][$fieldName]))
 					{
 						$options['value'] = $this->formData[$fieldModel][$fieldName];
+
+						if ($options['value'])
+						{
+							$options['class'] = 'filter-active';
+						}
 					}
 				}
 
