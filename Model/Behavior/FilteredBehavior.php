@@ -324,7 +324,7 @@ class FilteredBehavior extends ModelBehavior
 
 				break;
 			case 'select':
-				if ( is_string( $value ) && strlen(trim(strval($value))) == 0)
+				if (strlen(trim(strval($value))) == 0)
 				{
 					continue;
 				}
