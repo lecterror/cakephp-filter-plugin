@@ -273,6 +273,7 @@ class FilteredBehavior extends ModelBehavior
 		$conditionFieldFormats = array
 			(
 				'like' => '%s like',
+				'ilike' => '%s ilike',
 				'contains' => '%s like',
 				'startswith' => '%s like',
 				'endswith' => '%s like',
@@ -283,6 +284,7 @@ class FilteredBehavior extends ModelBehavior
 		$conditionValueFormats = array
 			(
 				'like' => '%%%s%%',
+				'ilike' => '%%%s%%',
 				'contains' => '%%%s%%',
 				'startswith' => '%s%%',
 				'endswith' => '%%%s',
@@ -304,6 +306,7 @@ class FilteredBehavior extends ModelBehavior
 				switch ($condition)
 				{
 					case 'like':
+					case 'ilike':
 					case 'contains':
 					case 'startswith':
 					case 'endswith':
