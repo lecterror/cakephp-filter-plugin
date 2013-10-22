@@ -247,6 +247,27 @@ class FilterComponent extends Component
 								$options['options'] = $workingModel->find('list', array_merge($selectOptions, array('nofilter' => true)));
 							}
 						}
+						// Bryan - strange behavior where array key of 0 gets mapped to empty key
+						// e.g.  $options[] = 0;
+						if( isset($options['options'][null]) ){
+							if( isset($options['options'][0]) ){
+								// do nothing - zero already set
+								unset($options['options'][null]);
+							}else{
+								$options['options'][0] = $options['options'][null];
+								unset($options['options'][null]);
+							}
+						}
+						
+						if(count($options['options']) == 2){
+							if( isset($options['options'][0]) && $options['options'][0] == 0){
+								if( isset($options['options'][1]) && $options['options'][1] == 1){
+									$options['options'][0] = 'No';
+									$options['options'][1] = 'Yes';
+								}
+							}
+							
+						}
 
 						if (!$settings['required'])
 						{
