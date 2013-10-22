@@ -139,7 +139,7 @@ class FilteredBehavior extends ModelBehavior
 			{
 				if (isset($Model->{$type}) && isset($Model->{$type}[$configurationModelName]))
 				{
-					$filterModelName = 'Filter'.$configurationModelName;
+					$filterModelName = $configurationModelName;
 					$relationType = $type;
 					break;
 				}
@@ -154,7 +154,7 @@ class FilteredBehavior extends ModelBehavior
 
 				if ($filterModelName != $Model->alias)
 				{
-					$filterModelName = 'Filter'.$filterModelName;
+					$filterModelName = $filterModelName;
 				}
 			}
 			else
@@ -169,7 +169,7 @@ class FilteredBehavior extends ModelBehavior
 		if (isset($Model->{$relationType}) && isset($Model->{$relationType}[$configurationModelName]))
 		{
 			$relatedModel = $Model->{$configurationModelName};
-			$relatedModelAlias = 'Filter'.$relatedModel->alias;
+			$relatedModelAlias = $relatedModel->alias;
 
 			if (!Set::matches(sprintf('/joins[alias=%s]', $relatedModelAlias), $query))
 			{
@@ -206,7 +206,7 @@ class FilteredBehavior extends ModelBehavior
 		{
 			if (isset($Model->{$type}) && isset($Model->{$type}[$relatedModel->alias]))
 			{
-				$relatedModelAlias = 'Filter'.$relatedModel->alias;
+				$relatedModelAlias = $relatedModel->alias;
 				$relationType = $type;
 				break;
 			}
