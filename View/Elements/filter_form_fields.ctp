@@ -17,7 +17,26 @@ if (isset($viewFilterParams))
 	{
 		if(empty($includeFields))
 		{
-			echo $this->Form->input($field['name'], $field['options']);
+			$fieldName = $field['name'];
+			$fieldOptions = $field['options'];
+			
+			if($field['options']['type'] === "date"){
+				$selectedEndDate = $fieldOptions['selected_end_date'];
+			}
+			if( !isset($fieldOptions['required'])){
+				$fieldOptions['required'] = false;
+			}
+			unset($fieldOptions['selected_end_date']);
+			$myFormField = $this->Form->input($fieldName, $fieldOptions);
+			echo $myFormField;
+			
+			if($field['options']['type'] === "date"){
+				$endDateFieldOptions = $fieldOptions;
+				$endDateFieldOptions['label'] = str_replace('From', 'To', $endDateFieldOptions['label']);
+				$endDateFieldOptions['selected'] = $selectedEndDate;
+				$myEndDateFormField = $this->Form->input($fieldName . "_end_date", $endDateFieldOptions);
+				echo $myEndDateFormField;
+			}
 		}
 		else
 		{

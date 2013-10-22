@@ -295,6 +295,42 @@ class FilterComponent extends Component
 						}
 						break;
 
+					case 'date':
+						if (isset($options['value']))
+						{
+							$options['selected'] = $options['value'];
+							if( isset($this->formData[$fieldModel][$fieldName . "_end_date"]) ){
+								$options['selected_end_date'] = $this->formData[$fieldModel][$fieldName . "_end_date"];
+							}
+							
+						}else if (isset($settings['default']))
+						{
+							$options['selected'] = $settings['default'];
+						}else{
+							$options['selected'] = array('day' => date('d'), 'month' => date('m'), 'year' => ( date('Y') - 40)  );
+						}
+						if( !isset($options['selected_end_date']) ){
+							$options['selected_end_date'] = array('day' => date('d'), 'month' => date('m'), 'year' => date('Y'));
+						}
+						if (isset($settings['maxYear']))
+						{
+							$options['maxYear'] = $settings['maxYear'];
+						}else{
+							$options['maxYear'] = date('Y');
+						}
+						if (isset($settings['minYear']))
+						{
+							$options['minYear'] = $settings['minYear'];
+						}else{
+							$options['minYear'] = date('Y') - 40;
+						}
+						
+						unset($options['value']);
+						
+						$options['type'] = 'date';
+
+						break;
+
 					default:
 						continue;
 				}
@@ -302,7 +338,7 @@ class FilterComponent extends Component
 				// if no value has been set, show the default one
 				if (!isset($options['value']) &&
 					isset($settings['default']) &&
-					$options['type'] != 'checkbox')
+					$options['type'] != 'checkbox' && $options['type'] != 'date')
 				{
 					$options['value'] = $settings['default'];
 				}
