@@ -29,7 +29,7 @@ class FilteredTestCase extends CakeTestCase
 
 	function startTest()
 	{
-		$this->Document =& ClassRegistry::init('Document');
+		$this->Document = ClassRegistry::init('Document');
 	}
 
 	function endTest()

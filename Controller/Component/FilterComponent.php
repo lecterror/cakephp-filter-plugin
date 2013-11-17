@@ -198,7 +198,7 @@ class FilterComponent extends Component
 						$options['type'] = 'select';
 
 						$selectOptions = array();
-						$workingModel =& ClassRegistry::init($fieldModel);
+						$workingModel = ClassRegistry::init($fieldModel);
 
 						if (isset($settings['selectOptions']))
 						{
