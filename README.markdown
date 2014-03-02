@@ -18,7 +18,7 @@ not the latest version from GitHub.
 
 First, obtain the plugin. If you're using Git, run this while in your app folder:
 
-	git submodule add git://github.com/lecterror/cakephp-filter-plugin.git Plugin/Filter
+	git submodule add git://github.com/lecterror/cakephp-filter-plugin.git app/Plugin/Filter
 	git submodule init
 	git submodule update
 
