@@ -57,7 +57,7 @@ class FilterTestCase extends CakeTestCase
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
 	}
 
-	function endTest()
+	function endTest($method)
 	{
 		$this->Controller->Session->destroy();
 		$this->Controller = null;

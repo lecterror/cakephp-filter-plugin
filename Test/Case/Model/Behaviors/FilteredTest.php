@@ -27,12 +27,12 @@ class FilteredTestCase extends CakeTestCase
 
 	var $Document = null;
 
-	function startTest()
+	function startTest($model)
 	{
 		$this->Document = ClassRegistry::init('Document');
 	}
 
-	function endTest()
+	function endTest($model)
 	{
 		$this->Document = null;
 	}

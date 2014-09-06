@@ -98,7 +98,7 @@ class DocumentTestsController extends Controller
 
 	// must override this or the tests never complete..
 	// @TODO: mock partial?
-	function redirect()
+	function redirect($url, $status = NULL, $exit = true)
 	{
 	}
 }
