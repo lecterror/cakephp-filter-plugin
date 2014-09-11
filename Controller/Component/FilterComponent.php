@@ -247,6 +247,27 @@ class FilterComponent extends Component
 								$options['options'] = $workingModel->find('list', array_merge($selectOptions, array('nofilter' => true)));
 							}
 						}
+						// Bryan - strange behavior where array key of 0 gets mapped to empty key
+						// e.g.  $options[] = 0;
+						if( isset($options['options'][null]) ){
+							if( isset($options['options'][0]) ){
+								// do nothing - zero already set
+								unset($options['options'][null]);
+							}else{
+								$options['options'][0] = $options['options'][null];
+								unset($options['options'][null]);
+							}
+						}
+						
+						if(count($options['options']) == 2){
+							if( isset($options['options'][0]) && $options['options'][0] == 0){
+								if( isset($options['options'][1]) && $options['options'][1] == 1){
+									$options['options'][0] = 'No';
+									$options['options'][1] = 'Yes';
+								}
+							}
+							
+						}
 
 						if (!$settings['required'])
 						{
@@ -274,6 +295,42 @@ class FilterComponent extends Component
 						}
 						break;
 
+					case 'date':
+						if (isset($options['value']))
+						{
+							$options['selected'] = $options['value'];
+							if( isset($this->formData[$fieldModel][$fieldName . "_end_date"]) ){
+								$options['selected_end_date'] = $this->formData[$fieldModel][$fieldName . "_end_date"];
+							}
+							
+						}else if (isset($settings['default']))
+						{
+							$options['selected'] = $settings['default'];
+						}else{
+							$options['selected'] = array('day' => date('d'), 'month' => date('m'), 'year' => ( date('Y') - 40)  );
+						}
+						if( !isset($options['selected_end_date']) ){
+							$options['selected_end_date'] = array('day' => date('d'), 'month' => date('m'), 'year' => date('Y'));
+						}
+						if (isset($settings['maxYear']))
+						{
+							$options['maxYear'] = $settings['maxYear'];
+						}else{
+							$options['maxYear'] = date('Y');
+						}
+						if (isset($settings['minYear']))
+						{
+							$options['minYear'] = $settings['minYear'];
+						}else{
+							$options['minYear'] = date('Y') - 40;
+						}
+						
+						unset($options['value']);
+						
+						$options['type'] = 'date';
+
+						break;
+
 					default:
 						continue;
 				}
@@ -281,7 +338,7 @@ class FilterComponent extends Component
 				// if no value has been set, show the default one
 				if (!isset($options['value']) &&
 					isset($settings['default']) &&
-					$options['type'] != 'checkbox')
+					$options['type'] != 'checkbox' && $options['type'] != 'date')
 				{
 					$options['value'] = $settings['default'];
 				}

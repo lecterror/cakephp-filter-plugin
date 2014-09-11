@@ -139,7 +139,7 @@ class FilteredBehavior extends ModelBehavior
 			{
 				if (isset($Model->{$type}) && isset($Model->{$type}[$configurationModelName]))
 				{
-					$filterModelName = 'Filter'.$configurationModelName;
+					$filterModelName = $configurationModelName;
 					$relationType = $type;
 					break;
 				}
@@ -154,7 +154,7 @@ class FilteredBehavior extends ModelBehavior
 
 				if ($filterModelName != $Model->alias)
 				{
-					$filterModelName = 'Filter'.$filterModelName;
+					$filterModelName = $filterModelName;
 				}
 			}
 			else
@@ -165,11 +165,15 @@ class FilteredBehavior extends ModelBehavior
 		}
 
 		$realFilterField = sprintf('%s.%s', $filterModelName, $filterFieldName);
+		// Correct real field name if end_date	
+		if( substr($realFilterField, -strlen('_end_date')) === '_end_date' ){
+			$realFilterField = preg_replace('/_end_date$/', '', $realFilterField); 
+		}
 
 		if (isset($Model->{$relationType}) && isset($Model->{$relationType}[$configurationModelName]))
 		{
 			$relatedModel = $Model->{$configurationModelName};
-			$relatedModelAlias = 'Filter'.$relatedModel->alias;
+			$relatedModelAlias = $relatedModel->alias;
 
 			if (!Set::matches(sprintf('/joins[alias=%s]', $relatedModelAlias), $query))
 			{
@@ -183,8 +187,12 @@ class FilteredBehavior extends ModelBehavior
 				$query,
 				$realFilterField,
 				$field_options,
-				$values[$configurationModelName][$configurationFieldName]
+				$values,
+				$configurationModelName,
+				$configurationFieldName
 			);
+
+
 	}
 
 	/**
@@ -206,7 +214,7 @@ class FilteredBehavior extends ModelBehavior
 		{
 			if (isset($Model->{$type}) && isset($Model->{$type}[$relatedModel->alias]))
 			{
-				$relatedModelAlias = 'Filter'.$relatedModel->alias;
+				$relatedModelAlias = $relatedModel->alias;
 				$relationType = $type;
 				break;
 			}
@@ -268,8 +276,10 @@ class FilteredBehavior extends ModelBehavior
 	 * @param array $options Configuration options for this field.
 	 * @param mixed $value Field value.
 	 */
-	protected function buildFilterConditions(array &$query, $field, $options, $value)
+	protected function buildFilterConditions(array &$query, $field, $options, $values, $configurationModelName, $configurationFieldName)
 	{
+		$value = $values[$configurationModelName][$configurationFieldName];
+		
 		$conditionFieldFormats = array
 			(
 				'like' => '%s like',
@@ -336,6 +346,15 @@ class FilteredBehavior extends ModelBehavior
 				break;
 			case 'checkbox':
 				$query['conditions'][$field] = $value;
+				break;
+			case 'date':
+				$query['conditions'][$field . ' >=' ] = "$value[year]-$value[month]-$value[day]";
+
+				$endValueFieldName = $configurationFieldName . "_end_date";
+				if(isset($values[$configurationModelName][$endValueFieldName])){
+					$endValue = $values[$configurationModelName][$endValueFieldName];
+					$query['conditions'][$field . ' <=' ] = "$endValue[year]-$endValue[month]-$endValue[day]";
+				}
 				break;
 		}
 	}
