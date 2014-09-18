@@ -294,21 +294,25 @@ class FilterComponent extends Component
 			}
 		}
 
-		$title = $controller->viewVars['title_for_layout'];
-		foreach ($viewFilterParams as $viewFilterParam)
+		if (!empty($this->settings['add_filter_value_to_title']) &&
+			array_search($controller->action, $this->settings['add_filter_value_to_title']) !== false)
 		{
-			if (!empty($viewFilterParam['options']['class']) &&
-				$viewFilterParam['options']['class'] == 'filter-active')
+			$title = $controller->viewVars['title_for_layout'];
+			foreach ($viewFilterParams as $viewFilterParam)
 			{
-				$titleValue = $viewFilterParam['options']['value'];
-				if ($viewFilterParam['options']['type'] == 'select')
+				if (!empty($viewFilterParam['options']['class']) &&
+					$viewFilterParam['options']['class'] == 'filter-active')
 				{
-					$titleValue = $viewFilterParam['options']['options'][$titleValue];
+					$titleValue = $viewFilterParam['options']['value'];
+					if ($viewFilterParam['options']['type'] == 'select')
+					{
+						$titleValue = $viewFilterParam['options']['options'][$titleValue];
+					}
+					$title .= ' - ' . $titleValue;
 				}
-				$title .= ' - ' . $titleValue;
 			}
+			$controller->set('title_for_layout', $title);
 		}
-		$controller->set('title_for_layout', $title);
 		$controller->set('viewFilterParams', $viewFilterParams);
 	}
 
