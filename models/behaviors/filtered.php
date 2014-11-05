@@ -18,7 +18,7 @@ class FilteredBehavior extends ModelBehavior
 	/**
 	 * Keeps current values after filter form post.
 	 *
-	 * @var array 
+	 * @var array
 	 */
 	var $_filterValues = array();
 
@@ -171,7 +171,8 @@ class FilteredBehavior extends ModelBehavior
 							$customConditions = array($customConditions);
 						}
 
-						$filterConditions = preg_replace(sprintf('#(?<![A-Za-z])%s(?![A-Za-z])#', $relatedModel->alias), $relatedModelAlias, $customConditions);
+
+						$filterConditions = $this->_replaceArrayKeysAndValues(sprintf('#(?<![A-Za-z])%s(?![A-Za-z])#', $relatedModel->alias), $relatedModelAlias, $customConditions);
 						$conditions = array_merge($conditions, $filterConditions);
 					}
 
@@ -274,5 +275,16 @@ class FilteredBehavior extends ModelBehavior
 			);
 
 		$this->_filterValues[$Model->alias] = array_merge($this->_filterValues[$Model->alias], $values);
+	}
+
+	function _replaceArrayKeysAndValues($pattern, $replacement, $input)
+	{
+		$keys = array_keys($input);
+		$values = array_values($input);
+
+		$newKeys = preg_replace($pattern, $replacement, $keys);
+		$newValues = preg_replace($pattern, $replacement, $values);
+
+		return array_combine($newKeys, $newValues);
 	}
 }
