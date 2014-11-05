@@ -177,7 +177,7 @@ class FilteredBehavior extends ModelBehavior
 
 					$query['joins'][] = array
 						(
-							'table' => $relatedModel->table,
+							'table' => $relatedModel->tablePrefix.$relatedModel->table,
 							'alias' => $relatedModelAlias,
 							'type' => 'INNER',
 							'conditions' => $conditions,
