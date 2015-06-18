@@ -13,6 +13,7 @@
 ?>
 <div class="filterForm">
 	<?php echo $this->Form->create(false, array('url' => '/'.$this->request->url, 'id' => $modelName.'Filter')); ?>
+		<?php $this->Form->inputDefaults(array('required' => false)); ?>
 		<fieldset>
 			<?php
 			if (isset($options['legend']))
