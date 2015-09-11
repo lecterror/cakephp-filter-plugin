@@ -255,7 +255,7 @@ class FilteredBehavior extends ModelBehavior
 			(
 				'table' => $relatedModel->table,
 				'alias' => $relatedModelAlias,
-				'type' => 'INNER',
+				'type' => 'LEFT',
 				'conditions' => $conditions,
 			);
 	}
