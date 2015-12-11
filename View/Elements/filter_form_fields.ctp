@@ -15,16 +15,13 @@ if (isset($viewFilterParams))
 {
 	foreach ($viewFilterParams as $field)
 	{
-		if(empty($includeFields))
+		if(empty($includeFields) || in_array($field['name'], $includeFields))
 		{
-			echo $this->Form->input($field['name'], $field['options']);
-		}
-		else
-		{
-			if (in_array($field['name'], $includeFields))
-			{
-				echo $this->Form->input($field['name'], $field['options']);
+			$fieldName = explode('.', $field['name']);
+			if (count($fieldName) === 2) {
+				$field['options']['name'] = sprintf('data[%s][%s]', $fieldName[0], $fieldName[1]);
 			}
+			echo $this->Form->input($field['name'], $field['options']);
 		}
 	}
 }

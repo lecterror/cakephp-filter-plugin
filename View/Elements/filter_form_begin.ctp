@@ -12,7 +12,17 @@
 */
 ?>
 <div class="filterForm">
-	<?php echo $this->Form->create(false, array('url' => '/'.$this->request->url, 'id' => $modelName.'Filter')); ?>
+	<?php echo $this->Form->create(
+		false,
+		array(
+			'url' => array(
+				'plugin' => $this->request->params['plugin'],
+				'controller' => $this->request->params['controller'],
+				'action' => $this->request->params['action'],
+			),
+			'id' => $modelName.'Filter',
+		) + $options
+	); ?>
 		<?php $this->Form->inputDefaults(array('required' => false)); ?>
 		<fieldset>
 			<?php
