@@ -78,8 +78,8 @@ class FilterComponent extends Component
 		}
 
 		$sessionKey = sprintf('FilterPlugin.Filters.%s.%s', $controller->name, $controller->action);
-
-		if ($controller->request->is('get') && !empty($controller->request->query('filterFormId')))
+		$filterFormId = $controller->request->query('filterFormId');
+		if ($controller->request->is('get') && !empty($filterFormId))
 		{
 			$this->formData = $controller->request->query('data');
 		}
