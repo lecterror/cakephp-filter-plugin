@@ -78,8 +78,12 @@ class FilterComponent extends Component
 		}
 
 		$sessionKey = sprintf('FilterPlugin.Filters.%s.%s', $controller->name, $controller->action);
-
-		if (!$controller->request->is('post') || !isset($controller->request->data['Filter']['filterFormId']))
+		$filterFormId = $controller->request->query('filterFormId');
+		if ($controller->request->is('get') && !empty($filterFormId))
+		{
+			$this->formData = $controller->request->query('data');
+		}
+		elseif (!$controller->request->is('post') || !isset($controller->request->data['Filter']['filterFormId']))
 		{
 			$persistedData = array();
 
@@ -87,7 +91,7 @@ class FilterComponent extends Component
 			{
 				$persistedData = $this->Session->read($sessionKey);
 			}
-			
+
 			if (empty($persistedData))
 			{
 				return;
@@ -99,7 +103,6 @@ class FilterComponent extends Component
 		{
 			$this->formData = $controller->request->data;
 			$this->Session->write($sessionKey, $this->formData);
-			$controller->redirect($controller->referer());
 		}
 
 		foreach ($settings as $model => $options)
@@ -257,7 +260,7 @@ class FilterComponent extends Component
 						{
 							$options['multiple'] = $settings['multiple'];
 						}
-						
+
 						break;
 
 					case 'checkbox':

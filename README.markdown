@@ -31,6 +31,8 @@ a quick tutorial, visit <http://lecterror.com/articles/view/cakephp-generic-filt
 If you need more than this plugin provides by default, there are ways to customize it, see
 this article: <http://lecterror.com/articles/view/cakephp-filter-plugin-advanced-usage>
 
+In order to generate GET forms add `'type' => 'GET'` to the `filterForm()` or `beginForm()` options array.
+
 ## Contributing ##
 
 If you'd like to contribute, clone the source on GitHub, make your changes and send me a pull request.
