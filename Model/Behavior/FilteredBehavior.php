@@ -358,6 +358,6 @@ class FilteredBehavior extends ModelBehavior
 				)
 			);
 
-		$this->_filterValues[$Model->alias] = array_merge($this->_filterValues[$Model->alias], $values);
+		$this->_filterValues[$Model->alias] = array_merge($this->_filterValues[$Model->alias], (array)$values);
 	}
 }
