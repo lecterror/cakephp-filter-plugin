@@ -139,7 +139,9 @@ class FilteredBehavior extends ModelBehavior
 			foreach ($relationTypes as $type)
 			{
 				if ($type == 'hasAndBelongsToMany') {
-					$linkModelName = $Model->{$type}[$Model->{$configurationModelName}->alias]['with'];
+					if (!empty($Model->{$configurationModelName})) {
+						$linkModelName = $Model->{$type}[$Model->{$configurationModelName}->alias]['with'];
+					}
 				}
 				if (isset($Model->{$type}) && isset($Model->{$type}[$configurationModelName]))
 				{
@@ -177,7 +179,7 @@ class FilteredBehavior extends ModelBehavior
 
 			if (!Set::matches(sprintf('/joins[alias=%s]', $relatedModelAlias), $query))
 			{
-				$joinStatement = $this->buildFilterJoin($Model, $relatedModel, $linkModelName);
+				$joinStatements = $this->buildFilterJoin($Model, $relatedModel, $linkModelName);
 				foreach ($joinStatements as $joinStatement)
 				{
 					$query['joins'][] = $joinStatement;
@@ -244,22 +246,22 @@ class FilteredBehavior extends ModelBehavior
 						$relatedModelAlias, $Model->{$relationType}[$relatedModel->alias]['foreignKey']
 					);
 			}
-		}
-		else if ($relationType == 'hasAndBelongsToMany')
-		{
-			$conditions[] = sprintf
-			(
-				'%s.%s = %s.%s',
-				$Model->{$relationType}[$relatedModel->alias]['with'], $Model->{$relationType}[$relatedModel->alias]['associationForeignKey'],
-				$relatedModelAlias, $relatedModel->primaryKey
-			);
+			else if ($relationType == 'hasAndBelongsToMany')
+			{
+				$conditions[] = sprintf
+				(
+					'%s.%s = %s.%s',
+					$Model->{$relationType}[$relatedModel->alias]['with'], $Model->{$relationType}[$relatedModel->alias]['associationForeignKey'],
+					$relatedModelAlias, $relatedModel->primaryKey
+				);
 
-			$linkConditions[] = sprintf
-			(
-				'%s.%s = %s.%s',
-				$Model->alias, $Model->primaryKey,
-				$linkModelAlias, $Model->{$relationType}[$relatedModel->alias]['foreignKey']
-			);
+				$linkConditions[] = sprintf
+				(
+					'%s.%s = %s.%s',
+					$Model->alias, $Model->primaryKey,
+					$linkModelAlias, $Model->{$relationType}[$relatedModel->alias]['foreignKey']
+				);
+			}
 		}
 
 		// merge any custom conditions from the relation, but change
@@ -309,7 +311,6 @@ class FilteredBehavior extends ModelBehavior
 					)
 				);
 		}
-
 		return $return;
 	}
 
