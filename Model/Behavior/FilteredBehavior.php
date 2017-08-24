@@ -129,14 +129,20 @@ class FilteredBehavior extends ModelBehavior
 		// model and field we're using to filter the data
 		$filterFieldName = $configurationFieldName;
 		$filterModelName = $configurationModelName;
+		$linkModelName = null;
 		$relationType = null;
 
 		if ($configurationModelName != $Model->alias)
 		{
-			$relationTypes = array('hasMany', 'hasOne', 'belongsTo');
+			$relationTypes = array('hasMany', 'hasOne', 'belongsTo', 'hasAndBelongsToMany');
 
 			foreach ($relationTypes as $type)
 			{
+				if ($type == 'hasAndBelongsToMany') {
+					if (!empty($Model->{$configurationModelName})) {
+						$linkModelName = $Model->{$type}[$Model->{$configurationModelName}->alias]['with'];
+					}
+				}
 				if (isset($Model->{$type}) && isset($Model->{$type}[$configurationModelName]))
 				{
 					$filterModelName = 'Filter'.$configurationModelName;
@@ -173,8 +179,11 @@ class FilteredBehavior extends ModelBehavior
 
 			if (!Set::matches(sprintf('/joins[alias=%s]', $relatedModelAlias), $query))
 			{
-				$joinStatement = $this->buildFilterJoin($Model, $relatedModel);
-				$query['joins'][] = $joinStatement;
+				$joinStatements = $this->buildFilterJoin($Model, $relatedModel, $linkModelName);
+				foreach ($joinStatements as $joinStatement)
+				{
+					$query['joins'][] = $joinStatement;
+				}
 			}
 		}
 
@@ -194,10 +203,10 @@ class FilteredBehavior extends ModelBehavior
 	 * @param Model $relatedModel
 	 * @return array Cake join array
 	 */
-	protected function buildFilterJoin(Model &$Model, Model &$relatedModel)
+	protected function buildFilterJoin(Model &$Model, Model &$relatedModel, $linkModelName)
 	{
 		$conditions = array();
-		$relationTypes = array('hasMany', 'hasOne', 'belongsTo');
+		$relationTypes = array('hasMany', 'hasOne', 'belongsTo', 'hasAndBelongsToMany');
 
 		$relatedModelAlias = null;
 		$relationType = null;
@@ -206,6 +215,10 @@ class FilteredBehavior extends ModelBehavior
 		{
 			if (isset($Model->{$type}) && isset($Model->{$type}[$relatedModel->alias]))
 			{
+				if (!empty($linkModelName))
+				{
+					$linkModelAlias = $Model->{$linkModelName}->alias;
+				}
 				$relatedModelAlias = 'Filter'.$relatedModel->alias;
 				$relationType = $type;
 				break;
@@ -233,6 +246,22 @@ class FilteredBehavior extends ModelBehavior
 						$relatedModelAlias, $Model->{$relationType}[$relatedModel->alias]['foreignKey']
 					);
 			}
+			else if ($relationType == 'hasAndBelongsToMany')
+			{
+				$conditions[] = sprintf
+				(
+					'%s.%s = %s.%s',
+					$Model->{$relationType}[$relatedModel->alias]['with'], $Model->{$relationType}[$relatedModel->alias]['associationForeignKey'],
+					$relatedModelAlias, $relatedModel->primaryKey
+				);
+
+				$linkConditions[] = sprintf
+				(
+					'%s.%s = %s.%s',
+					$Model->alias, $Model->primaryKey,
+					$linkModelAlias, $Model->{$relationType}[$relatedModel->alias]['foreignKey']
+				);
+			}
 		}
 
 		// merge any custom conditions from the relation, but change
@@ -251,13 +280,38 @@ class FilteredBehavior extends ModelBehavior
 			$conditions = array_merge($conditions, $filterConditions);
 		}
 
-		return array
+		$return = array
 			(
-				'table' => $relatedModel->table,
-				'alias' => $relatedModelAlias,
-				'type' => 'LEFT',
-				'conditions' => $conditions,
+				array
+				(
+					'table' => $relatedModel->table,
+					'alias' => $relatedModelAlias,
+					'type' => 'LEFT',
+					'conditions' => $conditions,
+				)
 			);
+
+		if (!empty($linkModelName))
+		{
+			$return = array
+				(
+					array
+					(
+						'table' => $Model->{$linkModelName}->table,
+						'alias' => $linkModelAlias,
+						'type' => 'LEFT',
+						'conditions' => $linkConditions,
+					),
+					array
+					(
+						'table' => $relatedModel->table,
+						'alias' => $relatedModelAlias,
+						'type' => 'LEFT',
+						'conditions' => $conditions,
+					)
+				);
+		}
+		return $return;
 	}
 
 	/**
@@ -358,6 +412,6 @@ class FilteredBehavior extends ModelBehavior
 				)
 			);
 
-		$this->_filterValues[$Model->alias] = array_merge($this->_filterValues[$Model->alias], $values);
+		$this->_filterValues[$Model->alias] = array_merge($this->_filterValues[$Model->alias], (array)$values);
 	}
 }

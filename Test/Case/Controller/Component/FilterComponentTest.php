@@ -69,7 +69,7 @@ class FilterTestCase extends CakeTestCase
 	function testNoFilters()
 	{
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->assertTrue(empty($this->Controller->Filter->settings));
+		$this->assertEmpty($this->Controller->Filter->settings);
 		$this->assertFalse($this->Controller->Document->Behaviors->enabled('Filtered'));
 
 		$this->Controller->Components->trigger('startup', array($this->Controller));
@@ -152,7 +152,7 @@ class FilterTestCase extends CakeTestCase
 			);
 
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->assertEqual($expected, $this->Controller->Filter->settings);
+		$this->assertEquals($this->Controller->Filter->settings, $expected);
 	}
 
 	/**
@@ -254,7 +254,7 @@ class FilterTestCase extends CakeTestCase
 
 		$sessionKey = sprintf('FilterPlugin.Filters.%s.%s', $this->Controller->name, $this->Controller->action);
 		$sessionData = $this->Controller->Session->read($sessionKey);
-		$this->assertEqual($filterValues, $sessionData);
+		$this->assertEquals($sessionData, $filterValues);
 
 		$this->assertEqual
 			(
@@ -371,7 +371,7 @@ class FilterTestCase extends CakeTestCase
 				),
 			);
 
-		$this->assertEqual($this->Controller->viewVars['viewFilterParams'], $expected);
+		$this->assertEquals($expected, $this->Controller->viewVars['viewFilterParams']);
 	}
 
 	/**
@@ -434,7 +434,7 @@ class FilterTestCase extends CakeTestCase
 				),
 			);
 
-		$this->assertEqual($this->Controller->viewVars['viewFilterParams'], $expected);
+		$this->assertEquals($expected, $this->Controller->viewVars['viewFilterParams']);
 	}
 
 	/**
@@ -484,7 +484,7 @@ class FilterTestCase extends CakeTestCase
 				),
 			);
 
-		$this->assertEqual($this->Controller->viewVars['viewFilterParams'], $expected);
+		$this->assertEquals($expected, $this->Controller->viewVars['viewFilterParams']);
 	}
 
 	/**
@@ -527,7 +527,7 @@ class FilterTestCase extends CakeTestCase
 				),
 			);
 
-		$this->assertEqual($this->Controller->viewVars['viewFilterParams'], $expected);
+		$this->assertEquals($expected, $this->Controller->viewVars['viewFilterParams']);
 	}
 
 	/**
@@ -557,7 +557,7 @@ class FilterTestCase extends CakeTestCase
 			);
 
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->assertEqual($expected, $this->Controller->Filter->settings);
+		$this->assertEquals($this->Controller->Filter->settings, $expected);
 	}
 
 	/**
@@ -606,7 +606,7 @@ class FilterTestCase extends CakeTestCase
 				),
 			);
 
-		$this->assertEqual($this->Controller->viewVars['viewFilterParams'], $expected);
+		$this->assertEquals($expected, $this->Controller->viewVars['viewFilterParams']);
 	}
 
 	/**
@@ -643,7 +643,7 @@ class FilterTestCase extends CakeTestCase
 		$this->Controller->Components->trigger('startup', array($this->Controller));
 
 		$expected = array($this->Controller->name => array($this->Controller->action => $filterValues));
-		$this->assertEqual($this->Controller->Session->read('FilterPlugin.Filters'), $expected);
+		$this->assertEquals($expected, $this->Controller->Session->read('FilterPlugin.Filters'));
 	}
 
 	/**
@@ -680,6 +680,6 @@ class FilterTestCase extends CakeTestCase
 				),
 			);
 
-		$this->assertEqual($this->Controller->viewVars['viewFilterParams'], $expected);
+		$this->assertEquals($expected, $this->Controller->viewVars['viewFilterParams']);
 	}
 }

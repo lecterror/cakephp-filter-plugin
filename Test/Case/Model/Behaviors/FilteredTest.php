@@ -76,7 +76,7 @@ class FilteredTestCase extends CakeTestCase
 				'DocumentCategory.id'	=> array('type' => 'select', 'filterField' => 'document_category_id', 'condition' => 'like', 'required' => false, 'selectOptions' => array()),
 				'Document.is_private'	=> array('type' => 'checkbox', 'label' => 'Private?', 'condition' => 'like', 'required' => false, 'selectOptions' => array())
 			);
-		$this->assertEqual($expected, $this->Document->Behaviors->Filtered->settings[$this->Document->alias]);
+		$this->assertEquals($this->Document->Behaviors->Filtered->settings[$this->Document->alias], $expected);
 	}
 
 	/**
@@ -91,7 +91,7 @@ class FilteredTestCase extends CakeTestCase
 			(
 				'Document.title'		=> array('type' => 'text', 'condition' => 'like', 'required' => false, 'selectOptions' => array()),
 			);
-		$this->assertEqual($expected, $this->Document->Behaviors->Filtered->settings[$this->Document->alias]);
+		$this->assertEquals($this->Document->Behaviors->Filtered->settings[$this->Document->alias], $expected);
 	}
 
 	/**
@@ -115,7 +115,7 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$this->Document->setFilterValues($filterValues);
-		$this->assertEqual($filterValues, $this->Document->Behaviors->Filtered->_filterValues[$this->Document->alias]);
+		$this->assertEquals($this->Document->Behaviors->Filtered->_filterValues[$this->Document->alias], $filterValues);
 	}
 
 	/**
@@ -168,7 +168,7 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$result = $this->Document->find('all', array('recursive' => -1));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 	public function testFilteringBelongsToTextField()
@@ -191,7 +191,7 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$result = $this->Document->find('all', array('recursive' => -1));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 	/**
@@ -221,7 +221,7 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$result = $this->Document->find('all', array('recursive' => -1));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 	/**
@@ -249,7 +249,7 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$result = $this->Document->find('all', array('recursive' => -1));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 
 		$testOptions = array
 			(
@@ -273,7 +273,7 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$result = $this->Document->find('all', array('recursive' => -1));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 	/**
@@ -317,7 +317,7 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$result = $this->Document->find('all');
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 
 		$expected = array
 			(
@@ -330,13 +330,13 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$result = $this->Document->find('all', array('recursive' => 0));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 
 		$this->Document->unbindModel(array('hasMany' => array('Item')), false);
 		$this->Document->bindModel(array('hasMany' => array('Item')), false);
 
 		$result = $this->Document->find('all', array('recursive' => 0));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 
 		$expected = array
 			(
@@ -347,7 +347,7 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$result = $this->Document->find('all', array('recursive' => -1));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 	/**
@@ -383,11 +383,11 @@ class FilteredTestCase extends CakeTestCase
 		$this->Document->Behaviors->attach('Containable');
 
 		$result = $this->Document->find('all', array('contain' => array('Metadata')));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 
 		$this->Document->hasOne['Metadata']['conditions'] = 'Metadata.size > 500';
 		$result = $this->Document->find('all', array('contain' => array('Metadata')));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 
 		$this->Document->hasOne['Metadata']['conditions'] = $oldConditions;
 		$this->Document->Behaviors->detach('Containable');
@@ -434,7 +434,7 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$result = $this->Document->find('all', array('contain' => array('DocumentCategory', 'Item')));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 
 		$expected = array
 			(
@@ -446,7 +446,7 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$result = $this->Document->find('all', array('contain' => array('DocumentCategory')));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 
 		$expected = array
 			(
@@ -457,7 +457,7 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$result = $this->Document->find('all', array('contain' => array()));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 
 		$this->Document->Behaviors->detach('Containable');
 	}
@@ -494,7 +494,7 @@ class FilteredTestCase extends CakeTestCase
 
 		$this->Document->recursive = -1;
 		$result = $this->Document->find('all', array('fields' => array('Document.id', 'Document.title')));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 	/**
@@ -537,7 +537,7 @@ class FilteredTestCase extends CakeTestCase
 		$this->_reattachBehavior($testOptions);
 		$this->Document->setFilterValues($filterValues);
 		$result = $this->Document->find('all', array('contain' => array('Metadata', 'Item')));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 		$this->Document->Behaviors->detach('Containable');
 
 		// filtered first, containable second
@@ -545,7 +545,7 @@ class FilteredTestCase extends CakeTestCase
 		$this->Document->setFilterValues($filterValues);
 		$this->Document->Behaviors->attach('Containable');
 		$result = $this->Document->find('all', array('contain' => array('Metadata', 'Item')));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 		$this->Document->Behaviors->detach('Containable');
 	}
 
@@ -598,7 +598,7 @@ class FilteredTestCase extends CakeTestCase
 		$this->_reattachBehavior($testOptions);
 		$this->Document->setFilterValues($filterValues);
 		$result = $this->Document->find('all', array('joins' => $customJoin, 'recursive' => 1));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 		$arse = false;
 	}
 
@@ -632,7 +632,7 @@ class FilteredTestCase extends CakeTestCase
 		$this->assertNotEqual($result, $expected);
 
 		$result = $this->Document->find('all', array('recursive' => -1, 'nofilter' => 'true'));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 	/**
@@ -660,7 +660,7 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$result = $this->Document->DocumentCategory->find('all', array('recursive' => -1));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 
 		$this->Document->DocumentCategory->Behaviors->detach('Filtered');
 	}
@@ -699,7 +699,7 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$result = $this->Document->find('all', array('recursive' => -1));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 	/**
@@ -738,6 +738,6 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$result = $this->Document->find('all', array('recursive' => -1));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 }
