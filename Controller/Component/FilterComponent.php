@@ -102,7 +102,10 @@ class FilterComponent extends Component
 		else
 		{
 			$this->formData = $controller->request->data;
-			$this->Session->write($sessionKey, $this->formData);
+			if ($this->Session->started())
+			{
+				$this->Session->write($sessionKey, $this->formData);
+			}
 		}
 
 		foreach ($settings as $model => $options)
@@ -310,12 +313,18 @@ class FilterComponent extends Component
 		if (isset($settings['nopersist']))
 		{
 			$this->nopersist[$controller->name] = $settings['nopersist'];
-			$this->Session->write('FilterPlugin.NoPersist', $this->nopersist);
+			if ($this->Session->started())
+			{
+				$this->Session->write('FilterPlugin.NoPersist', $this->nopersist);
+			}
 		}
 		else if (isset($this->nopersist[$controller->name]))
 		{
 			unset($this->nopersist[$controller->name]);
-			$this->Session->write('FilterPlugin.NoPersist', $this->nopersist);
+			if ($this->Session->started())
+			{
+				$this->Session->write('FilterPlugin.NoPersist', $this->nopersist);
+			}
 		}
 
 		if (!empty($this->nopersist))
