@@ -18,7 +18,7 @@ class FilteredBehavior extends ModelBehavior
 	/**
 	 * Keeps current values after filter form post.
 	 *
-	 * @var array 
+	 * @var array
 	 */
 	var $_filterValues = array();
 
@@ -140,7 +140,10 @@ class FilteredBehavior extends ModelBehavior
 			{
 				if ($type == 'hasAndBelongsToMany') {
 					if (!empty($Model->{$configurationModelName})) {
-						$linkModelName = $Model->{$type}[$Model->{$configurationModelName}->alias]['with'];
+						$configurationModelAlias = $Model->{$configurationModelName}->alias;
+						if (!empty($Model->{$type}[$configurationModelAlias])) {
+							$linkModelName = $Model->{$type}[$configurationModelAlias]['with'];
+						}
 					}
 				}
 				if (isset($Model->{$type}) && isset($Model->{$type}[$configurationModelName]))
