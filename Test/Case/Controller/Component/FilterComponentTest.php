@@ -258,7 +258,7 @@ class FilterTestCase extends CakeTestCase
 
 		$this->assertEquals
 			(
-				$filterValues
+				$filterValues,
 				$this->Controller->Document->Behaviors->Filtered->_filterValues[$this->Controller->Document->alias]
 			);
 	}
