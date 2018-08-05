@@ -334,7 +334,7 @@ class FilterComponent extends Component
 				{
 					$actions = array($actions);
 				}
-				else if (is_bool($actions) && $actions == true)
+				else if ($actions === true)
 				{
 					$actions = array();
 				}
