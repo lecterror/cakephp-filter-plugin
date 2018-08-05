@@ -152,7 +152,7 @@ class FilterTestCase extends CakeTestCase
 			);
 
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->assertEquals($this->Controller->Filter->settings, $expected);
+		$this->assertEquals($expected, $this->Controller->Filter->settings);
 	}
 
 	/**
@@ -207,20 +207,20 @@ class FilterTestCase extends CakeTestCase
 
 		$this->setExpectedException('PHPUnit_Framework_Error_Notice');
 		$this->Controller->Components->trigger('startup', array($this->Controller));
-		$this->assertEqual
+		$this->assertEquals
 			(
-				$this->Controller->Document->Behaviors->Filtered->_filterValues[$this->Controller->Document->alias],
-				$filterValues
+				$filterValues,
+				$this->Controller->Document->Behaviors->Filtered->_filterValues[$this->Controller->Document->alias]
 			);
 
 		$filterValues = array('Document' => array('title' => 'in'));
 		$this->Controller->Session->write($sessionKey, $filterValues);
 
 		$this->Controller->Components->trigger('startup', array($this->Controller));
-		$this->assertEqual
+		$this->assertEquals
 			(
-				$this->Controller->Document->Behaviors->Filtered->_filterValues[$this->Controller->Document->alias],
-				$filterValues
+				$filterValues,
+				$this->Controller->Document->Behaviors->Filtered->_filterValues[$this->Controller->Document->alias]
 			);
 
 		$this->Controller->Session->delete($sessionKey);
@@ -254,12 +254,12 @@ class FilterTestCase extends CakeTestCase
 
 		$sessionKey = sprintf('FilterPlugin.Filters.%s.%s', $this->Controller->name, $this->Controller->action);
 		$sessionData = $this->Controller->Session->read($sessionKey);
-		$this->assertEquals($sessionData, $filterValues);
+		$this->assertEquals($filterValues, $sessionData);
 
-		$this->assertEqual
+		$this->assertEquals
 			(
-				$this->Controller->Document->Behaviors->Filtered->_filterValues[$this->Controller->Document->alias],
 				$filterValues
+				$this->Controller->Document->Behaviors->Filtered->_filterValues[$this->Controller->Document->alias]
 			);
 	}
 
@@ -557,7 +557,7 @@ class FilterTestCase extends CakeTestCase
 			);
 
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->assertEquals($this->Controller->Filter->settings, $expected);
+		$this->assertEquals($expected, $this->Controller->Filter->settings);
 	}
 
 	/**
