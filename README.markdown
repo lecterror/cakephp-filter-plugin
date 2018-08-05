@@ -43,12 +43,12 @@ what happens next.
 chance I won't accept it. For example:
 
 	// bad
-	function drink() {
+	public function drink() {
 		return false;
 	}
 
 	// good
-	function drink()
+	public function drink()
 	{
 		return true;
 	}

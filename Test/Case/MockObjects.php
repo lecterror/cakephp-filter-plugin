@@ -19,7 +19,7 @@ class DocumentCategory extends CakeTestModel
 	var $name = 'DocumentCategory';
 	var $hasMany = array('Document');
 
-	function customSelector($options = array())
+	public function customSelector($options = array())
 	{
 		$options['conditions']['DocumentCategory.title LIKE'] = '%T%';
 		$options['nofilter'] = true;
@@ -45,7 +45,7 @@ class Document2 extends CakeTestModel
 
 	var $returnValue = false;
 
-	function beforeDataFilter($query, $options)
+	public function beforeDataFilter($query, $options)
 	{
 		return $this->returnValue;
 	}
@@ -60,7 +60,7 @@ class Document3 extends CakeTestModel
 
 	var $itemToUnset = null;
 
-	function afterDataFilter($query, $options)
+	public function afterDataFilter($query, $options)
 	{
 		if (!is_string($this->itemToUnset))
 		{
@@ -92,13 +92,13 @@ class DocumentTestsController extends Controller
 {
 	var $name = 'DocumentTests';
 
-	function index()
+	public function index()
 	{
 	}
 
 	// must override this or the tests never complete..
 	// @TODO: mock partial?
-	function redirect($url, $status = NULL, $exit = true)
+	public function redirect($url, $status = NULL, $exit = true)
 	{
 	}
 }

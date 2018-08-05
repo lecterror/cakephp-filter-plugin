@@ -16,12 +16,12 @@ class FilterHelper extends AppHelper
 {
 	var $_view = null;
 
-	function __construct(View $view, $settings = array())
+	public function __construct(View $view, $settings = array())
 	{
 		$this->_view = $view;
 	}
 
-	function filterForm($modelName, $options)
+	public function filterForm($modelName, $options)
 	{
 		$view =& $this->_view;
 
@@ -54,7 +54,7 @@ class FilterHelper extends AppHelper
 		return $output;
 	}
 
-	function beginForm($modelName, $options)
+	public function beginForm($modelName, $options)
 	{
 		$view =& $this->_view;
 		$output = $view->element
@@ -72,7 +72,7 @@ class FilterHelper extends AppHelper
 		return $output;
 	}
 
-	function inputFields($fields = array())
+	public function inputFields($fields = array())
 	{
 		$view =& $this->_view;
 		$output = $view->element
@@ -89,7 +89,7 @@ class FilterHelper extends AppHelper
 		return $output;
 	}
 
-	function endForm()
+	public function endForm()
 	{
 		$view = $this->_view;
 		$output = $view->element

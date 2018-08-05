@@ -34,7 +34,7 @@ class FilterComponent extends Component
 		$this->_request_settings = $settings;
 	}
 
-	function initialize(Controller $controller)
+	public function initialize(Controller $controller)
 	{
 		if (!isset($controller->filters))
 		{
@@ -63,7 +63,7 @@ class FilterComponent extends Component
 		}
 	}
 
-	function startup(Controller $controller)
+	public function startup(Controller $controller)
 	{
 		if (!isset($this->settings[$controller->name][$controller->action]))
 		{
@@ -120,7 +120,7 @@ class FilterComponent extends Component
 		}
 	}
 
-	function beforeRender(Controller $controller)
+	public function beforeRender(Controller $controller)
 	{
 		if (!isset($this->settings[$controller->name][$controller->action]))
 		{
@@ -303,7 +303,7 @@ class FilterComponent extends Component
 		$controller->set('viewFilterParams', $viewFilterParams);
 	}
 
-	function __updatePersistence($controller, $settings)
+	private function __updatePersistence($controller, $settings)
 	{
 		if ($this->Session->check('FilterPlugin.NoPersist'))
 		{
@@ -365,7 +365,7 @@ class FilterComponent extends Component
 		}
 	}
 
-	function shutdown(Controller $controller)
+	public function shutdown(Controller $controller)
 	{
 	}
 }

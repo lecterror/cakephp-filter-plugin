@@ -27,7 +27,7 @@ class FilterTestCase extends CakeTestCase
 
 	var $Controller = null;
 
-	function startTest($method)
+	public function startTest($method)
 	{
 		Router::connect('/', array('controller' => 'document_tests', 'action' => 'index'));
 		$request = new CakeRequest('/');
@@ -57,7 +57,7 @@ class FilterTestCase extends CakeTestCase
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
 	}
 
-	function endTest($method)
+	public function endTest($method)
 	{
 		$this->Controller->Session->destroy();
 		$this->Controller = null;
@@ -66,7 +66,7 @@ class FilterTestCase extends CakeTestCase
 	/**
 	 * Test bailing out when no filters are present.
 	 */
-	function testNoFilters()
+	public function testNoFilters()
 	{
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
 		$this->assertEmpty($this->Controller->Filter->settings);
@@ -80,7 +80,7 @@ class FilterTestCase extends CakeTestCase
 	 * Test bailing out when a filter model can't be found
 	 * or when the current action has no filters.
 	 */
-	function testNoModelPresentOrNoActionFilters()
+	public function testNoModelPresentOrNoActionFilters()
 	{
 		$testSettings = array
 			(
@@ -132,7 +132,7 @@ class FilterTestCase extends CakeTestCase
 	/**
 	 * Test basic filter settings.
 	 */
-	function testBasicFilters()
+	public function testBasicFilters()
 	{
 		$testSettings = array
 			(
@@ -158,7 +158,7 @@ class FilterTestCase extends CakeTestCase
 	/**
 	 * Test running a component with no filter data.
 	 */
-	function testEmptyStartup()
+	public function testEmptyStartup()
 	{
 		$testSettings = array
 			(
@@ -180,7 +180,7 @@ class FilterTestCase extends CakeTestCase
 	/**
 	 * Test loading filter data from session (both full and empty).
 	 */
-	function testSessionStartupData()
+	public function testSessionStartupData()
 	{
 		$testSettings = array
 			(
@@ -229,7 +229,7 @@ class FilterTestCase extends CakeTestCase
 	/**
 	 * Test loading filter data from a post request.
 	 */
-	function testPostStartupData()
+	public function testPostStartupData()
 	{
 		$_SERVER['REQUEST_METHOD'] = 'POST';
 
@@ -266,7 +266,7 @@ class FilterTestCase extends CakeTestCase
 	/**
 	 * Test exiting beforeRender when in an action with no settings.
 	 */
-	function testBeforeRenderAbort()
+	public function testBeforeRenderAbort()
 	{
 		$testSettings = array
 			(
@@ -296,7 +296,7 @@ class FilterTestCase extends CakeTestCase
 	 * Test triggering an error when the plugin runs into a setting
 	 * for filtering a model which cannot be found.
 	 */
-	function testNoModelFound()
+	public function testNoModelFound()
 	{
 		$testSettings = array
 			(
@@ -329,7 +329,7 @@ class FilterTestCase extends CakeTestCase
 	 * Test the view variable generation for very basic filtering.
 	 * Also tests model name detection and custom label.
 	 */
-	function testBasicViewInfo()
+	public function testBasicViewInfo()
 	{
 		$testSettings = array
 			(
@@ -378,7 +378,7 @@ class FilterTestCase extends CakeTestCase
 	 * Test passing additional inputOptions to the form
 	 * helper, used to customize search form.
 	 */
-	function testAdditionalInputOptions()
+	public function testAdditionalInputOptions()
 	{
 		$testSettings = array
 			(
@@ -441,7 +441,7 @@ class FilterTestCase extends CakeTestCase
 	 * Test data fetching for select input when custom selector
 	 * and custom options are provided.
 	 */
-	function testCustomSelector()
+	public function testCustomSelector()
 	{
 		$testSettings = array
 			(
@@ -490,7 +490,7 @@ class FilterTestCase extends CakeTestCase
 	/**
 	 * Test checkbox input filtering.
 	 */
-	function testCheckboxOptions()
+	public function testCheckboxOptions()
 	{
 		$testSettings = array
 			(
@@ -533,7 +533,7 @@ class FilterTestCase extends CakeTestCase
 	/**
 	 * Test basic filter settings.
 	 */
-	function testSelectMultiple()
+	public function testSelectMultiple()
 	{
 		$testSettings = array
 			(
@@ -563,7 +563,7 @@ class FilterTestCase extends CakeTestCase
 	/**
 	 * Test select input for the model filtered.
 	 */
-	function testSelectInputFromSameModel()
+	public function testSelectInputFromSameModel()
 	{
 		$testSettings = array
 			(
@@ -613,7 +613,7 @@ class FilterTestCase extends CakeTestCase
 	 * Test disabling persistence for single action
 	 * and for the entire controller.
 	 */
-	function testPersistence()
+	public function testPersistence()
 	{
 		$testSettings = array
 			(
