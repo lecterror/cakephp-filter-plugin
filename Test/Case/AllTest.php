@@ -10,6 +10,7 @@
 		LGPL <http://www.gnu.org/licenses/lgpl.html>
 		GPL <http://www.gnu.org/licenses/gpl.html>
 */
+App::uses('CakePlugin', 'Core');
 
 class AllFilterTests extends CakeTestSuite
 {
@@ -17,7 +18,7 @@ class AllFilterTests extends CakeTestSuite
 	{
 		$suite = new CakeTestSuite('All FilterPlugin tests');
 
-		$suite->addTestDirectoryRecursive(App::pluginPath('Filter').'Test'.DS.'Case');
+		$suite->addTestDirectoryRecursive(CakePlugin::path('Filter').'Test'.DS.'Case');
 
 		return $suite;
 	}
