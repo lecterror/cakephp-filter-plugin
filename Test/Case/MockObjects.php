@@ -16,8 +16,8 @@ App::uses('Controller', 'Controller');
 
 class DocumentCategory extends CakeTestModel
 {
-	var $name = 'DocumentCategory';
-	var $hasMany = array('Document');
+	public $name = 'DocumentCategory';
+	public $hasMany = array('Document');
 
 	public function customSelector($options = array())
 	{
@@ -30,20 +30,20 @@ class DocumentCategory extends CakeTestModel
 
 class Document extends CakeTestModel
 {
-	var $name = 'Document';
-	var $belongsTo = array('DocumentCategory');
-	var $hasMany = array('Item');
-	var $hasOne = array('Metadata');
+	public $name = 'Document';
+	public $belongsTo = array('DocumentCategory');
+	public $hasMany = array('Item');
+	public $hasOne = array('Metadata');
 }
 
 class Document2 extends CakeTestModel
 {
-	var $name = 'Document';
-	var $alias = 'Document';
-	var $belongsTo = array('DocumentCategory');
-	var $hasMany = array('Item');
+	public $name = 'Document';
+	public $alias = 'Document';
+	public $belongsTo = array('DocumentCategory');
+	public $hasMany = array('Item');
 
-	var $returnValue = false;
+	public $returnValue = false;
 
 	public function beforeDataFilter($query, $options)
 	{
@@ -53,12 +53,12 @@ class Document2 extends CakeTestModel
 
 class Document3 extends CakeTestModel
 {
-	var $name = 'Document';
-	var $alias = 'Document';
-	var $belongsTo = array('DocumentCategory');
-	var $hasMany = array('Item');
+	public $name = 'Document';
+	public $alias = 'Document';
+	public $belongsTo = array('DocumentCategory');
+	public $hasMany = array('Item');
 
-	var $itemToUnset = null;
+	public $itemToUnset = null;
 
 	public function afterDataFilter($query, $options)
 	{
@@ -78,19 +78,19 @@ class Document3 extends CakeTestModel
 
 class Metadata extends CakeTestModel
 {
-	var $name = 'Metadata';
-	var $hasOne = array('Document');
+	public $name = 'Metadata';
+	public $hasOne = array('Document');
 }
 
 class Item extends CakeTestModel
 {
-	var $name = 'Item';
-	var $belongsTo = array('Document');
+	public $name = 'Item';
+	public $belongsTo = array('Document');
 }
 
 class DocumentTestsController extends Controller
 {
-	var $name = 'DocumentTests';
+	public $name = 'DocumentTests';
 
 	public function index()
 	{

@@ -14,7 +14,7 @@ App::uses('AppHelper', 'View/Helper');
 
 class FilterHelper extends AppHelper
 {
-	var $_view = null;
+	protected $_view = null;
 
 	public function __construct(View $view, $settings = array())
 	{

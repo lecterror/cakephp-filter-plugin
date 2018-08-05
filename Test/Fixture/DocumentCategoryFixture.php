@@ -13,16 +13,16 @@
 
 class DocumentCategoryFixture extends CakeTestFixture
 {
-	var $name = 'DocumentCategory';
+	public $name = 'DocumentCategory';
 
-	var $fields = array
+	public $fields = array
 		(
 			'id'			=> array('type' => 'integer', 'key' => 'primary'),
 			'title'			=> array('type' => 'string', 'length' => 100, 'null' => false),
 			'description'	=> array('type' => 'string', 'length' => 255)
 		);
 
-	var $records = array
+	public $records = array
 		(
 			array('id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'),
 			array('id' => 2, 'title' => 'Imaginary Spec', 'description' => 'This doc does not exist'),
