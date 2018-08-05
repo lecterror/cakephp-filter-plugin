@@ -56,7 +56,7 @@ class FilteredBehavior extends ModelBehavior
 		{
 			return $query;
 		}
-
+		$callbackOptions = array();
 		if (method_exists($Model, 'beforeDataFilter'))
 		{
 			$callbackOptions['values'] = $this->_filterValues[$Model->alias];
@@ -213,6 +213,7 @@ class FilteredBehavior extends ModelBehavior
 
 		$relatedModelAlias = null;
 		$relationType = null;
+		$linkModelAlias = null;
 
 		foreach ($relationTypes as $type)
 		{
@@ -227,7 +228,7 @@ class FilteredBehavior extends ModelBehavior
 				break;
 			}
 		}
-
+		$linkConditions = array();
 		if (isset($Model->{$relationType}[$relatedModel->alias]['foreignKey'])
 			&& $Model->{$relationType}[$relatedModel->alias]['foreignKey'])
 		{
