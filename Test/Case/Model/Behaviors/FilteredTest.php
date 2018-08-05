@@ -599,7 +599,6 @@ class FilteredTestCase extends CakeTestCase
 		$this->Document->setFilterValues($filterValues);
 		$result = $this->Document->find('all', array('joins' => $customJoin, 'recursive' => 1));
 		$this->assertEquals($expected, $result);
-		$arse = false;
 	}
 
 	/**
