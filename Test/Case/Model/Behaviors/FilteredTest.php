@@ -27,12 +27,12 @@ class FilteredTestCase extends CakeTestCase
 
 	var $Document = null;
 
-	function startTest($model)
+	public function startTest($model)
 	{
 		$this->Document = ClassRegistry::init('Document');
 	}
 
-	function endTest($model)
+	public function endTest($model)
 	{
 		$this->Document = null;
 	}
@@ -42,7 +42,7 @@ class FilteredTestCase extends CakeTestCase
 	 *
 	 * @param array $options Behavior options.
 	 */
-	function _reattachBehavior($options = array())
+	protected function _reattachBehavior($options = array())
 	{
 		$this->Document->Behaviors->detach('Filtered');
 		$this->Document->Behaviors->attach('Filter.Filtered', $options);
@@ -51,7 +51,7 @@ class FilteredTestCase extends CakeTestCase
 	/**
 	 * Test attaching without options.
 	 */
-	function testBlankAttaching()
+	public function testBlankAttaching()
 	{
 		$this->Document->Behaviors->attach('Filter.Filtered');
 		$this->assertTrue($this->Document->Behaviors->enabled('Filtered'));
@@ -60,7 +60,7 @@ class FilteredTestCase extends CakeTestCase
 	/**
 	 * Test attaching with options.
 	 */
-	function testInitSettings()
+	public function testInitSettings()
 	{
 		$testOptions = array
 			(
@@ -82,7 +82,7 @@ class FilteredTestCase extends CakeTestCase
 	/**
 	 * Test init settings when only a single field is given, with no extra options.
 	 */
-	function testInitSettingsSingle()
+	public function testInitSettingsSingle()
 	{
 		$testOptions = array('Document.title');
 		$this->_reattachBehavior($testOptions);
@@ -97,7 +97,7 @@ class FilteredTestCase extends CakeTestCase
 	/**
 	 * Test setting the filter values for future queries.
 	 */
-	function testSetFilterValues()
+	public function testSetFilterValues()
 	{
 		$testOptions = array
 			(
@@ -121,7 +121,7 @@ class FilteredTestCase extends CakeTestCase
 	/**
 	 * Test detecting an error in options - when a field is 'required' but no value is given for it.
 	 */
-	function testLoadingRequiredFieldValueMissing()
+	public function testLoadingRequiredFieldValueMissing()
 	{
 		$testOptions = array
 			(
@@ -145,7 +145,7 @@ class FilteredTestCase extends CakeTestCase
 	/**
 	 * Test filtering with conditions from current model and belongsTo model.
 	 */
-	function testFilteringBelongsTo()
+	public function testFilteringBelongsTo()
 	{
 		$testOptions = array
 			(
@@ -198,7 +198,7 @@ class FilteredTestCase extends CakeTestCase
 	 * Test filtering with conditions from current model and belongsTo model,
 	 * same as testFilteringBelongsTo() except for a change in filterField format.
 	 */
-	function testFilteringBelongsToFilterFieldTest()
+	public function testFilteringBelongsToFilterFieldTest()
 	{
 		$testOptions = array
 			(
@@ -227,7 +227,7 @@ class FilteredTestCase extends CakeTestCase
 	/**
 	 * Test various conditions for the type 'text' in filtering (less than, equal, like, etc..)
 	 */
-	function testFilteringBelongsToDifferentConditions()
+	public function testFilteringBelongsToDifferentConditions()
 	{
 		$testOptions = array
 			(
@@ -280,7 +280,7 @@ class FilteredTestCase extends CakeTestCase
 	 * Test filtering with conditions on current model, the belongsTo model
 	 * and hasMany model (behavior adds an INNER JOIN in query).
 	 */
-	function testFilteringBelongsToAndHasMany()
+	public function testFilteringBelongsToAndHasMany()
 	{
 		$testOptions = array
 			(
@@ -354,7 +354,7 @@ class FilteredTestCase extends CakeTestCase
 	 * Test filtering with join which has some custom
 	 * condition in the relation (both string and array).
 	 */
-	function testCustomJoinConditions()
+	public function testCustomJoinConditions()
 	{
 		$testOptions = array
 			(
@@ -396,7 +396,7 @@ class FilteredTestCase extends CakeTestCase
 	/**
 	 * Test for any possible conflicts with Containable behavior.
 	 */
-	function testFilteringBelongsToAndHasManyWithContainable()
+	public function testFilteringBelongsToAndHasManyWithContainable()
 	{
 		$testOptions = array
 			(
@@ -465,7 +465,7 @@ class FilteredTestCase extends CakeTestCase
 	/**
 	 * Test filtering by text input with hasOne relation.
 	 */
-	function testHasOneAndHasManyWithTextSearch()
+	public function testHasOneAndHasManyWithTextSearch()
 	{
 		$testOptions = array
 			(
@@ -500,7 +500,7 @@ class FilteredTestCase extends CakeTestCase
 	/**
 	 * Test filtering with Containable and hasOne Model.field.
 	 */
-	function testHasOneWithContainable()
+	public function testHasOneWithContainable()
 	{
 		$testOptions = array
 			(
@@ -553,7 +553,7 @@ class FilteredTestCase extends CakeTestCase
 	 * Test filtering when a join is already present in the query,
 	 * this should prevent duplicate joins and query errors.
 	 */
-	function testJoinAlreadyPresent()
+	public function testJoinAlreadyPresent()
 	{
 		$testOptions = array
 			(
@@ -605,7 +605,7 @@ class FilteredTestCase extends CakeTestCase
 	/**
 	 * Test the 'nofilter' query param.
 	 */
-	function testNofilterFindParam()
+	public function testNofilterFindParam()
 	{
 		$testOptions = array
 			(
@@ -638,7 +638,7 @@ class FilteredTestCase extends CakeTestCase
 	/**
 	 * Test bailing out if no settings exist for the current model.
 	 */
-	function testExitWhenNoSettings()
+	public function testExitWhenNoSettings()
 	{
 		$this->Document->DocumentCategory->Behaviors->attach('Filter.Filtered');
 
@@ -668,7 +668,7 @@ class FilteredTestCase extends CakeTestCase
 	/**
 	 * Test beforeDataFilter() callback, used to cancel filtering if necessary.
 	 */
-	function testBeforeDataFilterCallbackCancel()
+	public function testBeforeDataFilterCallbackCancel()
 	{
 		$this->Document = ClassRegistry::init('Document2');
 
@@ -706,7 +706,7 @@ class FilteredTestCase extends CakeTestCase
 	 * Test afterDataFilter() callback, used to modify the conditions after
 	 * filter conditions have been applied.
 	 */
-	function testAfterDataFilterCallbackQueryChange()
+	public function testAfterDataFilterCallbackQueryChange()
 	{
 		$this->Document = ClassRegistry::init('Document3');
 		$this->Document->itemToUnset = 'FilterDocumentCategory.id';
