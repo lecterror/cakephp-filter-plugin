@@ -13,16 +13,16 @@
 
 class ItemFixture extends CakeTestFixture
 {
-	var $name = 'Item';
+	public $name = 'Item';
 
-	var $fields = array
+	public $fields = array
 		(
 			'id'					=> array('type' => 'integer', 'key' => 'primary'),
 			'document_id'			=> array('type' => 'integer', 'null' => false),
 			'code'					=> array('type' => 'string', 'length' => '20', 'null' => false)
 		);
 
-	var $records = array
+	public $records = array
 		(
 			array('id' => 1, 'document_id' => 1, 'code' => 'The item #01'),
 			array('id' => 2, 'document_id' => 1, 'code' => 'The item #02'),

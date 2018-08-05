@@ -20,9 +20,9 @@ class FilteredBehavior extends ModelBehavior
 	 *
 	 * @var array
 	 */
-	var $_filterValues = array();
+	protected $_filterValues = array();
 
-	var $mapMethods = array('/setFilterValues/' => '_setFilterValues');
+	public $mapMethods = array('/setFilterValues/' => '_setFilterValues');
 
 	public function setup(Model $Model, $settings = array())
 	{

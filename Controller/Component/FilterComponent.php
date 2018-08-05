@@ -21,12 +21,12 @@ App::import('Behavior', 'Filter.Filtered');
 
 class FilterComponent extends Component
 {
-	var $components = array('Session');
+	public $components = array('Session');
 
-	var $settings = array();
-	var $nopersist = array();
-	var $formData = array();
-	var $_request_settings = array();
+	public $settings = array();
+	public $nopersist = array();
+	public $formData = array();
+	protected $_request_settings = array();
 
 	public function __construct(ComponentCollection $collection, $settings = array())
 	{
