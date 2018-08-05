@@ -11,14 +11,13 @@
 		GPL <http://www.gnu.org/licenses/gpl.html>
 */
 
+App::import('Component', 'Session');
+App::import('Behavior', 'Filter.Filtered');
+
 /**
  * @property RequestHandlerComponent $RequestHandler
  * @property SessionComponent $Session
  */
-
-App::import('Component', 'Session');
-App::import('Behavior', 'Filter.Filtered');
-
 class FilterComponent extends Component
 {
 	public $components = array('Session');
