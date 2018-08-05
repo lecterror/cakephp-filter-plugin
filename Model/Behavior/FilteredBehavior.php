@@ -397,7 +397,7 @@ class FilteredBehavior extends ModelBehavior
 		}
 	}
 
-	protected function _setFilterValues(&$Model, $method, $values = array())
+	public function _setFilterValues(&$Model, $method, $values = array())
 	{
 		$values = Sanitize::clean
 			(
