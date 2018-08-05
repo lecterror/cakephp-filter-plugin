@@ -629,7 +629,7 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$result = $this->Document->find('all', array('recursive' => -1, 'nofilter' => true));
-		$this->assertNotEqual($result, $expected);
+		$this->assertNotEquals($expected, $result);
 
 		$result = $this->Document->find('all', array('recursive' => -1, 'nofilter' => 'true'));
 		$this->assertEquals($expected, $result);
