@@ -280,11 +280,6 @@ class FilterTestCase extends CakeTestCase
 			);
 		$this->Controller->filters = $testSettings;
 
-		$expected = array
-			(
-				$this->Controller->name => $testSettings
-			);
-
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
 		$this->Controller->Components->trigger('startup', array($this->Controller));
 		$this->Controller->Components->trigger('beforeRender', array($this->Controller));
@@ -309,11 +304,6 @@ class FilterTestCase extends CakeTestCase
 				)
 			);
 		$this->Controller->filters = $testSettings;
-
-		$expected = array
-			(
-				$this->Controller->name => $testSettings
-			);
 
 		$this->setExpectedException('PHPUnit_Framework_Error_Notice');
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
