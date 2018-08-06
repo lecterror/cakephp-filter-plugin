@@ -399,11 +399,12 @@ class FilteredBehavior extends ModelBehavior
 	/**
 	 * Makes a string SQL-safe.
 	 *
-	 * @param string $string String to sanitize
-	 * @param string $connection Database connection being used
-	 * @return string SQL safe string
+	 * @param string $string String to sanitize.
+	 * @param string $connection Database connection being used.
+	 * @return string SQL safe string.
 	 */
-	private function __escape($string, $connection = 'default') {
+	private function __escape($string, $connection = 'default')
+	{
 		if (is_numeric($string) || $string === null || is_bool($string)) {
 			return $string;
 		}
@@ -423,7 +424,8 @@ class FilteredBehavior extends ModelBehavior
 	 * @param string $options DB connection being used.
 	 * @return mixed Sanitized data.
 	 */
-	private function __clean($data, $connection = 'default') {
+	private function __clean($data, $connection = 'default')
+	{
 		if (empty($data)) {
 			return $data;
 		}
