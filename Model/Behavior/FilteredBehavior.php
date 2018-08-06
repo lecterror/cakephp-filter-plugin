@@ -22,8 +22,6 @@ class FilteredBehavior extends ModelBehavior
 	 */
 	protected $_filterValues = array();
 
-	public $mapMethods = array('/setFilterValues/' => 'setFilterValues');
-
 	public function setup(Model $Model, $settings = array())
 	{
 		foreach ($settings as $key => $value)
@@ -398,7 +396,7 @@ class FilteredBehavior extends ModelBehavior
 		}
 	}
 
-	public function setFilterValues(&$Model, $method, $values = array())
+	public function setFilterValues(&$Model, $values = array())
 	{
 		$values = Sanitize::clean
 			(
