@@ -20,9 +20,9 @@ class FilteredBehavior extends ModelBehavior
 	 *
 	 * @var array
 	 */
-	public $_filterValues = array();
+	protected $_filterValues = array();
 
-	public $mapMethods = array('/setFilterValues/' => '_setFilterValues');
+	public $mapMethods = array('/setFilterValues/' => 'setFilterValues');
 
 	public function setup(Model $Model, $settings = array())
 	{
@@ -398,7 +398,7 @@ class FilteredBehavior extends ModelBehavior
 		}
 	}
 
-	public function _setFilterValues(&$Model, $method, $values = array())
+	public function setFilterValues(&$Model, $method, $values = array())
 	{
 		$values = Sanitize::clean
 			(
@@ -418,4 +418,16 @@ class FilteredBehavior extends ModelBehavior
 
 		$this->_filterValues[$Model->alias] = array_merge($this->_filterValues[$Model->alias], (array)$values);
 	}
+
+	/**
+	 * Gets filter values.
+	 *
+	 * @param Model $Model Current model.
+	 * @return array
+	 */
+	public function getFilterValues($Model)
+	{
+		return $this->_filterValues;
+	}
+
 }

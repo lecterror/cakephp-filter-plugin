@@ -207,20 +207,22 @@ class FilterTestCase extends CakeTestCase
 
 		$this->setExpectedException('PHPUnit_Framework_Error_Notice');
 		$this->Controller->Components->trigger('startup', array($this->Controller));
+		$actualFilterValues = $this->Controller->Document->getFilterValues();
 		$this->assertEquals
 			(
 				$filterValues,
-				$this->Controller->Document->Behaviors->Filtered->_filterValues[$this->Controller->Document->alias]
+				$actualFilterValues[$this->Controller->Document->alias]
 			);
 
 		$filterValues = array('Document' => array('title' => 'in'));
 		$this->Controller->Session->write($sessionKey, $filterValues);
 
 		$this->Controller->Components->trigger('startup', array($this->Controller));
+		$actualFilterValues = $this->Controller->Document->getFilterValues();
 		$this->assertEquals
 			(
 				$filterValues,
-				$this->Controller->Document->Behaviors->Filtered->_filterValues[$this->Controller->Document->alias]
+				$actualFilterValues[$this->Controller->Document->alias]
 			);
 
 		$this->Controller->Session->delete($sessionKey);
@@ -256,10 +258,11 @@ class FilterTestCase extends CakeTestCase
 		$sessionData = $this->Controller->Session->read($sessionKey);
 		$this->assertEquals($filterValues, $sessionData);
 
+		$actualFilterValues = $this->Controller->Document->getFilterValues();
 		$this->assertEquals
 			(
 				$filterValues,
-				$this->Controller->Document->Behaviors->Filtered->_filterValues[$this->Controller->Document->alias]
+				$actualFilterValues[$this->Controller->Document->alias]
 			);
 	}
 
