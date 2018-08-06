@@ -115,7 +115,8 @@ class FilteredTestCase extends CakeTestCase
 			);
 
 		$this->Document->setFilterValues($filterValues);
-		$this->assertEquals($filterValues, $this->Document->Behaviors->Filtered->_filterValues[$this->Document->alias]);
+		$actualFilterValues = $this->Document->getFilterValues();
+		$this->assertEquals($filterValues, $actualFilterValues[$this->Document->alias]);
 	}
 
 	/**
