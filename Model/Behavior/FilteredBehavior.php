@@ -396,24 +396,57 @@ class FilteredBehavior extends ModelBehavior
 		}
 	}
 
+	/**
+	 * Makes a string SQL-safe.
+	 *
+	 * @param string $string String to sanitize.
+	 * @param string $connection Database connection being used.
+	 * @return string SQL safe string.
+	 */
+	private function __escape($string, $connection = 'default')
+	{
+		if (is_numeric($string) || $string === null || is_bool($string)) {
+			return $string;
+		}
+		$db = ConnectionManager::getDataSource($connection);
+		$string = $db->value($string, 'string');
+		$start = 1;
+		if ($string{0} === 'N') {
+			$start = 2;
+		}
+		return substr(substr($string, $start), 0, -1);
+	}
+
+	/**
+	 * Makes an array SQL-safe.
+	 *
+	 * @param string|array $data Data to sanitize.
+	 * @param string $options DB connection being used.
+	 * @return mixed Sanitized data.
+	 */
+	private function __clean($data, $connection = 'default')
+	{
+		if (empty($data)) {
+			return $data;
+		}
+		if (is_array($data)) {
+			foreach ($data as $key => $val) {
+				$data[$key] = $this->__clean($val, $connection);
+			}
+			return $data;
+		}
+		return $this->__escape($data, $connection);
+	}
+
+	/**
+	 * Sets filter values.
+	 *
+	 * @param Model $Model  Current model.
+	 * @param array $values Filter values.
+	 */
 	public function setFilterValues(&$Model, $values = array())
 	{
-		$values = Sanitize::clean
-			(
-				$values,
-				array
-				(
-					'connection' => $Model->useDbConfig,
-					'odd_spaces' => false,
-					'encode' => false,
-					'dollar' => false,
-					'carriage' => false,
-					'unicode' => false,
-					'escape' => true,
-					'backslash' => false
-				)
-			);
-
+		$values = $this->__clean($values, $Model->useDbConfig);
 		$this->_filterValues[$Model->alias] = array_merge($this->_filterValues[$Model->alias], (array)$values);
 	}
 
