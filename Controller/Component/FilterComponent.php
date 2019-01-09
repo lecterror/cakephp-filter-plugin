@@ -43,12 +43,12 @@ class FilterComponent extends Component
 		$this->__updatePersistence($controller, $this->_request_settings);
 		$this->settings[$controller->name] = $controller->filters;
 
-		if (!isset($this->settings[$controller->name][$controller->action]))
+		if (!isset($this->settings[$controller->name][$controller->request->action]))
 		{
 			return;
 		}
 
-		$settings = $this->settings[$controller->name][$controller->action];
+		$settings = $this->settings[$controller->name][$controller->request->action];
 
 		foreach ($settings as $model => $filter)
 		{
@@ -64,19 +64,19 @@ class FilterComponent extends Component
 
 	public function startup(Controller $controller)
 	{
-		if (!isset($this->settings[$controller->name][$controller->action]))
+		if (!isset($this->settings[$controller->name][$controller->request->action]))
 		{
 			return;
 		}
 
-		$settings = $this->settings[$controller->name][$controller->action];
+		$settings = $this->settings[$controller->name][$controller->request->action];
 
 		if (!in_array('Filter.Filter', $controller->helpers))
 		{
 			$controller->helpers[] = 'Filter.Filter';
 		}
 
-		$sessionKey = sprintf('FilterPlugin.Filters.%s.%s', $controller->name, $controller->action);
+		$sessionKey = sprintf('FilterPlugin.Filters.%s.%s', $controller->name, $controller->request->action);
 		$filterFormId = $controller->request->query('filterFormId');
 		if ($controller->request->is('get') && !empty($filterFormId))
 		{
@@ -121,12 +121,12 @@ class FilterComponent extends Component
 
 	public function beforeRender(Controller $controller)
 	{
-		if (!isset($this->settings[$controller->name][$controller->action]))
+		if (!isset($this->settings[$controller->name][$controller->request->action]))
 		{
 			return;
 		}
 
-		$models = $this->settings[$controller->name][$controller->action];
+		$models = $this->settings[$controller->name][$controller->request->action];
 		$viewFilterParams = array();
 
 		foreach ($models as $model => $fields)
@@ -350,7 +350,7 @@ class FilterComponent extends Component
 
 				foreach ($actions as $action)
 				{
-					if ($controller->name == $nopersistController && $action == $controller->action)
+					if ($controller->name == $nopersistController && $action == $controller->request->action)
 					{
 						continue;
 					}
