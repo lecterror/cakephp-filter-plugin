@@ -26,10 +26,10 @@ Or visit <http://github.com/lecterror/cakephp-filter-plugin> and download the
 plugin manually to your `app/Plugin/Filter/` folder.
 
 To use the plugin, you need to tell it which model to filter and which fields to use. For
-a quick tutorial, visit <http://lecterror.com/articles/view/cakephp-generic-filter-plugin>
+a quick tutorial, visit <https://github.com/lecterror/cakephp-filter-plugin/wiki/Basic-usage>
 
 If you need more than this plugin provides by default, there are ways to customize it, see
-this article: <http://lecterror.com/articles/view/cakephp-filter-plugin-advanced-usage>
+this article: <https://github.com/lecterror/cakephp-filter-plugin/wiki/Advanced-usage>
 
 In order to generate GET forms add `'type' => 'GET'` to the `filterForm()` or `beginForm()` options array.
 
