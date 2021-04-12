@@ -299,6 +299,25 @@ class FilterComponent extends Component
 			}
 		}
 
+		if (!empty($this->settings['add_filter_value_to_title']) &&
+			array_search($controller->action, $this->settings['add_filter_value_to_title']) !== false)
+		{
+			$title = $controller->viewVars['title_for_layout'];
+			foreach ($viewFilterParams as $viewFilterParam)
+			{
+				if (!empty($viewFilterParam['options']['class']) &&
+					$viewFilterParam['options']['class'] == 'filter-active')
+				{
+					$titleValue = $viewFilterParam['options']['value'];
+					if ($viewFilterParam['options']['type'] == 'select')
+					{
+						$titleValue = $viewFilterParam['options']['options'][$titleValue];
+					}
+					$title .= ' - ' . $titleValue;
+				}
+			}
+			$controller->set('title_for_layout', $title);
+		}
 		$controller->set('viewFilterParams', $viewFilterParams);
 	}
 
