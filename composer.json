@@ -2,7 +2,7 @@
     "name": "kba-team/cakephp-filter-plugin",
     "description": "Filter is a CakePHP plugin which enables you to create filtering forms for your data in a very fast and simple way, without getting in the way of paging, sorting and other \"standard\" things when displaying data. It also remembers the filter conditions in a session, but this can be turned off if undesirable.",
     "type": "cakephp-plugin",
-    "license": "GPL",
+    "license": "GPL-3.0-or-later",
     "minimum-stability": "stable",
     "require": {
         "php": "^7.2",
