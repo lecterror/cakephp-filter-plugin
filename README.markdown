@@ -18,7 +18,7 @@ not the latest version from GitHub.
 
 First, obtain the plugin. If you're using Git, run this while in your app folder:
 
-	git submodule add git://github.com/lecterror/cakephp-filter-plugin.git Plugin/Filter
+	git submodule add git://github.com/lecterror/cakephp-filter-plugin.git app/Plugin/Filter
 	git submodule init
 	git submodule update
 
@@ -28,10 +28,39 @@ plugin manually to your `app/Plugin/Filter/` folder.
 To use the plugin, you need to tell it which model to filter and which fields to use. For
 a quick tutorial, visit <https://github.com/lecterror/cakephp-filter-plugin/wiki/Basic-usage>
 
+* Ensure the plugin is loaded in `app/Config/bootstrap.php` by calling `CakePlugin::load('Filter');`
+
 If you need more than this plugin provides by default, there are ways to customize it, see
 this article: <https://github.com/lecterror/cakephp-filter-plugin/wiki/Advanced-usage>
 
 In order to generate GET forms add `'type' => 'GET'` to the `filterForm()` or `beginForm()` options array.
+
+## Synopsis
+
+### Adapt your controller, in this example, we add ModelName.field to the filter list.
+
+```php
+class ExampleController extends AppController  
+{  
+   var $components = array('Filter.Filter');  
+   
+       var $filters = array(  
+        'index' => array(  
+            'ModelName' => array(
+                'ModelName.field',  
+            ),
+        )
+    );   
+}
+```
+
+### Adapt the view :
+
+In the app/View/Modelname/index.ctp
+Before the table, insert :
+```php
+   <?php echo $this->Filter->filterForm('ModelName', array('legend' => 'Search')); ?>
+```
 
 ## Contributing ##
 
