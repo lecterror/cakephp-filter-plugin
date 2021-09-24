@@ -20,7 +20,7 @@ App::uses('DocumentTestsController', 'Filter.Test/Case/MockObjects');
 App::uses('Item', 'Filter.Test/Case/MockObjects');
 App::uses('Metadata', 'Filter.Test/Case/MockObjects');
 
-class FilteredTestCase extends CakeTestCase
+class FilteredBehaviorTest extends CakeTestCase
 {
 	public $fixtures = array
 		(
