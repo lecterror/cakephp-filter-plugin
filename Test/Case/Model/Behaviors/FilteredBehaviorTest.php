@@ -12,10 +12,15 @@
 */
 
 App::import('Core', array('AppModel', 'Model'));
-require_once(dirname(dirname(dirname(__FILE__))) . DS . 'MockObjects.php');
+App::uses('Document', 'Filter.Test/Case/MockObjects');
+App::uses('Document2', 'Filter.Test/Case/MockObjects');
+App::uses('Document3', 'Filter.Test/Case/MockObjects');
+App::uses('DocumentCategory', 'Filter.Test/Case/MockObjects');
+App::uses('DocumentTestsController', 'Filter.Test/Case/MockObjects');
+App::uses('Item', 'Filter.Test/Case/MockObjects');
+App::uses('Metadata', 'Filter.Test/Case/MockObjects');
 
-
-class FilteredTestCase extends CakeTestCase
+class FilteredBehaviorTest extends CakeTestCase
 {
 	public $fixtures = array
 		(
