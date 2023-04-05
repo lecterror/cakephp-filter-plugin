@@ -280,7 +280,7 @@ class FilterComponent extends Component
 						break;
 
 					default:
-						continue;
+						continue 2;
 				}
 
 				// if no value has been set, show the default one
