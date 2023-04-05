@@ -354,7 +354,7 @@ class FilteredBehavior extends ModelBehavior
 			case 'text':
 				if (strlen(trim(strval($value))) == 0)
 				{
-					continue;
+					break;
 				}
 
 				$condition = $options['condition'];
@@ -385,7 +385,7 @@ class FilteredBehavior extends ModelBehavior
 			case 'select':
 				if (is_string($value) && strlen(trim(strval($value))) == 0)
 				{
-					continue;
+					break;
 				}
 
 				$query['conditions'][$field] = $value;
