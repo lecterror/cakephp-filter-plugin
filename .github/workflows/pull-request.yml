@@ -17,16 +17,38 @@ jobs:
         uses: shogo82148/actions-setup-mysql@v1
         with:
           mysql-version: '5.6'
-
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
         uses: actions/checkout@v3
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
+      - name: Clone CakePHP
         run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
-      - run: php -v
+          git clone git://github.com/cakephp/cakephp
+          cd cakephp
+          git checkout $CAKE_VERSION
+          chmod -R 777 app/tmp
+          composer require 'phpunit/phpunit=5.7'
+          cd ../
+      - name: Fix composer autoload
+        run: |
+          echo "<?php " > /tmp/core.php
+          echo "require ROOT . '/vendors/autoload.php'; " >> /tmp/core.php
+          echo "spl_autoload_unregister(array('App', 'load')); " >> /tmp/core.php
+          echo "spl_autoload_register(array('App', 'load'), true, true); " >> /tmp/core.php
+          echo "?>" >> /tmp/core.php
+          cat ./cakephp/app/Config/core.php >> /tmp/core.php
+          cp /tmp/core.php ./cakephp/app/Config/core.php
+      - name: Copy plugin files to plugins folder
+        run: |
+          mkdir -p ./cakephp/plugins/Filter
+          cp -R ./Controller ./cakephp/plugins/Filter/Controller
+          cp -R ./Model ./cakephp/plugins/Filter/Model
+          cp -R ./Test ./cakephp/plugins/Filter/Test
+          cp -R ./View ./cakephp/plugins/Filter/View
+      - name: Setup database
+        run: |
+          cp ./cakephp/app/Config/database.php.default ./cakephp/app/Config/database.php
+          mysql -e "CREATE DATABASE test_database_name"
+          mysql -e "CREATE USER 'user'@'%' IDENTIFIED BY 'password'"
+          mysql -u root -e "GRANT ALL PRIVILEGES ON test_database_name.* TO 'user'@'%'"
+      - name: Unit Tests
+        run: ./cakephp/lib/Cake/Console/cake test Filter All --stderr -app ./cakephp/app
+
