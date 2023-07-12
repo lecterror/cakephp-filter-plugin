@@ -20,10 +20,13 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Clone CakePHP
+        uses: actions/checkout@v3
+        with: 
+          repository: cakephp/cakephp
+          path: ./cakephp
+          ref: 2.10.14
         run: |
-          git clone git://github.com/cakephp/cakephp
-          cd cakephp
-          git checkout $CAKE_VERSION
+          cd ./cakephp
           chmod -R 777 app/tmp
           composer require 'phpunit/phpunit=5.7'
           cd ../
