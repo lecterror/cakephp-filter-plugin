@@ -100,7 +100,5 @@ jobs:
       - name: PHPStan
         run: |
           composer require --dev phpstan/phpstan
-          ls ./
-          ls ./cakephp
-          ./vendor/bin/phpstan analyse ./cakephp/plugins/Filter
+          vendor/bin/phpstan analyse ./cakephp/plugins/Filter
 
