@@ -9,14 +9,91 @@ jobs:
   Unit-Tests:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.1'
+      - name: Install MySQL
+        uses: shogo82148/actions-setup-mysql@v1
+        with:
+          mysql-version: '5.6'
       - name: Check out repository code
         uses: actions/checkout@v3
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
+      - name: Clone CakePHP
+        uses: actions/checkout@v3
+        with: 
+          repository: cakephp/cakephp
+          path: ./cakephp
+          ref: 2.10.14
+      - name: Install PHPUnit
         run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+          cd ./cakephp
+          chmod -R 777 app/tmp
+          composer require 'phpunit/phpunit=5.7'
+          cd ../
+      - name: Fix composer autoload
+        run: |
+          echo "<?php " > /tmp/core.php
+          echo "require ROOT . '/vendors/autoload.php'; " >> /tmp/core.php
+          echo "spl_autoload_unregister(array('App', 'load')); " >> /tmp/core.php
+          echo "spl_autoload_register(array('App', 'load'), true, true); " >> /tmp/core.php
+          echo "?>" >> /tmp/core.php
+          cat ./cakephp/app/Config/core.php >> /tmp/core.php
+          cp /tmp/core.php ./cakephp/app/Config/core.php
+      - name: Copy plugin files to plugins folder
+        run: |
+          mkdir -p ./cakephp/plugins/Filter
+          cp -R ./Controller ./cakephp/plugins/Filter/Controller
+          cp -R ./Model ./cakephp/plugins/Filter/Model
+          cp -R ./Test ./cakephp/plugins/Filter/Test
+          cp -R ./View ./cakephp/plugins/Filter/View
+
+      - name: Setup database
+        run: |
+          mysql -u root -e "CREATE DATABASE cakephp_test"
+          echo "<?php
+          class DATABASE_CONFIG {
+             private \$identities = array(
+               'mysql' => array(
+                  'datasource' => 'Database/Mysql',
+                  'host' => '127.0.0.1',
+                  'login' => 'root'
+               )
+             );
+             public \$default = array(
+               'persistent' => false,
+               'host' => '',
+               'login' => '',
+               'password' => '',
+               'database' => 'cakephp_test',
+               'prefix' => ''
+             );
+             public \$test = array(
+               'persistent' => false,
+               'host' => '',
+               'login' => '',
+               'password' => '',
+               'database' => 'cakephp_test',
+               'prefix' => ''
+             );
+             public function __construct() {
+               \$db = 'mysql';
+               if (!empty(\$_SERVER['DB'])) {
+                 \$db = \$_SERVER['DB'];
+               }
+               foreach (array('default', 'test') as \$source) {
+                 \$config = array_merge(\$this->{\$source}, \$this->identities[\$db]);
+                 if (is_array(\$config['database'])) {
+                   \$config['database'] = \$config['database'][\$source];
+                 }
+                 if (!empty(\$config['schema']) && is_array(\$config['schema'])) {
+                   \$config['schema'] = \$config['schema'][\$source];
+                 }
+                 \$this->{\$source} = \$config;
+               }
+             }
+          }" > ./cakephp/app/Config/database.php
+
+      - name: Unit Tests
+        run: ./cakephp/lib/Cake/Console/cake test Filter All --stderr -app ./cakephp/app
+
