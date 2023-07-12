@@ -365,7 +365,7 @@ class FilteredBehavior extends ModelBehavior
 			default:
 				if (strlen(trim(strval($value))) == 0)
 				{
-					continue;
+					break;
 				}
 
 				$condition = $options['condition'];
