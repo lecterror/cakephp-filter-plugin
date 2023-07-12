@@ -351,7 +351,18 @@ class FilteredBehavior extends ModelBehavior
 
 		switch ($options['type'])
 		{
-			case 'text':
+			case 'select':
+				if (is_string($value) && strlen(trim(strval($value))) == 0)
+				{
+					continue;
+				}
+
+				$query['conditions'][$field] = $value;
+				break;
+			case 'checkbox':
+				$query['conditions'][$field] = $value;
+				break;
+			default:
 				if (strlen(trim(strval($value))) == 0)
 				{
 					continue;
@@ -381,17 +392,6 @@ class FilteredBehavior extends ModelBehavior
 						break;
 				}
 
-				break;
-			case 'select':
-				if (is_string($value) && strlen(trim(strval($value))) == 0)
-				{
-					continue;
-				}
-
-				$query['conditions'][$field] = $value;
-				break;
-			case 'checkbox':
-				$query['conditions'][$field] = $value;
 				break;
 		}
 	}

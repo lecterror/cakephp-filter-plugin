@@ -195,10 +195,6 @@ class FilterComponent extends Component
 
 				switch ($settings['type'])
 				{
-					case 'text':
-						$options['type'] = 'text';
-						break;
-
 					case 'select':
 						$options['type'] = 'select';
 
@@ -280,6 +276,7 @@ class FilterComponent extends Component
 						break;
 
 					default:
+						$options['type'] = $settings['type'];
 						continue;
 				}
 
