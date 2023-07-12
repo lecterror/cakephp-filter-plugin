@@ -97,3 +97,8 @@ jobs:
       - name: Unit Tests
         run: ./cakephp/lib/Cake/Console/cake test Filter All --stderr -app ./cakephp/app
 
+      - name: PHPStan
+        run: |
+          composer require --dev phpstan/phpstan
+          vendors/bin/phpstan analyse ./cakephp/plugins/Filter
+
