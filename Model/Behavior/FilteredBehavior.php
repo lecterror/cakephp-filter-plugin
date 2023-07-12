@@ -411,7 +411,7 @@ class FilteredBehavior extends ModelBehavior
 		$db = ConnectionManager::getDataSource($connection);
 		$string = $db->value($string, 'string');
 		$start = 1;
-		if ($string{0} === 'N') {
+		if ($string[0] === 'N') {
 			$start = 2;
 		}
 		return substr(substr($string, $start), 0, -1);
