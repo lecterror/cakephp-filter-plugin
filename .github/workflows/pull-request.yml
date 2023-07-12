@@ -100,3 +100,16 @@ jobs:
       - name: Unit Tests
         run: ./cakephp/lib/Cake/Console/cake test Filter All --stderr -app ./cakephp/app
 
+  PHP-Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Install PHPLint
+        run: composer require --dev overtrue/phplint
+      - name: Run PHPLint
+        run: vendor/bin/phplint
