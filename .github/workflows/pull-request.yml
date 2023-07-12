@@ -25,6 +25,7 @@ jobs:
           repository: cakephp/cakephp
           path: ./cakephp
           ref: 2.10.14
+      - name: Install PHPUnit
         run: |
           cd ./cakephp
           chmod -R 777 app/tmp
