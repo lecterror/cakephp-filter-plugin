@@ -18,10 +18,17 @@ class FilteredBehavior extends ModelBehavior
 	/**
 	 * Keeps current values after filter form post.
 	 *
-	 * @var array
+	 * @var mixed[]
 	 */
 	protected $_filterValues = array();
 
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @param \Model $model Model using this behavior
+	 * @param mixed[] $config Configuration settings for $model
+	 * @return void
+	 */
 	public function setup(Model $Model, $settings = array())
 	{
 		foreach ($settings as $key => $value)
@@ -48,6 +55,13 @@ class FilteredBehavior extends ModelBehavior
 		$this->_filterValues[$Model->alias] = array();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @param \Model $model Model using this behavior
+	 * @param mixed[] $query Data used to execute this query, i.e. conditions, order, etc.
+	 * @return bool|mixed[]
+	 */
 	public function beforeFind(Model $Model, $query)
 	{
 		if (isset($query['nofilter']) && $query['nofilter'] === true)
@@ -95,6 +109,15 @@ class FilteredBehavior extends ModelBehavior
 		return $query;
 	}
 
+	/**
+	 * @param \Model $Model
+	 * @param mixed[] $query
+	 * @param mixed[] $settings
+	 * @param mixed[] $values
+	 * @param string $field
+	 * @param mixed[] $field_options
+	 * @return void
+	 */
 	protected function addFieldToFilter(&$Model, &$query, $settings, $values, $field, $field_options)
 	{
 		$configurationModelName = $Model->alias;
@@ -202,7 +225,8 @@ class FilteredBehavior extends ModelBehavior
 	 *
 	 * @param Model $Model
 	 * @param Model $relatedModel
-	 * @return array Cake join array
+	 * @param string $linkModelName
+	 * @return mixed[] Cake join array
 	 */
 	protected function buildFilterJoin(Model &$Model, Model &$relatedModel, $linkModelName)
 	{
@@ -319,10 +343,11 @@ class FilteredBehavior extends ModelBehavior
 	/**
 	 * Build query conditions and add them to $query.
 	 *
-	 * @param array $query Cake query array.
+	 * @param mixed[] $query Cake query array.
 	 * @param string $field Filter field.
-	 * @param array $options Configuration options for this field.
+	 * @param mixed[] $options Configuration options for this field.
 	 * @param mixed $value Field value.
+	 * @return void
 	 */
 	protected function buildFilterConditions(array &$query, $field, $options, $value)
 	{
@@ -399,7 +424,7 @@ class FilteredBehavior extends ModelBehavior
 	/**
 	 * Makes a string SQL-safe.
 	 *
-	 * @param string $string String to sanitize.
+	 * @param bool|string|null $string String to sanitize.
 	 * @param string $connection Database connection being used.
 	 * @return string SQL safe string.
 	 */
@@ -408,6 +433,7 @@ class FilteredBehavior extends ModelBehavior
 		if (is_numeric($string) || $string === null || is_bool($string)) {
 			return $string;
 		}
+		/** @var \DboSource $db */
 		$db = ConnectionManager::getDataSource($connection);
 		$string = $db->value($string, 'string');
 		$start = 1;
@@ -420,9 +446,9 @@ class FilteredBehavior extends ModelBehavior
 	/**
 	 * Makes an array SQL-safe.
 	 *
-	 * @param string|array $data Data to sanitize.
+	 * @param string|mixed[] $data Data to sanitize.
 	 * @param string $options DB connection being used.
-	 * @return mixed Sanitized data.
+	 * @return mixed[] Sanitized data.
 	 */
 	private function __clean($data, $connection = 'default')
 	{
@@ -442,7 +468,8 @@ class FilteredBehavior extends ModelBehavior
 	 * Sets filter values.
 	 *
 	 * @param Model $Model  Current model.
-	 * @param array $values Filter values.
+	 * @param mixed[] $values Filter values.
+	 * @return void
 	 */
 	public function setFilterValues(&$Model, $values = array())
 	{
