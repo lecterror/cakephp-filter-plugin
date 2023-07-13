@@ -14,6 +14,7 @@ runs:
 
   - name: Make tmp folder writable
     run: chmod -R 777 ./cakephp/app/tmp
+    shell: bash
 
   - name: Fix composer autoload
     run: |
@@ -24,6 +25,7 @@ runs:
       echo "?>" >> /tmp/core.php
       cat ./cakephp/app/Config/core.php >> /tmp/core.php
       cp /tmp/core.php ./cakephp/app/Config/core.php
+    shell: bash
 
   - name: Copy plugin files to plugins folder
     run: |
@@ -32,3 +34,4 @@ runs:
       cp -R ./Model ./cakephp/plugins/Filter/Model
       cp -R ./Test ./cakephp/plugins/Filter/Test
       cp -R ./View ./cakephp/plugins/Filter/View
+    shell: bash

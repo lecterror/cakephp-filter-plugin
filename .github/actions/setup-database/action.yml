@@ -7,6 +7,7 @@ runs:
 
   - name: Create test database
     run: mysql -u root -e "CREATE DATABASE cakephp_test"
+    shell: bash
 
   - name: Generate database configuration file
     run: echo "<?php
@@ -51,3 +52,4 @@ runs:
                }
              }
           }" > ./cakephp/app/Config/database.php
+    shell: bash
