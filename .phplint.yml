@@ -1,0 +1,7 @@
+path: ./
+extensions:
+  - php
+  - ctp
+exclude:
+  - vendor
+warning: true

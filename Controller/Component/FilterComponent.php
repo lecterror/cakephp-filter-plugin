@@ -277,7 +277,7 @@ class FilterComponent extends Component
 
 					default:
 						$options['type'] = $settings['type'];
-						continue;
+						break;
 				}
 
 				// if no value has been set, show the default one
