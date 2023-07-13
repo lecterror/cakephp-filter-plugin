@@ -1,0 +1,53 @@
+name: 'Setup Database'
+description: 'Create test database and generate database configuration file'
+
+runs:
+  using: "composite"
+  steps:
+
+  - name: Create test database
+    run: mysql -u root -e "CREATE DATABASE cakephp_test"
+
+  - name: Generate database configuration file
+    run: echo "<?php
+          class DATABASE_CONFIG {
+             private \$identities = array(
+               'mysql' => array(
+                  'datasource' => 'Database/Mysql',
+                  'host' => '127.0.0.1',
+                  'login' => 'root'
+               )
+             );
+             public \$default = array(
+               'persistent' => false,
+               'host' => '',
+               'login' => '',
+               'password' => '',
+               'database' => 'cakephp_test',
+               'prefix' => ''
+             );
+             public \$test = array(
+               'persistent' => false,
+               'host' => '',
+               'login' => '',
+               'password' => '',
+               'database' => 'cakephp_test',
+               'prefix' => ''
+             );
+             public function __construct() {
+               \$db = 'mysql';
+               if (!empty(\$_SERVER['DB'])) {
+                 \$db = \$_SERVER['DB'];
+               }
+               foreach (array('default', 'test') as \$source) {
+                 \$config = array_merge(\$this->{\$source}, \$this->identities[\$db]);
+                 if (is_array(\$config['database'])) {
+                   \$config['database'] = \$config['database'][\$source];
+                 }
+                 if (!empty(\$config['schema']) && is_array(\$config['schema'])) {
+                   \$config['schema'] = \$config['schema'][\$source];
+                 }
+                 \$this->{\$source} = \$config;
+               }
+             }
+          }" > ./cakephp/app/Config/database.php

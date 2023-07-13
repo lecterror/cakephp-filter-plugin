@@ -1,0 +1,34 @@
+name: 'Setup CakePHP'
+description: 'Clone CakePHP and setup it'
+
+runs:
+  using: "composite"
+  steps:
+
+  - name: Clone CakePHP
+    uses: actions/checkout@v3
+    with: 
+      repository: cakephp/cakephp
+      path: ./cakephp
+      ref: 2.10.14
+
+  - name: Make tmp folder writable
+    run: chmod -R 777 ./cakephp/app/tmp
+
+  - name: Fix composer autoload
+    run: |
+      echo "<?php " > /tmp/core.php
+      echo "require ROOT . '/vendors/autoload.php'; " >> /tmp/core.php
+      echo "spl_autoload_unregister(array('App', 'load')); " >> /tmp/core.php
+      echo "spl_autoload_register(array('App', 'load'), true, true); " >> /tmp/core.php
+      echo "?>" >> /tmp/core.php
+      cat ./cakephp/app/Config/core.php >> /tmp/core.php
+      cp /tmp/core.php ./cakephp/app/Config/core.php
+
+  - name: Copy plugin files to plugins folder
+    run: |
+      mkdir -p ./cakephp/plugins/Filter
+      cp -R ./Controller ./cakephp/plugins/Filter/Controller
+      cp -R ./Model ./cakephp/plugins/Filter/Model
+      cp -R ./Test ./cakephp/plugins/Filter/Test
+      cp -R ./View ./cakephp/plugins/Filter/View
