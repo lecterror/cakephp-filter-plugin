@@ -25,8 +25,8 @@ class FilteredBehavior extends ModelBehavior
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @param \Model $model Model using this behavior
-	 * @param mixed[] $config Configuration settings for $model
+	 * @param \Model $Model Model using this behavior
+	 * @param mixed[] $settings Configuration settings for $model
 	 * @return void
 	 */
 	public function setup(Model $Model, $settings = array())
@@ -58,7 +58,7 @@ class FilteredBehavior extends ModelBehavior
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @param \Model $model Model using this behavior
+	 * @param \Model $Model Model using this behavior
 	 * @param mixed[] $query Data used to execute this query, i.e. conditions, order, etc.
 	 * @return bool|mixed[]
 	 */
@@ -447,8 +447,8 @@ class FilteredBehavior extends ModelBehavior
 	 * Makes an array SQL-safe.
 	 *
 	 * @param string|mixed[] $data Data to sanitize.
-	 * @param string $options DB connection being used.
-	 * @return mixed[] Sanitized data.
+	 * @param string $connection DB connection being used.
+	 * @return string|mixed[] Sanitized data.
 	 */
 	private function __clean($data, $connection = 'default')
 	{
@@ -481,7 +481,7 @@ class FilteredBehavior extends ModelBehavior
 	 * Gets filter values.
 	 *
 	 * @param Model $Model Current model.
-	 * @return array
+	 * @return mixed[]
 	 */
 	public function getFilterValues($Model)
 	{
