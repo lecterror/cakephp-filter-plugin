@@ -99,7 +99,7 @@ class FilterComponentTest extends CakeTestCase
 				)
 			);
 
-		$this->setExpectedException('PHPUnit_Framework_Error_Notice');
+		$this->expectException('PHPUnit_Framework_Error_Notice');
 		$this->Controller->filters = $testSettings;
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
 
@@ -208,10 +208,10 @@ class FilterComponentTest extends CakeTestCase
 
 		$filterValues = array();
 		$this->Controller->Session->write($sessionKey, $filterValues);
-		$this->setExpectedException('PHPUnit_Framework_Error_Notice');
+		$this->expectException('PHPUnit_Framework_Error_Notice');
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
 
-		$this->setExpectedException('PHPUnit_Framework_Error_Notice');
+		$this->expectException('PHPUnit_Framework_Error_Notice');
 		$this->Controller->Components->trigger('startup', array($this->Controller));
 		$actualFilterValues = $this->Controller->Document->getFilterValues();
 		$this->assertEquals
@@ -314,13 +314,13 @@ class FilterComponentTest extends CakeTestCase
 			);
 		$this->Controller->filters = $testSettings;
 
-		$this->setExpectedException('PHPUnit_Framework_Error_Notice');
+		$this->expectException('PHPUnit_Framework_Error_Notice');
 		$this->Controller->Components->trigger('initialize', array($this->Controller));
 
 		//$this->expectError();
 		$this->Controller->Components->trigger('startup', array($this->Controller));
 
-		$this->setExpectedException('PHPUnit_Framework_Error_Notice');
+		$this->expectException('PHPUnit_Framework_Error_Notice');
 		$this->Controller->Components->trigger('beforeRender', array($this->Controller));
 	}
 
