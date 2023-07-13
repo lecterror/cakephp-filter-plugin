@@ -92,8 +92,9 @@ class FilteredBehaviorTest extends CakeTestCase
 				'DocumentCategory.id'	=> array('type' => 'select', 'filterField' => 'document_category_id', 'condition' => 'like', 'required' => false, 'selectOptions' => array()),
 				'Document.is_private'	=> array('type' => 'checkbox', 'label' => 'Private?', 'condition' => 'like', 'required' => false, 'selectOptions' => array())
 			);
-		$this->assertInstanceOf('FilteredBehavior', $this->Document->Behaviors->Filtered);
-		$this->assertEquals($expected, $this->Document->Behaviors->Filtered->settings[$this->Document->alias]);
+		$Filtered = $this->Document->Behaviors->Filtered;
+		$this->assertInstanceOf('FilteredBehavior', $Filtered);
+		$this->assertEquals($expected, $Filtered->settings[$this->Document->alias]);
 	}
 
 	/**
@@ -110,8 +111,9 @@ class FilteredBehaviorTest extends CakeTestCase
 			(
 				'Document.title'		=> array('type' => 'text', 'condition' => 'like', 'required' => false, 'selectOptions' => array()),
 			);
-		$this->assertInstanceOf('FilteredBehavior', $this->Document->Behaviors->Filtered);
-		$this->assertEquals($expected, $this->Document->Behaviors->Filtered->settings[$this->Document->alias]);
+		$Filtered = $this->Document->Behaviors->Filtered;
+		$this->assertInstanceOf('FilteredBehavior', $Filtered);
+		$this->assertEquals($expected, $Filtered->settings[$this->Document->alias]);
 	}
 
 	/**
