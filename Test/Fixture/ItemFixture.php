@@ -15,6 +15,9 @@ class ItemFixture extends CakeTestFixture
 {
 	public $name = 'Item';
 
+	/**
+	 * @var (bool|int|string)[][]
+	 */
 	public $fields = array
 		(
 			'id'					=> array('type' => 'integer', 'key' => 'primary'),
@@ -22,6 +25,9 @@ class ItemFixture extends CakeTestFixture
 			'code'					=> array('type' => 'string', 'length' => '20', 'null' => false)
 		);
 
+	/**
+	 * @var (int|string)[][]
+	 */
 	public $records = array
 		(
 			array('id' => 1, 'document_id' => 1, 'code' => 'The item #01'),

@@ -23,6 +23,9 @@ App::uses('Metadata', 'Filter.Test/Case/MockObjects');
 
 class FilterComponentTest extends CakeTestCase
 {
+	/**
+	 * @var string[]
+	 */
 	public $fixtures = array
 		(
 			'plugin.filter.document_category',
@@ -31,6 +34,9 @@ class FilterComponentTest extends CakeTestCase
 			'plugin.filter.metadata',
 		);
 
+	/**
+	 * @var \Controller
+	 */
 	public $Controller = null;
 
 	public function startTest($method)
@@ -71,6 +77,8 @@ class FilterComponentTest extends CakeTestCase
 
 	/**
 	 * Test bailing out when no filters are present.
+	 *
+	 * @return void
 	 */
 	public function testNoFilters()
 	{
@@ -85,6 +93,8 @@ class FilterComponentTest extends CakeTestCase
 	/**
 	 * Test bailing out when a filter model can't be found
 	 * or when the current action has no filters.
+	 *
+	 * @return void
 	 */
 	public function testNoModelPresentOrNoActionFilters()
 	{
@@ -137,6 +147,8 @@ class FilterComponentTest extends CakeTestCase
 
 	/**
 	 * Test basic filter settings.
+	 *
+	 * @return void
 	 */
 	public function testBasicFilters()
 	{
@@ -163,6 +175,8 @@ class FilterComponentTest extends CakeTestCase
 
 	/**
 	 * Test running a component with no filter data.
+	 *
+	 * @return void
 	 */
 	public function testEmptyStartup()
 	{
@@ -185,6 +199,8 @@ class FilterComponentTest extends CakeTestCase
 
 	/**
 	 * Test loading filter data from session (both full and empty).
+	 *
+	 * @return void
 	 */
 	public function testSessionStartupData()
 	{
@@ -236,6 +252,8 @@ class FilterComponentTest extends CakeTestCase
 
 	/**
 	 * Test loading filter data from a post request.
+	 *
+	 * @return void
 	 */
 	public function testPostStartupData()
 	{
@@ -274,6 +292,8 @@ class FilterComponentTest extends CakeTestCase
 
 	/**
 	 * Test exiting beforeRender when in an action with no settings.
+	 *
+	 * @return void
 	 */
 	public function testBeforeRenderAbort()
 	{
@@ -299,6 +319,8 @@ class FilterComponentTest extends CakeTestCase
 	/**
 	 * Test triggering an error when the plugin runs into a setting
 	 * for filtering a model which cannot be found.
+	 *
+	 * @return void
 	 */
 	public function testNoModelFound()
 	{
@@ -327,6 +349,8 @@ class FilterComponentTest extends CakeTestCase
 	/**
 	 * Test the view variable generation for very basic filtering.
 	 * Also tests model name detection and custom label.
+	 *
+	 * @return void
 	 */
 	public function testBasicViewInfo()
 	{
@@ -376,6 +400,8 @@ class FilterComponentTest extends CakeTestCase
 	/**
 	 * Test passing additional inputOptions to the form
 	 * helper, used to customize search form.
+	 *
+	 * @return void
 	 */
 	public function testAdditionalInputOptions()
 	{
@@ -439,6 +465,8 @@ class FilterComponentTest extends CakeTestCase
 	/**
 	 * Test data fetching for select input when custom selector
 	 * and custom options are provided.
+	 *
+	 * @return void
 	 */
 	public function testCustomSelector()
 	{
@@ -488,6 +516,8 @@ class FilterComponentTest extends CakeTestCase
 
 	/**
 	 * Test checkbox input filtering.
+	 *
+	 * @return void
 	 */
 	public function testCheckboxOptions()
 	{
@@ -531,6 +561,8 @@ class FilterComponentTest extends CakeTestCase
 
 	/**
 	 * Test basic filter settings.
+	 *
+	 * @return void
 	 */
 	public function testSelectMultiple()
 	{
@@ -561,6 +593,8 @@ class FilterComponentTest extends CakeTestCase
 
 	/**
 	 * Test select input for the model filtered.
+	 *
+	 * @return void
 	 */
 	public function testSelectInputFromSameModel()
 	{
@@ -611,6 +645,8 @@ class FilterComponentTest extends CakeTestCase
 	/**
 	 * Test disabling persistence for single action
 	 * and for the entire controller.
+	 *
+	 * @return void
 	 */
 	public function testPersistence()
 	{
@@ -648,6 +684,8 @@ class FilterComponentTest extends CakeTestCase
 	/**
 	 * Test whether filtering by belongsTo model text field
 	 * works correctly.
+	 *
+	 * @return void
 	 */
 	public function testBelongsToFilteringByText()
 	{
