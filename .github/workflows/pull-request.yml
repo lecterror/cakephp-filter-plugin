@@ -61,7 +61,7 @@ jobs:
       - name: Setup CakePHP
         uses: ./.github/actions/setup-cakephp
       - name: Install PHPUnit
-        run: composer require 'phpunit/phpunit=5.7'
+        run: composer require 'phpunit/phpunit=7.0'
       - name: Install PHPStan
         run: |
           composer require --dev phpstan/phpstan
