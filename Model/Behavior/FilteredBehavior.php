@@ -118,7 +118,7 @@ class FilteredBehavior extends ModelBehavior
 	 * @param mixed[] $field_options
 	 * @return void
 	 */
-	protected function addFieldToFilter(&$Model, &$query, $settings, $values, $field, $field_options)
+	protected function addFieldToFilter($Model, &$query, $settings, $values, $field, $field_options)
 	{
 		$configurationModelName = $Model->alias;
 		$configurationFieldName = $field;
@@ -228,7 +228,7 @@ class FilteredBehavior extends ModelBehavior
 	 * @param string $linkModelName
 	 * @return mixed[] Cake join array
 	 */
-	protected function buildFilterJoin(Model &$Model, Model &$relatedModel, $linkModelName)
+	protected function buildFilterJoin(Model $Model, Model $relatedModel, $linkModelName)
 	{
 		$conditions = array();
 		$relationTypes = array('hasMany', 'hasOne', 'belongsTo', 'hasAndBelongsToMany');
@@ -471,7 +471,7 @@ class FilteredBehavior extends ModelBehavior
 	 * @param mixed[] $values Filter values.
 	 * @return void
 	 */
-	public function setFilterValues(&$Model, $values = array())
+	public function setFilterValues($Model, $values = array())
 	{
 		$values = $this->__clean($values, $Model->useDbConfig);
 		$this->_filterValues[$Model->alias] = array_merge($this->_filterValues[$Model->alias], (array)$values);
