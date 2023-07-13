@@ -6,3 +6,6 @@ parameters:
       - phpstan-bootstrap.php
     scanDirectories:
       - ./
+    ignoreErrors:
+      # False positive as __() function can accept more than 2 parameters.
+      - '/Function __ invoked with [0-9_]+ parameters, 1-2 required./'
