@@ -34,7 +34,7 @@ class FilteredBehaviorTest extends CakeTestCase
 		);
 
 	/**
-	 * @var \Document
+	 * @var \Document|\Document2|\Document3
 	 */
 	public $Document = null;
 
@@ -727,6 +727,7 @@ class FilteredBehaviorTest extends CakeTestCase
 	{
 		$Document = ClassRegistry::init('Document2');
 		$this->assertInstanceOf('Document2', $Document);
+		$this->Document = $Document;
 		$testOptions = array
 			(
 				'Document.title'		=> array('type' => 'text', 'condition' => 'like'),
@@ -740,7 +741,7 @@ class FilteredBehaviorTest extends CakeTestCase
 			(
 				'DocumentCategory'	=> array('id' => 2)
 			);
-		$Document->setFilterValues($filterValues);
+		$this->Document->setFilterValues($filterValues);
 
 		$expected = array
 			(
@@ -753,7 +754,7 @@ class FilteredBehaviorTest extends CakeTestCase
 				array('Document' => array('id' => 7, 'title' => 'Duplicate title', 'document_category_id' => 5, 'owner_id' => 3, 'is_private' => 0, 'created' => '2009-01-13 05:15:03', 'updated' => '2010-12-05 03:24:15')),
 			);
 
-		$result = $Document->find('all', array('recursive' => -1));
+		$result = $this->Document->find('all', array('recursive' => -1));
 		$this->assertEquals($expected, $result);
 	}
 
@@ -767,7 +768,8 @@ class FilteredBehaviorTest extends CakeTestCase
 	{
 		$Document = ClassRegistry::init('Document3');
 		$this->assertInstanceOf('Document3', $Document);
-		$Document->itemToUnset = 'FilterDocumentCategory.id';
+		$this->Document = $Document;
+		$this->Document->itemToUnset = 'FilterDocumentCategory.id';
 
 		$testOptions = array
 			(
@@ -782,7 +784,7 @@ class FilteredBehaviorTest extends CakeTestCase
 			(
 				'DocumentCategory'	=> array('id' => 2)
 			);
-		$Document->setFilterValues($filterValues);
+		$this->Document->setFilterValues($filterValues);
 
 		$expected = array
 			(
@@ -795,7 +797,7 @@ class FilteredBehaviorTest extends CakeTestCase
 				array('Document' => array('id' => 7, 'title' => 'Duplicate title', 'document_category_id' => 5, 'owner_id' => 3, 'is_private' => 0, 'created' => '2009-01-13 05:15:03', 'updated' => '2010-12-05 03:24:15')),
 			);
 
-		$result = $Document->find('all', array('recursive' => -1));
+		$result = $this->Document->find('all', array('recursive' => -1));
 		$this->assertEquals($expected, $result);
 	}
 }
