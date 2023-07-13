@@ -4,7 +4,8 @@
  * @property \DocumentCategory $DocumentCategory
  * @property \Item $Item
  * @property \Metadata $Metadata
- * @method setFilterValues($Model, $values = array())
+ * @method getFilterValues()
+ * @method setFilterValues($values = array())
  */
 class Document extends CakeTestModel
 {

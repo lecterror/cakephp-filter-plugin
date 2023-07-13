@@ -3,7 +3,8 @@
 /**
  * @property \DocumentCategory $DocumentCategory
  * @property \Item $Item
- * @method setFilterValues($Model, $values = array())
+ * @method getFilterValues()
+ * @method setFilterValues($values = array())
  */
 class Document3 extends CakeTestModel
 {

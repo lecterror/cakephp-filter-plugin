@@ -2,7 +2,8 @@
 
 /**
  * @property \Document $Document
- * @method setFilterValues($Model, $values = array())
+ * @method getFilterValues()
+ * @method setFilterValues($values = array())
  */
 class DocumentCategory extends CakeTestModel
 {

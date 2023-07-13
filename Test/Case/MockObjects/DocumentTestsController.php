@@ -3,6 +3,7 @@
 App::uses('Controller', 'Controller');
 
 /**
+ * @property \Document $Document
  * @property \FilterComponent $Filter
  */
 class DocumentTestsController extends Controller
