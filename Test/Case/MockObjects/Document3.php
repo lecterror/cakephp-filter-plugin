@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @method setFilterValues($Model, $values)
+ */
 class Document3 extends CakeTestModel
 {
 	public $name = 'Document';
