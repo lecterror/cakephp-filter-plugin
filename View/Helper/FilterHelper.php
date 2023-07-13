@@ -14,16 +14,9 @@ App::uses('AppHelper', 'View/Helper');
 
 class FilterHelper extends AppHelper
 {
-	protected $_view = null;
-
-	public function __construct(View $view, $settings = array())
-	{
-		$this->_view = $view;
-	}
-
 	public function filterForm($modelName, $options)
 	{
-		$view =& $this->_view;
+		$view =& $this->_View;
 
 		$output = $view->element
 			(
@@ -56,7 +49,7 @@ class FilterHelper extends AppHelper
 
 	public function beginForm($modelName, $options)
 	{
-		$view =& $this->_view;
+		$view =& $this->_View;
 		$output = $view->element
 			(
 				'filter_form_begin',
@@ -74,7 +67,7 @@ class FilterHelper extends AppHelper
 
 	public function inputFields($fields = array())
 	{
-		$view =& $this->_view;
+		$view =& $this->_View;
 		$output = $view->element
 			(
 				'filter_form_fields',
@@ -91,7 +84,7 @@ class FilterHelper extends AppHelper
 
 	public function endForm()
 	{
-		$view = $this->_view;
+		$view = $this->_View;
 		$output = $view->element
 			(
 				'filter_form_end',
