@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @method setFilterValues($Model, $values)
+ * @method setFilterValues($Model, $values = array())
  */
 class Document2 extends CakeTestModel
 {
