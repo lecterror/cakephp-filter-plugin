@@ -448,7 +448,7 @@ class FilteredBehavior extends ModelBehavior
 	 *
 	 * @param string|mixed[] $data Data to sanitize.
 	 * @param string $connection DB connection being used.
-	 * @return string|mixed[] Sanitized data.
+	 * @return (bool|string|null)|mixed[] Sanitized data.
 	 */
 	private function __clean($data, $connection = 'default')
 	{
