@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * @property \DocumentCategory $DocumentCategory
+ * @property \Item $Item
  * @method setFilterValues($Model, $values = array())
  */
 class Document3 extends CakeTestModel

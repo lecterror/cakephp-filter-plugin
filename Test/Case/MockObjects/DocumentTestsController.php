@@ -7,6 +7,11 @@ class DocumentTestsController extends Controller
 	public $name = 'DocumentTests';
 
 	/**
+	 * @var mixed[]
+	 */
+	public $filters;
+
+	/**
 	 * @return void
 	 */
 	public function index()

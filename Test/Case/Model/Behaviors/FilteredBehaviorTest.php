@@ -34,7 +34,7 @@ class FilteredBehaviorTest extends CakeTestCase
 		);
 
 	/**
-	 * @var \Model
+	 * @var \Document
 	 */
 	public $Document = null;
 

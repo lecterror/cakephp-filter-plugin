@@ -35,7 +35,7 @@ class FilterComponentTest extends CakeTestCase
 		);
 
 	/**
-	 * @var \Controller
+	 * @var \DocumentTestsController
 	 */
 	public $Controller = null;
 

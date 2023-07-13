@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * @property \DocumentCategory $DocumentCategory
+ * @property \Item $Item
  * @method setFilterValues($Model, $values = array())
  */
 class Document2 extends CakeTestModel
@@ -26,7 +28,7 @@ class Document2 extends CakeTestModel
 	/**
 	 * @param mixed[] $query
 	 * @param mixed[] $options
-	 * @return mixed[]
+	 * @return mixed[]|bool
 	 */
 	public function beforeDataFilter($query, $options)
 	{

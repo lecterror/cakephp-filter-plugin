@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @property \DocumentCategory $DocumentCategory
+ * @property \Item $Item
+ * @property \Metadata $Metadata
+ * @method setFilterValues($Model, $values = array())
+ */
 class Document extends CakeTestModel
 {
 	public $name = 'Document';
