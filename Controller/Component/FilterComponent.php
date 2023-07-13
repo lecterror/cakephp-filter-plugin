@@ -20,13 +20,35 @@ App::import('Behavior', 'Filter.Filtered');
  */
 class FilterComponent extends Component
 {
+	/**
+	 * @var string[]
+	 */
 	public $components = array('Session');
 
+	/**
+	 * @var mixed[]
+	 */
 	public $settings = array();
+
+	/**
+	 * @var mixed[]
+	 */
 	public $nopersist = array();
+
+	/**
+	 * @var mixed[]
+	 */
 	public $formData = array();
+
+	/**
+	 * @var mixed[]
+	 */
 	protected $_request_settings = array();
 
+	/**
+	 * @param \ComponentCollection $collection
+	 * @param mixed[] $settings
+	 */
 	public function __construct(ComponentCollection $collection, $settings = array())
 	{
 		parent::__construct($collection, $settings);
@@ -321,6 +343,11 @@ class FilterComponent extends Component
 		$controller->set('viewFilterParams', $viewFilterParams);
 	}
 
+	/**
+	 * @param \Controller $controller
+	 * @param mixed[] $settings
+	 * @return void
+	 */
 	private function __updatePersistence($controller, $settings)
 	{
 		if ($this->Session->check('FilterPlugin.NoPersist'))
