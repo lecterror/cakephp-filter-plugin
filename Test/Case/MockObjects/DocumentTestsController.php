@@ -14,5 +14,6 @@ class DocumentTestsController extends Controller
 	// @TODO: mock partial?
 	public function redirect($url, $status = null, $exit = true)
 	{
+		return null;
 	}
 }
