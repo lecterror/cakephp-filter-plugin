@@ -301,9 +301,11 @@ class FilteredBehavior extends ModelBehavior
 			{
 				$customConditions = array($customConditions);
 			}
-
-			$filterConditions = preg_replace(sprintf('#(?<![A-Za-z])%s(?![A-Za-z])#', $relatedModel->alias), $relatedModelAlias, $customConditions);
-			$conditions = array_merge($conditions, $filterConditions);
+			if ($relatedModelAlias !== null) {
+				$aliasPattern = sprintf('#(?<![A-Za-z])%s(?![A-Za-z])#', $relatedModel->alias);
+				$filterConditions = preg_replace($aliasPattern, $relatedModelAlias, $customConditions);
+				$conditions = array_merge($conditions, $filterConditions);
+			}
 		}
 
 		$return = array
