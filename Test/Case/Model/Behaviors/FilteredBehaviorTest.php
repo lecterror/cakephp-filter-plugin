@@ -40,7 +40,9 @@ class FilteredBehaviorTest extends CakeTestCase
 
 	public function startTest($model)
 	{
-		$this->Document = ClassRegistry::init('Document');
+		$Document = ClassRegistry::init('Document');
+		$this->assertInstanceOf('Document', $Document);
+		$this->Document = $Document;
 	}
 
 	public function endTest($model)
@@ -723,8 +725,9 @@ class FilteredBehaviorTest extends CakeTestCase
 	 */
 	public function testBeforeDataFilterCallbackCancel()
 	{
-		$this->Document = ClassRegistry::init('Document2');
-		$this->assertInstanceOf('Document2', $this->Document);
+		$Document = ClassRegistry::init('Document2');
+		$this->assertInstanceOf('Document2', $Document);
+		$this->Document = $Document;
 		$testOptions = array
 			(
 				'Document.title'		=> array('type' => 'text', 'condition' => 'like'),
@@ -763,8 +766,9 @@ class FilteredBehaviorTest extends CakeTestCase
 	 */
 	public function testAfterDataFilterCallbackQueryChange()
 	{
-		$this->Document = ClassRegistry::init('Document3');
-		$this->assertInstanceOf('Document3', $this->Document);
+		$Document = ClassRegistry::init('Document3');
+		$this->assertInstanceOf('Document3', $Document);
+		$this->Document = $Document;
 		$this->Document->itemToUnset = 'FilterDocumentCategory.id';
 
 		$testOptions = array

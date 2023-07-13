@@ -8,7 +8,7 @@ class Item extends CakeTestModel
 	public $name = 'Item';
 
 	/**
-	 * @var (string|mixed[])[]
+	 * @var mixed[]
 	 */
 	public $belongsTo = array('Document');
 }

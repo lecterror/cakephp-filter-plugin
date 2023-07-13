@@ -10,13 +10,13 @@ class DocumentCategory extends CakeTestModel
 	public $name = 'DocumentCategory';
 
 	/**
-	 * @var (string|mixed[])[]
+	 * @var mixed[]
 	 */
 	public $hasMany = array('Document');
 
 	/**
 	 * @param mixed[] $options
-	 * @return string[]
+	 * @return mixed[]|int|null
 	 */
 	public function customSelector($options = array())
 	{

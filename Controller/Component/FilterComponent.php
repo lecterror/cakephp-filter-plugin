@@ -221,6 +221,7 @@ class FilterComponent extends Component
 						$options['type'] = 'select';
 
 						$selectOptions = array();
+						/** @var \Model|bool $workingModel */
 						$workingModel = ClassRegistry::init($fieldModel);
 						if (is_bool($workingModel)) {
 							throw new MissingModelException(array($workingModel));

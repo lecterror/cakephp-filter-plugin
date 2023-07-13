@@ -12,12 +12,12 @@ class Document3 extends CakeTestModel
 	public $alias = 'Document';
 
 	/**
-	 * @var (string|mixed[])[]
+	 * @var mixed[]
 	 */
 	public $belongsTo = array('DocumentCategory');
 
 	/**
-	 * @var (string|mixed[])[]
+	 * @var mixed[]
 	 */
 	public $hasMany = array('Item');
 

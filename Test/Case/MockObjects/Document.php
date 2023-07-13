@@ -12,17 +12,17 @@ class Document extends CakeTestModel
 	public $name = 'Document';
 
 	/**
-	 * @var (string|mixed[])[]
+	 * @var mixed[]
 	 */
 	public $belongsTo = array('DocumentCategory');
 
 	/**
-	 * @var (string|mixed[])[]
+	 * @var mixed[]
 	 */
 	public $hasMany = array('Item');
 
 	/**
-	 * @var (string|mixed[])[]
+	 * @var mixed[]
 	 */
 	public $hasOne = array('Metadata');
 }

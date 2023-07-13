@@ -426,7 +426,7 @@ class FilteredBehavior extends ModelBehavior
 	 *
 	 * @param bool|string|null $string String to sanitize.
 	 * @param string $connection Database connection being used.
-	 * @return string SQL safe string.
+	 * @return bool|string|null SQL safe string.
 	 */
 	private function __escape($string, $connection = 'default')
 	{
