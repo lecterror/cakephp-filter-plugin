@@ -64,5 +64,10 @@ jobs:
         run: |
           composer require --dev phpstan/phpstan
           composer require --dev phpstan/phpstan-phpunit
+          ls ./
+          ls ./cakephp
+          ls ./cakephp/lib
+          ls ./cakephp/lib/Cake
+          ls ./cakephp/lib/Cake/TestSuite
       - name: PHPStan
         run: vendor/bin/phpstan analyse --level=1 ./cakephp/plugins/Filter
