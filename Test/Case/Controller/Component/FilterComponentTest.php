@@ -72,7 +72,7 @@ class FilterComponentTest extends CakeTestCase
 	public function endTest($method)
 	{
 		$this->Controller->Session->destroy();
-		$this->Controller = null;
+		unset($this->Controller);
 	}
 
 	/**

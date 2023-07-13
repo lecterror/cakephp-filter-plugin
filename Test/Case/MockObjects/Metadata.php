@@ -5,7 +5,7 @@ class Metadata extends CakeTestModel
 	public $name = 'Metadata';
 
 	/**
-	 * @var string[]
+	 * @var (string|mixed[])[]
 	 */
 	public $hasOne = array('Document');
 }

@@ -2,6 +2,9 @@
 
 App::uses('Controller', 'Controller');
 
+/**
+ * @property \FilterComponent $Filter
+ */
 class DocumentTestsController extends Controller
 {
 	public $name = 'DocumentTests';

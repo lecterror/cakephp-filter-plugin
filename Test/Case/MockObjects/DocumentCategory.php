@@ -1,11 +1,15 @@
 <?php
 
+/**
+ * @property \Document $Document
+ * @method setFilterValues($Model, $values = array())
+ */
 class DocumentCategory extends CakeTestModel
 {
 	public $name = 'DocumentCategory';
 
 	/**
-	 * @var string[]
+	 * @var (string|mixed[])[]
 	 */
 	public $hasMany = array('Document');
 
