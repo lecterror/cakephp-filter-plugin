@@ -15,6 +15,9 @@ class MetadataFixture extends CakeTestFixture
 {
 	public $name = 'Metadata';
 
+	/**
+	 * @var (bool|int|string)[][]
+	 */
 	public $fields = array
 		(
 			'id'					=> array('type' => 'integer', 'key' => 'primary'),
@@ -24,6 +27,9 @@ class MetadataFixture extends CakeTestFixture
 			'permissions'			=> array('type' => 'string', 'length' => 10, 'null' => false),
 		);
 
+	/**
+	 * @var (int|string)[][]
+	 */
 	public $records = array
 		(
 			array('id' => 1, 'document_id' => 1, 'weight' => 5, 'size' => 256, 'permissions' => 'rw-r--r--'),

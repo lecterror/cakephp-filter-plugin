@@ -22,6 +22,9 @@ App::uses('Metadata', 'Filter.Test/Case/MockObjects');
 
 class FilteredBehaviorTest extends CakeTestCase
 {
+	/**
+	 * @var string[]
+	 */
 	public $fixtures = array
 		(
 			'plugin.filter.document_category',
@@ -30,22 +33,28 @@ class FilteredBehaviorTest extends CakeTestCase
 			'plugin.filter.metadata',
 		);
 
+	/**
+	 * @var \Document|\Document2|\Document3
+	 */
 	public $Document = null;
 
 	public function startTest($model)
 	{
-		$this->Document = ClassRegistry::init('Document');
+		$Document = ClassRegistry::init('Document');
+		$this->assertInstanceOf('Document', $Document);
+		$this->Document = $Document;
 	}
 
 	public function endTest($model)
 	{
-		$this->Document = null;
+		unset($this->Document);
 	}
 
 	/**
 	 * Detach and re-attach the behavior to reset the options.
 	 *
-	 * @param array $options Behavior options.
+	 * @param mixed[] $options Behavior options.
+	 * @return void
 	 */
 	protected function _reattachBehavior($options = array())
 	{
@@ -55,6 +64,8 @@ class FilteredBehaviorTest extends CakeTestCase
 
 	/**
 	 * Test attaching without options.
+	 *
+	 * @return void
 	 */
 	public function testBlankAttaching()
 	{
@@ -64,6 +75,8 @@ class FilteredBehaviorTest extends CakeTestCase
 
 	/**
 	 * Test attaching with options.
+	 *
+	 * @return void
 	 */
 	public function testInitSettings()
 	{
@@ -81,11 +94,15 @@ class FilteredBehaviorTest extends CakeTestCase
 				'DocumentCategory.id'	=> array('type' => 'select', 'filterField' => 'document_category_id', 'condition' => 'like', 'required' => false, 'selectOptions' => array()),
 				'Document.is_private'	=> array('type' => 'checkbox', 'label' => 'Private?', 'condition' => 'like', 'required' => false, 'selectOptions' => array())
 			);
-		$this->assertEquals($expected, $this->Document->Behaviors->Filtered->settings[$this->Document->alias]);
+		$Filtered = $this->Document->Behaviors->__get('Filtered');
+		$this->assertInstanceOf('FilteredBehavior', $Filtered);
+		$this->assertEquals($expected, $Filtered->settings[$this->Document->alias]);
 	}
 
 	/**
 	 * Test init settings when only a single field is given, with no extra options.
+	 *
+	 * @return void
 	 */
 	public function testInitSettingsSingle()
 	{
@@ -96,11 +113,15 @@ class FilteredBehaviorTest extends CakeTestCase
 			(
 				'Document.title'		=> array('type' => 'text', 'condition' => 'like', 'required' => false, 'selectOptions' => array()),
 			);
-		$this->assertEquals($expected, $this->Document->Behaviors->Filtered->settings[$this->Document->alias]);
+		$Filtered = $this->Document->Behaviors->__get('Filtered');
+		$this->assertInstanceOf('FilteredBehavior', $Filtered);
+		$this->assertEquals($expected, $Filtered->settings[$this->Document->alias]);
 	}
 
 	/**
 	 * Test setting the filter values for future queries.
+	 *
+	 * @return void
 	 */
 	public function testSetFilterValues()
 	{
@@ -126,6 +147,8 @@ class FilteredBehaviorTest extends CakeTestCase
 
 	/**
 	 * Test detecting an error in options - when a field is 'required' but no value is given for it.
+	 *
+	 * @return void
 	 */
 	public function testLoadingRequiredFieldValueMissing()
 	{
@@ -144,12 +167,14 @@ class FilteredBehaviorTest extends CakeTestCase
 			);
 		$this->Document->setFilterValues($filterValues);
 
-		$this->setExpectedException('PHPUnit_Framework_Error_Notice');
+		$this->expectException('PHPUnit_Framework_Error_Notice');
 		$this->Document->find('first');
 	}
 
 	/**
 	 * Test filtering with conditions from current model and belongsTo model.
+	 *
+	 * @return void
 	 */
 	public function testFilteringBelongsTo()
 	{
@@ -177,6 +202,9 @@ class FilteredBehaviorTest extends CakeTestCase
 		$this->assertEquals($expected, $result);
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testFilteringBelongsToTextField()
 	{
 		$testOptions = array
@@ -203,6 +231,8 @@ class FilteredBehaviorTest extends CakeTestCase
 	/**
 	 * Test filtering with conditions from current model and belongsTo model,
 	 * same as testFilteringBelongsTo() except for a change in filterField format.
+	 *
+	 * @return void
 	 */
 	public function testFilteringBelongsToFilterFieldTest()
 	{
@@ -232,6 +262,8 @@ class FilteredBehaviorTest extends CakeTestCase
 
 	/**
 	 * Test various conditions for the type 'text' in filtering (less than, equal, like, etc..)
+	 *
+	 * @return void
 	 */
 	public function testFilteringBelongsToDifferentConditions()
 	{
@@ -285,6 +317,8 @@ class FilteredBehaviorTest extends CakeTestCase
 	/**
 	 * Test filtering with conditions on current model, the belongsTo model
 	 * and hasMany model (behavior adds an INNER JOIN in query).
+	 *
+	 * @return void
 	 */
 	public function testFilteringBelongsToAndHasMany()
 	{
@@ -359,6 +393,8 @@ class FilteredBehaviorTest extends CakeTestCase
 	/**
 	 * Test filtering with join which has some custom
 	 * condition in the relation (both string and array).
+	 *
+	 * @return void
 	 */
 	public function testCustomJoinConditions()
 	{
@@ -401,6 +437,8 @@ class FilteredBehaviorTest extends CakeTestCase
 
 	/**
 	 * Test for any possible conflicts with Containable behavior.
+	 *
+	 * @return void
 	 */
 	public function testFilteringBelongsToAndHasManyWithContainable()
 	{
@@ -470,6 +508,8 @@ class FilteredBehaviorTest extends CakeTestCase
 
 	/**
 	 * Test filtering by text input with hasOne relation.
+	 *
+	 * @return void
 	 */
 	public function testHasOneAndHasManyWithTextSearch()
 	{
@@ -505,6 +545,8 @@ class FilteredBehaviorTest extends CakeTestCase
 
 	/**
 	 * Test filtering with Containable and hasOne Model.field.
+	 *
+	 * @return void
 	 */
 	public function testHasOneWithContainable()
 	{
@@ -558,6 +600,8 @@ class FilteredBehaviorTest extends CakeTestCase
 	/**
 	 * Test filtering when a join is already present in the query,
 	 * this should prevent duplicate joins and query errors.
+	 *
+	 * @return void
 	 */
 	public function testJoinAlreadyPresent()
 	{
@@ -609,6 +653,8 @@ class FilteredBehaviorTest extends CakeTestCase
 
 	/**
 	 * Test the 'nofilter' query param.
+	 *
+	 * @return void
 	 */
 	public function testNofilterFindParam()
 	{
@@ -642,6 +688,8 @@ class FilteredBehaviorTest extends CakeTestCase
 
 	/**
 	 * Test bailing out if no settings exist for the current model.
+	 *
+	 * @return void
 	 */
 	public function testExitWhenNoSettings()
 	{
@@ -672,11 +720,14 @@ class FilteredBehaviorTest extends CakeTestCase
 
 	/**
 	 * Test beforeDataFilter() callback, used to cancel filtering if necessary.
+	 *
+	 * @return void
 	 */
 	public function testBeforeDataFilterCallbackCancel()
 	{
-		$this->Document = ClassRegistry::init('Document2');
-
+		$Document = ClassRegistry::init('Document2');
+		$this->assertInstanceOf('Document2', $Document);
+		$this->Document = $Document;
 		$testOptions = array
 			(
 				'Document.title'		=> array('type' => 'text', 'condition' => 'like'),
@@ -710,10 +761,14 @@ class FilteredBehaviorTest extends CakeTestCase
 	/**
 	 * Test afterDataFilter() callback, used to modify the conditions after
 	 * filter conditions have been applied.
+	 *
+	 * @return void
 	 */
 	public function testAfterDataFilterCallbackQueryChange()
 	{
-		$this->Document = ClassRegistry::init('Document3');
+		$Document = ClassRegistry::init('Document3');
+		$this->assertInstanceOf('Document3', $Document);
+		$this->Document = $Document;
 		$this->Document->itemToUnset = 'FilterDocumentCategory.id';
 
 		$testOptions = array

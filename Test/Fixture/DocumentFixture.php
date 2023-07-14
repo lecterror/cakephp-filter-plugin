@@ -15,6 +15,9 @@ class DocumentFixture extends CakeTestFixture
 {
 	public $name = 'Document';
 
+	/**
+	 * @var (bool|int|string)[][]
+	 */
 	public $fields = array
 		(
 			'id'					=> array('type' => 'integer', 'key' => 'primary'),
@@ -26,6 +29,9 @@ class DocumentFixture extends CakeTestFixture
 			'updated'				=> array('type' => 'datetime', 'null' => true)
 		);
 
+	/**
+	 * @var (int|string)[][]
+	 */
 	public $records = array
 		(
 			array('id' => 1, 'title' => 'Testing Doc', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0, 'created' => '2010-06-28 10:39:23', 'updated' => '2010-06-29 11:22:48'),

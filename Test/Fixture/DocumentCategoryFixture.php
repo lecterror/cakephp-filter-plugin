@@ -15,6 +15,9 @@ class DocumentCategoryFixture extends CakeTestFixture
 {
 	public $name = 'DocumentCategory';
 
+	/**
+	 * @var (bool|int|string)[][]
+	 */
 	public $fields = array
 		(
 			'id'			=> array('type' => 'integer', 'key' => 'primary'),
@@ -22,6 +25,9 @@ class DocumentCategoryFixture extends CakeTestFixture
 			'description'	=> array('type' => 'string', 'length' => 255)
 		);
 
+	/**
+	 * @var (int|string)[][]
+	 */
 	public $records = array
 		(
 			array('id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'),
