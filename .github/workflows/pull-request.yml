@@ -3,7 +3,7 @@ run-name: Pull to ${{ github.base_ref }} by ${{ github.actor }}
 
 on:
   pull_request:
-    branches: [master, develop]
+    branches: [master, develop, 3.x]
 
 jobs:
   Unit-Tests:
