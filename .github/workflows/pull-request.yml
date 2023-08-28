@@ -75,5 +75,6 @@ jobs:
         run: | 
           composer remove --dev phpstan/phpstan phpunit/phpunit overtrue/phplint --no-update
           composer require cakephp/cakephp-codesniffer
+          vendor/bin/phpcs --config-set installed_paths /home/runner/work/cakephp-filter-plugin/cakephp-filter-plugin/vendor/cakephp/cakephp-codesniffer
       - name: Run PHPCS
         run: vendor/bin/phpcs --colors --parallel=16 -p --standard=CakePHP src/ tests/
