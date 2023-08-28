@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace Filter\Test\TestCase\MockObjects;
 
@@ -42,7 +41,6 @@ class DocumentTestsController extends Controller
     /**
      * must override this or the tests never complete.
      *
-     * @TODO: mock partial?
      * @param string|mixed[] $url
      * @param int|mixed[]|null|string $status
      * @param bool $exit
