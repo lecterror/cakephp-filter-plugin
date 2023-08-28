@@ -8,6 +8,7 @@
         "cakephp/cakephp": "^3.10"
     },
     "require-dev": {
+        "cakephp/cakephp-codesniffer": "^5.1",
         "overtrue/phplint": "^2.0|^3.4",
         "phpstan/phpstan": "^0.1|^1.10",
         "phpunit/phpunit": "^5.7.14|^6.0"
@@ -16,6 +17,11 @@
         "psr-4": {
             "Filter\\": "src/",
             "Filter\\Test\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     }
 }
