@@ -1,4 +1,9 @@
 <?php
+
+namespace Filter\Test\Fixture;
+
+use Cake\TestSuite\Fixture\TestFixture;
+
 /**
 	CakePHP Filter Plugin
 
@@ -11,7 +16,7 @@
 		GPL <http://www.gnu.org/licenses/gpl.html>
 */
 
-class DocumentCategoryFixture extends CakeTestFixture
+class DocumentCategoriesFixture extends TestFixture
 {
 	public $name = 'DocumentCategory';
 
@@ -20,9 +25,12 @@ class DocumentCategoryFixture extends CakeTestFixture
 	 */
 	public $fields = array
 		(
-			'id'			=> array('type' => 'integer', 'key' => 'primary'),
+			'id'			=> array('type' => 'integer'),
 			'title'			=> array('type' => 'string', 'length' => 100, 'null' => false),
-			'description'	=> array('type' => 'string', 'length' => 255)
+			'description'	=> array('type' => 'string', 'length' => 255),
+			'_constraints' => [
+				'primary' => ['type' => 'primary', 'columns' => ['id']],
+			],
 		);
 
 	/**

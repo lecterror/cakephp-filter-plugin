@@ -1,4 +1,9 @@
 <?php
+
+namespace Filter\Test\Fixture;
+
+use Cake\TestSuite\Fixture\TestFixture;
+
 /**
 	CakePHP Filter Plugin
 
@@ -11,7 +16,7 @@
 		GPL <http://www.gnu.org/licenses/gpl.html>
 */
 
-class MetadataFixture extends CakeTestFixture
+class MetadataFixture extends TestFixture
 {
 	public $name = 'Metadata';
 
@@ -20,11 +25,14 @@ class MetadataFixture extends CakeTestFixture
 	 */
 	public $fields = array
 		(
-			'id'					=> array('type' => 'integer', 'key' => 'primary'),
+			'id'					=> array('type' => 'integer'),
 			'document_id'			=> array('type' => 'integer', 'null' => false),
 			'weight'				=> array('type' => 'integer', 'null' => false),
 			'size'					=> array('type' => 'integer', 'null' => false),
 			'permissions'			=> array('type' => 'string', 'length' => 10, 'null' => false),
+			'_constraints' => [
+				'primary' => ['type' => 'primary', 'columns' => ['id']],
+			],
 		);
 
 	/**
