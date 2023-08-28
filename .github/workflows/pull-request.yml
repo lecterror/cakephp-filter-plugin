@@ -23,7 +23,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Install dependencies
-        run: composer install cakephp/cakephp
+        run: composer require 'cakephp/cakephp=3.10.5'
         shell: bash
       #- name: Setup CakePHP
       #  uses: ./.github/actions/setup-cakephp
