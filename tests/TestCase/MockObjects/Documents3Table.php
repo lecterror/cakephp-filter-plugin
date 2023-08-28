@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Filter\Test\TestCase\MockObjects;
 
@@ -38,8 +39,7 @@ class Documents3Table extends Table
      */
     public function afterDataFilter($query, $options)
     {
-        if (!is_string($this->itemToUnset))
-        {
+        if (!is_string($this->itemToUnset)) {
             return $query;
         }
         $query->clause('where')->iterateParts(function ($Comparison) {
@@ -48,8 +48,10 @@ class Documents3Table extends Table
             if ($field == $this->itemToUnset) {
                 return null;
             }
+
             return $Comparison;
         });
+
         return $query;
     }
 }
