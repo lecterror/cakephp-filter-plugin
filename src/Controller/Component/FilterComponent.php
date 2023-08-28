@@ -200,7 +200,7 @@ class FilterComponent extends Component
                     $className = $settings['className'];
                 }
                 if (strpos($field, '.') !== false) {
-                    [$fieldModel, $fieldName] = explode('.', $field);
+                    list($fieldModel, $fieldName) = explode('.', $field);
                 }
 
                 if (!empty($this->formData)) {
@@ -295,10 +295,10 @@ class FilterComponent extends Component
                         $options['type'] = 'checkbox';
 
                         if (isset($options['value'])) {
-                            $options['checked'] = !!$options['value'];
+                            $options['checked'] = (bool)$options['value'];
                             unset($options['value']);
                         } elseif (isset($settings['default'])) {
-                            $options['checked'] = !!$settings['default'];
+                            $options['checked'] = (bool)$settings['default'];
                         }
                         break;
 
@@ -347,7 +347,7 @@ class FilterComponent extends Component
     }
 
     /**
-     * @param array<mixed> $settings
+     * @param array<mixed> $settings Settings.
      * @return void
      */
     private function __updatePersistence($settings)
