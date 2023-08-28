@@ -23,7 +23,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Install dependencies
-        run: composer require 'cakephp/cakephp=3.10.5'
+        run: composer require 'cakephp/cakephp=3.10.5' --with-all-dependencies
         shell: bash
       #- name: Setup CakePHP
       #  uses: ./.github/actions/setup-cakephp
@@ -33,7 +33,7 @@ jobs:
         run: mysql -u root -e "CREATE DATABASE cakephp_test"
         shell: bash
       - name: Install PHPUnit
-        run: composer require 'phpunit/phpunit=5.7'
+        run: composer require 'phpunit/phpunit=5.7' --with-all-dependencies
       #  run: |
       #    cd ./cakephp
       #    composer require 'phpunit/phpunit=5.7'
