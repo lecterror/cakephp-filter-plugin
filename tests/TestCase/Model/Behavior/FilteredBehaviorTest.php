@@ -1,13 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace Filter\Test\TestCase\Model\Behavior;
 
+use Cake\ORM\Association;
+use Cake\TestSuite\TestCase;
 use Filter\Model\Behavior\FilteredBehavior;
+use Filter\Test\TestCase\MockObjects\Documents2Table;
 use Filter\Test\TestCase\MockObjects\Documents3Table;
 use Filter\Test\TestCase\MockObjects\DocumentsTable;
-use Cake\TestSuite\TestCase;
-use Filter\Test\TestCase\MockObjects\Documents2Table;
-use Cake\ORM\Association;
 
 /**
     CakePHP Filter Plugin
@@ -19,20 +20,20 @@ use Cake\ORM\Association;
         MPL <http://www.mozilla.org/MPL/MPL-1.1.html>
         LGPL <http://www.gnu.org/licenses/lgpl.html>
         GPL <http://www.gnu.org/licenses/gpl.html>
-*/
+ */
 
 class FilteredBehaviorTest extends TestCase
 {
     /**
      * @var string[]
      */
-    public $fixtures = array
-        (
+    public $fixtures =
+        [
             'plugin.Filter.DocumentCategories',
             'plugin.Filter.Documents',
             'plugin.Filter.Items',
             'plugin.Filter.Metadata',
-        );
+        ];
 
     /**
      * @var \Filter\Test\TestCase\MockObjects\DocumentsTable|\Filter\Test\TestCase\MockObjects\Documents2Table|\Filter\Test\TestCase\MockObjects\Documents3Table
@@ -59,7 +60,7 @@ class FilteredBehaviorTest extends TestCase
      * @param mixed[] $options Behavior options.
      * @return void
      */
-    protected function _reattachBehavior($options = array())
+    protected function _reattachBehavior($options = [])
     {
         if ($this->Document->hasBehavior('Filtered')) {
             $this->Document->removeBehavior('Filtered');
@@ -85,20 +86,20 @@ class FilteredBehaviorTest extends TestCase
      */
     public function testInitSettings()
     {
-        $testOptions = array
-            (
-                'Documents.title'        => array('type' => 'text', 'condition' => 'like'),
-                'DocumentCategories.id'    => array('type' => 'select', 'filterField' => 'document_category_id'),
-                'Documents.is_private'    => array('type' => 'checkbox', 'label' => 'Private?')
-            );
+        $testOptions =
+            [
+                'Documents.title' => ['type' => 'text', 'condition' => 'like'],
+                'DocumentCategories.id' => ['type' => 'select', 'filterField' => 'document_category_id'],
+                'Documents.is_private' => ['type' => 'checkbox', 'label' => 'Private?'],
+            ];
         $this->_reattachBehavior($testOptions);
 
-        $expected = array
-            (
-                'Documents.title'        => array('type' => 'text', 'condition' => 'like', 'required' => false, 'selectOptions' => array()),
-                'DocumentCategories.id'    => array('type' => 'select', 'filterField' => 'document_category_id', 'condition' => 'like', 'required' => false, 'selectOptions' => array()),
-                'Documents.is_private'    => array('type' => 'checkbox', 'label' => 'Private?', 'condition' => 'like', 'required' => false, 'selectOptions' => array())
-            );
+        $expected =
+            [
+                'Documents.title' => ['type' => 'text', 'condition' => 'like', 'required' => false, 'selectOptions' => []],
+                'DocumentCategories.id' => ['type' => 'select', 'filterField' => 'document_category_id', 'condition' => 'like', 'required' => false, 'selectOptions' => []],
+                'Documents.is_private' => ['type' => 'checkbox', 'label' => 'Private?', 'condition' => 'like', 'required' => false, 'selectOptions' => []],
+            ];
         $Filtered = $this->Document->getBehavior('Filtered');
         $this->assertInstanceOf(FilteredBehavior::class, $Filtered);
         $this->assertEquals($expected, $Filtered->settings[$this->Document->getAlias()]);
@@ -111,13 +112,13 @@ class FilteredBehaviorTest extends TestCase
      */
     public function testInitSettingsSingle()
     {
-        $testOptions = array('Documents.title');
+        $testOptions = ['Documents.title'];
         $this->_reattachBehavior($testOptions);
 
-        $expected = array
-            (
-                'Documents.title'        => array('type' => 'text', 'condition' => 'like', 'required' => false, 'selectOptions' => array()),
-            );
+        $expected =
+            [
+                'Documents.title' => ['type' => 'text', 'condition' => 'like', 'required' => false, 'selectOptions' => []],
+            ];
         $Filtered = $this->Document->getBehavior('Filtered');
         $this->assertInstanceOf(FilteredBehavior::class, $Filtered);
         $this->assertEquals($expected, $Filtered->settings[$this->Document->getAlias()]);
@@ -130,20 +131,20 @@ class FilteredBehaviorTest extends TestCase
      */
     public function testSetFilterValues()
     {
-        $testOptions = array
-            (
-                'Documents.title'        => array('type' => 'text', 'condition' => 'like', 'required' => true),
-                'DocumentCategories.id'    => array('type' => 'select', 'filterField' => 'document_category_id'),
-                'Documents.is_private'    => array('type' => 'checkbox', 'label' => 'Private?')
-            );
+        $testOptions =
+            [
+                'Documents.title' => ['type' => 'text', 'condition' => 'like', 'required' => true],
+                'DocumentCategories.id' => ['type' => 'select', 'filterField' => 'document_category_id'],
+                'Documents.is_private' => ['type' => 'checkbox', 'label' => 'Private?'],
+            ];
 
         $this->_reattachBehavior($testOptions);
 
-        $filterValues = array
-            (
-                'Documents'                => array('title' => 'in', 'is_private' => 0),
-                'DocumentCategories'    => array('id' => 1)
-            );
+        $filterValues =
+            [
+                'Documents' => ['title' => 'in', 'is_private' => 0],
+                'DocumentCategories' => ['id' => 1],
+            ];
 
         $this->Document->setFilterValues($filterValues);
         $actualFilterValues = $this->Document->getFilterValues();
@@ -157,19 +158,19 @@ class FilteredBehaviorTest extends TestCase
      */
     public function testLoadingRequiredFieldValueMissing()
     {
-        $testOptions = array
-            (
-                'Documents.title'        => array('type' => 'text', 'condition' => 'like', 'required' => true),
-                'DocumentCategories.id'    => array('type' => 'select', 'filterField' => 'document_category_id'),
-                'Documents.is_private'    => array('type' => 'checkbox', 'label' => 'Private?')
-            );
+        $testOptions =
+            [
+                'Documents.title' => ['type' => 'text', 'condition' => 'like', 'required' => true],
+                'DocumentCategories.id' => ['type' => 'select', 'filterField' => 'document_category_id'],
+                'Documents.is_private' => ['type' => 'checkbox', 'label' => 'Private?'],
+            ];
         $this->_reattachBehavior($testOptions);
 
-        $filterValues = array
-            (
-                'Documents'                => array('is_private' => 0),
-                'DocumentCategories'    => array('id' => 1)
-            );
+        $filterValues =
+            [
+                'Documents' => ['is_private' => 0],
+                'DocumentCategories' => ['id' => 1],
+            ];
         $this->Document->setFilterValues($filterValues);
 
         $this->expectException('PHPUnit\Framework\Error\Notice');
@@ -183,25 +184,25 @@ class FilteredBehaviorTest extends TestCase
      */
     public function testFilteringBelongsTo()
     {
-        $testOptions = array
-            (
-                'title'                    => array('type' => 'text', 'condition' => 'like', 'required' => true),
-                'DocumentCategories.id'    => array('type' => 'select')
-            );
+        $testOptions =
+            [
+                'title' => ['type' => 'text', 'condition' => 'like', 'required' => true],
+                'DocumentCategories.id' => ['type' => 'select'],
+            ];
         $this->_reattachBehavior($testOptions);
 
-        $filterValues = array
-            (
-                'Documents'                => array('title' => 'in'),
-                'DocumentCategories'    => array('id' => 1)
-            );
+        $filterValues =
+            [
+                'Documents' => ['title' => 'in'],
+                'DocumentCategories' => ['id' => 1],
+            ];
         $this->Document->setFilterValues($filterValues);
 
-        $expected = array
-            (
-                array('id' => 1, 'title' => 'Testing Doc', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0),
-                array('id' => 2, 'title' => 'Imaginary Spec', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0)
-            );
+        $expected =
+            [
+                ['id' => 1, 'title' => 'Testing Doc', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0],
+                ['id' => 2, 'title' => 'Imaginary Spec', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0],
+            ];
 
         $result = $this->Document->find()
             ->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])
@@ -215,22 +216,22 @@ class FilteredBehaviorTest extends TestCase
      */
     public function testFilteringBelongsToTextField()
     {
-        $testOptions = array
-            (
-                'DocumentCategories.title'    => array('type' => 'text')
-            );
+        $testOptions =
+            [
+                'DocumentCategories.title' => ['type' => 'text'],
+            ];
         $this->_reattachBehavior($testOptions);
 
-        $filterValues = array
-            (
-                'DocumentCategories'    => array('title' => 'spec')
-            );
+        $filterValues =
+            [
+                'DocumentCategories' => ['title' => 'spec'],
+            ];
         $this->Document->setFilterValues($filterValues);
 
-        $expected = array
-            (
-                array('id' => 5, 'title' => 'Father Ted', 'document_category_id' => 2, 'owner_id' => 2, 'is_private' => 0)
-            );
+        $expected =
+            [
+                ['id' => 5, 'title' => 'Father Ted', 'document_category_id' => 2, 'owner_id' => 2, 'is_private' => 0],
+            ];
 
         $result = $this->Document->find()
             ->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])
@@ -248,25 +249,25 @@ class FilteredBehaviorTest extends TestCase
      */
     public function testFilteringBelongsToFilterFieldTest()
     {
-        $testOptions = array
-            (
-                'title'                    => array('type' => 'text', 'condition' => 'like', 'required' => true),
-                'DocumentCategories.id'    => array('type' => 'select', 'filterField' => 'Documents.document_category_id')
-            );
+        $testOptions =
+            [
+                'title' => ['type' => 'text', 'condition' => 'like', 'required' => true],
+                'DocumentCategories.id' => ['type' => 'select', 'filterField' => 'Documents.document_category_id'],
+            ];
         $this->_reattachBehavior($testOptions);
 
-        $filterValues = array
-            (
-                'Documents'                => array('title' => 'in'),
-                'DocumentCategories'    => array('id' => 1)
-            );
+        $filterValues =
+            [
+                'Documents' => ['title' => 'in'],
+                'DocumentCategories' => ['id' => 1],
+            ];
         $this->Document->setFilterValues($filterValues);
 
-        $expected = array
-            (
-                array('id' => 1, 'title' => 'Testing Doc', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0),
-                array('id' => 2, 'title' => 'Imaginary Spec', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0)
-            );
+        $expected =
+            [
+                ['id' => 1, 'title' => 'Testing Doc', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0],
+                ['id' => 2, 'title' => 'Imaginary Spec', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0],
+            ];
 
         $result = $this->Document->find()
             ->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])
@@ -283,24 +284,24 @@ class FilteredBehaviorTest extends TestCase
      */
     public function testFilteringBelongsToDifferentConditions()
     {
-        $testOptions = array
-            (
-                'title'                    => array('type' => 'text', 'condition' => '='),
-                'DocumentCategories.id'    => array('type' => 'select')
-            );
+        $testOptions =
+            [
+                'title' => ['type' => 'text', 'condition' => '='],
+                'DocumentCategories.id' => ['type' => 'select'],
+            ];
         $this->_reattachBehavior($testOptions);
 
-        $filterValues = array
-            (
-                'Documents'                => array('title' => 'Illegal explosives DIY'),
-                'DocumentCategories'    => array('id' => '')
-            );
+        $filterValues =
+            [
+                'Documents' => ['title' => 'Illegal explosives DIY'],
+                'DocumentCategories' => ['id' => ''],
+            ];
         $this->Document->setFilterValues($filterValues);
 
-        $expected = array
-            (
-                array('id' => 4, 'title' => 'Illegal explosives DIY', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 1),
-            );
+        $expected =
+            [
+                ['id' => 4, 'title' => 'Illegal explosives DIY', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 1],
+            ];
 
         $result = $this->Document->find()
             ->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])
@@ -309,26 +310,26 @@ class FilteredBehaviorTest extends TestCase
             ->toArray();
         $this->assertEquals($expected, $result);
 
-        $testOptions = array
-            (
-                'id'                    => array('type' => 'text', 'condition' => '>='),
-                'created'                => array('type' => 'text', 'condition' => '<=')
-            );
+        $testOptions =
+            [
+                'id' => ['type' => 'text', 'condition' => '>='],
+                'created' => ['type' => 'text', 'condition' => '<='],
+            ];
         $this->_reattachBehavior($testOptions);
 
-        $filterValues = array
-            (
-                'Documents'            => array('id' => 3, 'created' => '2010-03-01')
-            );
+        $filterValues =
+            [
+                'Documents' => ['id' => 3, 'created' => '2010-03-01'],
+            ];
         $this->Document->setFilterValues($filterValues);
 
-        $expected = array
-            (
-                array('id' => 4, 'title' => 'Illegal explosives DIY', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 1),
-                array('id' => 5, 'title' => 'Father Ted', 'document_category_id' => 2, 'owner_id' => 2, 'is_private' => 0),
-                array('id' => 6, 'title' => 'Duplicate title', 'document_category_id' => 5, 'owner_id' => 3, 'is_private' => 0),
-                array('id' => 7, 'title' => 'Duplicate title', 'document_category_id' => 5, 'owner_id' => 3, 'is_private' => 0),
-            );
+        $expected =
+            [
+                ['id' => 4, 'title' => 'Illegal explosives DIY', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 1],
+                ['id' => 5, 'title' => 'Father Ted', 'document_category_id' => 2, 'owner_id' => 2, 'is_private' => 0],
+                ['id' => 6, 'title' => 'Duplicate title', 'document_category_id' => 5, 'owner_id' => 3, 'is_private' => 0],
+                ['id' => 7, 'title' => 'Duplicate title', 'document_category_id' => 5, 'owner_id' => 3, 'is_private' => 0],
+            ];
 
         $result = $this->Document->find()
             ->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])
@@ -346,43 +347,43 @@ class FilteredBehaviorTest extends TestCase
      */
     public function testFilteringBelongsToAndHasMany()
     {
-        $testOptions = array
-            (
-                'title'                    => array('type' => 'text', 'condition' => 'like', 'required' => true),
-                'DocumentCategories.id'    => array('type' => 'select'),
-                'Documents.is_private'    => array('type' => 'checkbox', 'label' => 'Private?'),
-                'Items.code'            => array('type' => 'text'),
-            );
+        $testOptions =
+            [
+                'title' => ['type' => 'text', 'condition' => 'like', 'required' => true],
+                'DocumentCategories.id' => ['type' => 'select'],
+                'Documents.is_private' => ['type' => 'checkbox', 'label' => 'Private?'],
+                'Items.code' => ['type' => 'text'],
+            ];
         $this->_reattachBehavior($testOptions);
 
-        $filterValues = array
-            (
-                'Documents'                => array('title' => 'in', 'is_private' => 0),
-                'DocumentCategories'    => array('id' => 1),
-                'Items'                    => array('code' => '04')
-            );
+        $filterValues =
+            [
+                'Documents' => ['title' => 'in', 'is_private' => 0],
+                'DocumentCategories' => ['id' => 1],
+                'Items' => ['code' => '04'],
+            ];
         $this->Document->setFilterValues($filterValues);
 
-        $expected = array
-            (
-                array
-                (
+        $expected =
+            [
+
+                [
                     'id' => 2,
                     'title' => 'Imaginary Spec',
                     'document_category_id' => 1,
                     'owner_id' => 1,
                     'is_private' => 0,
-                    'document_category' => array('id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'),
-                    'metadata' => array('id' => 2, 'document_id' => 2, 'weight' => 0, 'size' => 45, 'permissions' => 'rw-------'),
-                    'items' => array
-                        (
-                            array('id' => 4, 'document_id' => 2, 'code' => 'The item #01'),
-                            array('id' => 5, 'document_id' => 2, 'code' => 'The item #02'),
-                            array('id' => 6, 'document_id' => 2, 'code' => 'The item #03'),
-                            array('id' => 7, 'document_id' => 2, 'code' => 'The item #04')
-                        )
-                )
-            );
+                    'document_category' => ['id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'],
+                    'metadata' => ['id' => 2, 'document_id' => 2, 'weight' => 0, 'size' => 45, 'permissions' => 'rw-------'],
+                    'items' =>
+                        [
+                            ['id' => 4, 'document_id' => 2, 'code' => 'The item #01'],
+                            ['id' => 5, 'document_id' => 2, 'code' => 'The item #02'],
+                            ['id' => 6, 'document_id' => 2, 'code' => 'The item #03'],
+                            ['id' => 7, 'document_id' => 2, 'code' => 'The item #04'],
+                        ],
+                ],
+            ];
 
         $result = $this->Document->find()
             ->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])
@@ -401,19 +402,19 @@ class FilteredBehaviorTest extends TestCase
             ->toArray();
         $this->assertEquals($expected, $result);
 
-        $expected = array
-            (
-                array
-                (
+        $expected =
+            [
+
+                [
                     'id' => 2,
                     'title' => 'Imaginary Spec',
                     'document_category_id' => 1,
                     'owner_id' => 1,
                     'is_private' => 0,
-                    'document_category' => array('id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'),
-                    'metadata' => array('id' => 2, 'document_id' => 2, 'weight' => 0, 'size' => 45, 'permissions' => 'rw-------'),
-                )
-            );
+                    'document_category' => ['id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'],
+                    'metadata' => ['id' => 2, 'document_id' => 2, 'weight' => 0, 'size' => 45, 'permissions' => 'rw-------'],
+                ],
+            ];
 
         $result = $this->Document->find()
             ->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])
@@ -446,13 +447,13 @@ class FilteredBehaviorTest extends TestCase
             ->toArray();
         $this->assertEquals($expected, $result);
 
-        $expected = array
-            (
-                array
-                (
+        $expected =
+            [
+
+                [
                     'id' => 2, 'title' => 'Imaginary Spec', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0,
-                )
-            );
+                ],
+            ];
 
         $result = $this->Document->find()
             ->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])
@@ -469,26 +470,26 @@ class FilteredBehaviorTest extends TestCase
      */
     public function testCustomJoinConditions()
     {
-        $testOptions = array
-            (
-                'Metadata.weight'    => array('type' => 'text', 'condition' => '>'),
-            );
+        $testOptions =
+            [
+                'Metadata.weight' => ['type' => 'text', 'condition' => '>'],
+            ];
         $this->_reattachBehavior($testOptions);
 
-        $filterValues = array
-            (
-                'Metadata'            => array('weight' => 3),
-            );
+        $filterValues =
+            [
+                'Metadata' => ['weight' => 3],
+            ];
         $this->Document->setFilterValues($filterValues);
 
-        $expected = array
-            (
-                array
-                (
+        $expected =
+            [
+
+                [
                     'id' => 5, 'title' => 'Father Ted', 'document_category_id' => 2, 'owner_id' => 2, 'is_private' => 0,
-                    'metadata' => array('id' => 5, 'document_id' => 5, 'weight' => 4, 'size' => 790, 'permissions' => 'rw-rw-r--'),
-                )
-            );
+                    'metadata' => ['id' => 5, 'document_id' => 5, 'weight' => 4, 'size' => 790, 'permissions' => 'rw-rw-r--'],
+                ],
+            ];
         $Metadata = $this->Document->associations()->get('Metadata');
         $this->assertInstanceOf(Association::class, $Metadata);
         $oldConditions = $Metadata->getConditions();
@@ -527,43 +528,43 @@ class FilteredBehaviorTest extends TestCase
      */
     public function testFilteringBelongsToAndHasManyWithContainable()
     {
-        $testOptions = array
-            (
-                'Documents.title'        => array('type' => 'text', 'condition' => 'like', 'required' => true),
-                'DocumentCategories.id'    => array('type' => 'select'),
-                'Documents.is_private'    => array('type' => 'checkbox', 'label' => 'Private?'),
-                'Items.code'            => array('type' => 'text'),
-            );
+        $testOptions =
+            [
+                'Documents.title' => ['type' => 'text', 'condition' => 'like', 'required' => true],
+                'DocumentCategories.id' => ['type' => 'select'],
+                'Documents.is_private' => ['type' => 'checkbox', 'label' => 'Private?'],
+                'Items.code' => ['type' => 'text'],
+            ];
 
         $this->_reattachBehavior($testOptions);
 
-        $filterValues = array
-            (
-                'Documents'                => array('title' => 'in', 'is_private' => 0),
-                'DocumentCategories'    => array('id' => 1),
-                'Items'                    => array('code' => '04')
-            );
+        $filterValues =
+            [
+                'Documents' => ['title' => 'in', 'is_private' => 0],
+                'DocumentCategories' => ['id' => 1],
+                'Items' => ['code' => '04'],
+            ];
         $this->Document->setFilterValues($filterValues);
 
-        $expected = array
-            (
-                array
-                (
+        $expected =
+            [
+
+                [
                     'id' => 2,
                     'title' => 'Imaginary Spec',
                     'document_category_id' => 1,
                     'owner_id' => 1,
                     'is_private' => 0,
-                    'document_category' => array('id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'),
-                    'items' => array
-                        (
-                            array('id' => 4, 'document_id' => 2, 'code' => 'The item #01'),
-                            array('id' => 5, 'document_id' => 2, 'code' => 'The item #02'),
-                            array('id' => 6, 'document_id' => 2, 'code' => 'The item #03'),
-                            array('id' => 7, 'document_id' => 2, 'code' => 'The item #04')
-                        )
-                )
-            );
+                    'document_category' => ['id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'],
+                    'items' =>
+                        [
+                            ['id' => 4, 'document_id' => 2, 'code' => 'The item #01'],
+                            ['id' => 5, 'document_id' => 2, 'code' => 'The item #02'],
+                            ['id' => 6, 'document_id' => 2, 'code' => 'The item #03'],
+                            ['id' => 7, 'document_id' => 2, 'code' => 'The item #04'],
+                        ],
+                ],
+            ];
 
         $result = $this->Document->find()
             ->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])
@@ -579,18 +580,18 @@ class FilteredBehaviorTest extends TestCase
             ->toArray();
         $this->assertEquals($expected, $result);
 
-        $expected = array
-            (
-                array
-                (
+        $expected =
+            [
+
+                [
                     'id' => 2,
                     'title' => 'Imaginary Spec',
                     'document_category_id' => 1,
                     'owner_id' => 1,
                     'is_private' => 0,
-                    'document_category' => array('id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'),
-                )
-            );
+                    'document_category' => ['id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'],
+                ],
+            ];
 
         $result = $this->Document->find()
             ->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])
@@ -603,17 +604,17 @@ class FilteredBehaviorTest extends TestCase
             ->toArray();
         $this->assertEquals($expected, $result);
 
-        $expected = array
-            (
-                array
-                (
+        $expected =
+            [
+
+                [
                     'id' => 2,
                     'title' => 'Imaginary Spec',
                     'document_category_id' => 1,
                     'owner_id' => 1,
                     'is_private' => 0,
-                )
-            );
+                ],
+            ];
 
         $result = $this->Document->find()
             ->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])
@@ -629,28 +630,28 @@ class FilteredBehaviorTest extends TestCase
      */
     public function testHasOneAndHasManyWithTextSearch()
     {
-        $testOptions = array
-            (
-                'title'                => array('type' => 'text', 'condition' => 'like', 'required' => true),
-                'Items.code'        => array('type' => 'text'),
-                'Metadata.size'        => array('type' => 'text', 'condition' => '='),
-            );
+        $testOptions =
+            [
+                'title' => ['type' => 'text', 'condition' => 'like', 'required' => true],
+                'Items.code' => ['type' => 'text'],
+                'Metadata.size' => ['type' => 'text', 'condition' => '='],
+            ];
 
-        $filterValues = array
-            (
-                'Documents'            => array('title' => 'in'),
-                'Items'                => array('code' => '04'),
-                'Metadata'            => array('size' => 45),
-            );
+        $filterValues =
+            [
+                'Documents' => ['title' => 'in'],
+                'Items' => ['code' => '04'],
+                'Metadata' => ['size' => 45],
+            ];
 
-        $expected = array
-            (
-                array
-                (
+        $expected =
+            [
+
+                [
                     'id' => 2,
                     'title' => 'Imaginary Spec',
-                )
-            );
+                ],
+            ];
 
         $this->_reattachBehavior($testOptions);
         $this->Document->setFilterValues($filterValues);
@@ -669,39 +670,39 @@ class FilteredBehaviorTest extends TestCase
      */
     public function testHasOneWithContainable()
     {
-        $testOptions = array
-            (
-                'title'                => array('type' => 'text', 'condition' => 'like', 'required' => true),
-                'Items.code'        => array('type' => 'text'),
-                'Metadata.size'        => array('type' => 'text', 'condition' => '='),
-            );
+        $testOptions =
+            [
+                'title' => ['type' => 'text', 'condition' => 'like', 'required' => true],
+                'Items.code' => ['type' => 'text'],
+                'Metadata.size' => ['type' => 'text', 'condition' => '='],
+            ];
 
-        $filterValues = array
-            (
-                'Documents'            => array('title' => 'in'),
-                'Items'                => array('code' => '04'),
-                'Metadata'            => array('size' => 45),
-            );
+        $filterValues =
+            [
+                'Documents' => ['title' => 'in'],
+                'Items' => ['code' => '04'],
+                'Metadata' => ['size' => 45],
+            ];
 
-        $expected = array
-            (
-                array
-                (
+        $expected =
+            [
+
+                [
                     'id' => 2,
                     'title' => 'Imaginary Spec',
                     'document_category_id' => 1,
                     'owner_id' => 1,
                     'is_private' => 0,
-                    'metadata' => array('id' => 2, 'document_id' => 2, 'weight' => 0, 'size' => 45, 'permissions' => 'rw-------'),
-                    'items' => array
-                        (
-                            array('id' => 4, 'document_id' => 2, 'code' => 'The item #01'),
-                            array('id' => 5, 'document_id' => 2, 'code' => 'The item #02'),
-                            array('id' => 6, 'document_id' => 2, 'code' => 'The item #03'),
-                            array('id' => 7, 'document_id' => 2, 'code' => 'The item #04')
-                        )
-                )
-            );
+                    'metadata' => ['id' => 2, 'document_id' => 2, 'weight' => 0, 'size' => 45, 'permissions' => 'rw-------'],
+                    'items' =>
+                        [
+                            ['id' => 4, 'document_id' => 2, 'code' => 'The item #01'],
+                            ['id' => 5, 'document_id' => 2, 'code' => 'The item #02'],
+                            ['id' => 6, 'document_id' => 2, 'code' => 'The item #03'],
+                            ['id' => 7, 'document_id' => 2, 'code' => 'The item #04'],
+                        ],
+                ],
+            ];
 
         // containable first, filtered second
         $this->_reattachBehavior($testOptions);
@@ -746,49 +747,49 @@ class FilteredBehaviorTest extends TestCase
      */
     public function testJoinAlreadyPresent()
     {
-        $testOptions = array
-            (
-                'title'                => array('type' => 'text', 'condition' => 'like', 'required' => true),
-                'Items.code'        => array('type' => 'text'),
-                'Metadata.size'        => array('type' => 'text', 'condition' => '='),
-            );
+        $testOptions =
+            [
+                'title' => ['type' => 'text', 'condition' => 'like', 'required' => true],
+                'Items.code' => ['type' => 'text'],
+                'Metadata.size' => ['type' => 'text', 'condition' => '='],
+            ];
 
-        $filterValues = array
-            (
-                'Documents'            => array('title' => 'in'),
-                'Items'                => array('code' => '04'),
-                'Metadata'            => array('size' => 45),
-            );
+        $filterValues =
+            [
+                'Documents' => ['title' => 'in'],
+                'Items' => ['code' => '04'],
+                'Metadata' => ['size' => 45],
+            ];
 
-        $expected = array
-            (
-                array
-                (
+        $expected =
+            [
+
+                [
                     'id' => 2,
                     'title' => 'Imaginary Spec',
                     'document_category_id' => 1,
                     'owner_id' => 1,
                     'is_private' => 0,
-                    'document_category' => array('id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'),
-                    'metadata' => array('id' => 2, 'document_id' => 2, 'weight' => 0, 'size' => 45, 'permissions' => 'rw-------'),
-                    'items' => array
-                        (
-                            array('id' => 4, 'document_id' => 2, 'code' => 'The item #01'),
-                            array('id' => 5, 'document_id' => 2, 'code' => 'The item #02'),
-                            array('id' => 6, 'document_id' => 2, 'code' => 'The item #03'),
-                            array('id' => 7, 'document_id' => 2, 'code' => 'The item #04')
-                        )
-                )
-            );
+                    'document_category' => ['id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'],
+                    'metadata' => ['id' => 2, 'document_id' => 2, 'weight' => 0, 'size' => 45, 'permissions' => 'rw-------'],
+                    'items' =>
+                        [
+                            ['id' => 4, 'document_id' => 2, 'code' => 'The item #01'],
+                            ['id' => 5, 'document_id' => 2, 'code' => 'The item #02'],
+                            ['id' => 6, 'document_id' => 2, 'code' => 'The item #03'],
+                            ['id' => 7, 'document_id' => 2, 'code' => 'The item #04'],
+                        ],
+                ],
+            ];
 
-        $customJoin = array();
-        $customJoin[] = array
-            (
+        $customJoin = [];
+        $customJoin[] =
+            [
                 'table' => 'items',
                 'alias' => 'FilterItems',
                 'type' => 'INNER',
                 'conditions' => 'Documents.id = FilterItems.document_id',
-            );
+            ];
 
         $this->_reattachBehavior($testOptions);
         $this->Document->setFilterValues($filterValues);
@@ -818,26 +819,25 @@ class FilteredBehaviorTest extends TestCase
      */
     public function testNofilterFindParam()
     {
-        $testOptions = array
-            (
-                'Documents.title'        => array('type' => 'text', 'condition' => 'like'),
-                'DocumentCategories.id'    => array('type' => 'select'),
-                'Documents.is_private'    => array('type' => 'checkbox', 'label' => 'Private?', 'default' => 0)
-            );
+        $testOptions =
+            [
+                'Documents.title' => ['type' => 'text', 'condition' => 'like'],
+                'DocumentCategories.id' => ['type' => 'select'],
+                'Documents.is_private' => ['type' => 'checkbox', 'label' => 'Private?', 'default' => 0],
+            ];
         $this->_reattachBehavior($testOptions);
 
-
-        $filterValues = array
-            (
-                'DocumentCategories'    => array('id' => 2),
-                'Documents'                => array('title' => '')
-            );
+        $filterValues =
+            [
+                'DocumentCategories' => ['id' => 2],
+                'Documents' => ['title' => ''],
+            ];
         $this->Document->setFilterValues($filterValues);
 
-        $expected = array
-            (
-                array('id' => 5, 'title' => 'Father Ted', 'document_category_id' => 2, 'owner_id' => 2, 'is_private' => 0)
-            );
+        $expected =
+            [
+                ['id' => 5, 'title' => 'Father Ted', 'document_category_id' => 2, 'owner_id' => 2, 'is_private' => 0],
+            ];
 
         $result = $this->Document->find('all', ['nofilter' => true])
             ->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])
@@ -864,20 +864,20 @@ class FilteredBehaviorTest extends TestCase
         $Filtered = $this->Document->DocumentCategories->behaviors()->get('Filtered');
         $this->assertFalse(isset($Filtered->settings[$this->Document->DocumentCategories->getAlias()]));
 
-        $filterValues = array
-            (
-                'DocumentCategories'    => array('id' => 2)
-            );
+        $filterValues =
+            [
+                'DocumentCategories' => ['id' => 2],
+            ];
         $this->Document->DocumentCategories->setFilterValues($filterValues);
 
-        $expected = array
-            (
-                array('id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'),
-                array('id' => 2, 'title' => 'Imaginary Spec', 'description' => 'This doc does not exist'),
-                array('id' => 3, 'title' => 'Nonexistant data', 'description' => 'This doc is probably empty'),
-                array('id' => 4, 'title' => 'Illegal explosives DIY', 'description' => 'Viva la revolucion!'),
-                array('id' => 5, 'title' => 'Father Ted', 'description' => 'Feck! Drink! Arse! Girls!'),
-            );
+        $expected =
+            [
+                ['id' => 1, 'title' => 'Testing Doc', 'description' => 'It\'s a bleeding test doc!'],
+                ['id' => 2, 'title' => 'Imaginary Spec', 'description' => 'This doc does not exist'],
+                ['id' => 3, 'title' => 'Nonexistant data', 'description' => 'This doc is probably empty'],
+                ['id' => 4, 'title' => 'Illegal explosives DIY', 'description' => 'Viva la revolucion!'],
+                ['id' => 5, 'title' => 'Father Ted', 'description' => 'Feck! Drink! Arse! Girls!'],
+            ];
 
         $result = $this->Document->DocumentCategories->find('all', ['nofilter' => 'true'])
             ->select(['id', 'title', 'description'])
@@ -898,31 +898,30 @@ class FilteredBehaviorTest extends TestCase
         $Document = $this->getTableLocator()->get('Document2', ['className' => Documents2Table::class]);
         $this->assertInstanceOf(Documents2Table::class, $Document);
         $this->Document = $Document;
-        $testOptions = array
-            (
-                'Documents.title'        => array('type' => 'text', 'condition' => 'like'),
-                'DocumentCategories.id'    => array('type' => 'select'),
-                'Documents.is_private'    => array('type' => 'checkbox', 'label' => 'Private?')
-            );
+        $testOptions =
+            [
+                'Documents.title' => ['type' => 'text', 'condition' => 'like'],
+                'DocumentCategories.id' => ['type' => 'select'],
+                'Documents.is_private' => ['type' => 'checkbox', 'label' => 'Private?'],
+            ];
         $this->_reattachBehavior($testOptions);
 
-
-        $filterValues = array
-            (
-                'DocumentCategories'    => array('id' => 2)
-            );
+        $filterValues =
+            [
+                'DocumentCategories' => ['id' => 2],
+            ];
         $this->Document->setFilterValues($filterValues);
 
-        $expected = array
-            (
-                array('id' => 1, 'title' => 'Testing Doc', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0,),
-                array('id' => 2, 'title' => 'Imaginary Spec', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0),
-                array('id' => 3, 'title' => 'Nonexistant data', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0),
-                array('id' => 4, 'title' => 'Illegal explosives DIY', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 1),
-                array('id' => 5, 'title' => 'Father Ted', 'document_category_id' => 2, 'owner_id' => 2, 'is_private' => 0),
-                array('id' => 6, 'title' => 'Duplicate title', 'document_category_id' => 5, 'owner_id' => 3, 'is_private' => 0),
-                array('id' => 7, 'title' => 'Duplicate title', 'document_category_id' => 5, 'owner_id' => 3, 'is_private' => 0),
-            );
+        $expected =
+            [
+                ['id' => 1, 'title' => 'Testing Doc', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0,],
+                ['id' => 2, 'title' => 'Imaginary Spec', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0],
+                ['id' => 3, 'title' => 'Nonexistant data', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0],
+                ['id' => 4, 'title' => 'Illegal explosives DIY', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 1],
+                ['id' => 5, 'title' => 'Father Ted', 'document_category_id' => 2, 'owner_id' => 2, 'is_private' => 0],
+                ['id' => 6, 'title' => 'Duplicate title', 'document_category_id' => 5, 'owner_id' => 3, 'is_private' => 0],
+                ['id' => 7, 'title' => 'Duplicate title', 'document_category_id' => 5, 'owner_id' => 3, 'is_private' => 0],
+            ];
 
         $result = $this->Document->find()
             ->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])
@@ -944,31 +943,30 @@ class FilteredBehaviorTest extends TestCase
         $this->Document = $Document;
         $this->Document->itemToUnset = 'FilterDocumentCategories.id';
 
-        $testOptions = array
-            (
-                'Documents.title'        => array('type' => 'text', 'condition' => 'like'),
-                'DocumentCategories.id'    => array('type' => 'select'),
-                'Documents.is_private'    => array('type' => 'checkbox', 'label' => 'Private?')
-            );
+        $testOptions =
+            [
+                'Documents.title' => ['type' => 'text', 'condition' => 'like'],
+                'DocumentCategories.id' => ['type' => 'select'],
+                'Documents.is_private' => ['type' => 'checkbox', 'label' => 'Private?'],
+            ];
         $this->_reattachBehavior($testOptions);
 
-
-        $filterValues = array
-            (
-                'DocumentCategories'    => array('id' => 2)
-            );
+        $filterValues =
+            [
+                'DocumentCategories' => ['id' => 2],
+            ];
         $this->Document->setFilterValues($filterValues);
 
-        $expected = array
-            (
-                array('id' => 1, 'title' => 'Testing Doc', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0),
-                array('id' => 2, 'title' => 'Imaginary Spec', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0),
-                array('id' => 3, 'title' => 'Nonexistant data', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0),
-                array('id' => 4, 'title' => 'Illegal explosives DIY', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 1),
-                array('id' => 5, 'title' => 'Father Ted', 'document_category_id' => 2, 'owner_id' => 2, 'is_private' => 0),
-                array('id' => 6, 'title' => 'Duplicate title', 'document_category_id' => 5, 'owner_id' => 3, 'is_private' => 0),
-                array('id' => 7, 'title' => 'Duplicate title', 'document_category_id' => 5, 'owner_id' => 3, 'is_private' => 0),
-            );
+        $expected =
+            [
+                ['id' => 1, 'title' => 'Testing Doc', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0],
+                ['id' => 2, 'title' => 'Imaginary Spec', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0],
+                ['id' => 3, 'title' => 'Nonexistant data', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 0],
+                ['id' => 4, 'title' => 'Illegal explosives DIY', 'document_category_id' => 1, 'owner_id' => 1, 'is_private' => 1],
+                ['id' => 5, 'title' => 'Father Ted', 'document_category_id' => 2, 'owner_id' => 2, 'is_private' => 0],
+                ['id' => 6, 'title' => 'Duplicate title', 'document_category_id' => 5, 'owner_id' => 3, 'is_private' => 0],
+                ['id' => 7, 'title' => 'Duplicate title', 'document_category_id' => 5, 'owner_id' => 3, 'is_private' => 0],
+            ];
 
         $result = $this->Document->find('all')
             ->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])

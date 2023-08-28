@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Filter\Test\TestCase\MockObjects;
 
@@ -26,9 +27,10 @@ class DocumentCategoriesTable extends Table
      * @param mixed[] $options
      * @return mixed[]|int|null
      */
-    public function customSelector($options = array())
+    public function customSelector($options = [])
     {
         $options['nofilter'] = true;
+
         return $this->find('list', $options)
             ->where([
                 'DocumentCategory.title LIKE' => '%T%',

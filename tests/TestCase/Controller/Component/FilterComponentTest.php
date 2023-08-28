@@ -1,12 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace Filter\Test\TestCase\Controller\Component;
 
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
-use Filter\Test\TestCase\MockObjects\DocumentTestsController;
 use Filter\Test\TestCase\MockObjects\DocumentCategoriesTable;
 use Filter\Test\TestCase\MockObjects\DocumentsTable;
+use Filter\Test\TestCase\MockObjects\DocumentTestsController;
 
 /**
     CakePHP Filter Plugin
@@ -18,20 +19,20 @@ use Filter\Test\TestCase\MockObjects\DocumentsTable;
         MPL <http://www.mozilla.org/MPL/MPL-1.1.html>
         LGPL <http://www.gnu.org/licenses/lgpl.html>
         GPL <http://www.gnu.org/licenses/gpl.html>
-*/
+ */
 
 class FilterComponentTest extends TestCase
 {
     /**
      * @var string[]
      */
-    public $fixtures = array
-        (
+    public $fixtures =
+        [
             'plugin.Filter.DocumentCategories',
             'plugin.Filter.Documents',
             'plugin.Filter.Items',
             'plugin.Filter.Metadata',
-        );
+        ];
 
     /**
      * @var \Filter\Test\TestCase\MockObjects\DocumentTestsController
@@ -75,31 +76,31 @@ class FilterComponentTest extends TestCase
      */
     public function testNoActionFilters()
     {
-        $testSettings = array
-            (
-                'someotheraction' => array
-                (
-                    'Document' => array
-                    (
-                        'Document.title' => array('type' => 'text')
-                    )
-                )
-            );
+        $testSettings =
+            [
+                'someotheraction' =>
+                [
+                    'Document' =>
+                    [
+                        'Document.title' => ['type' => 'text'],
+                    ],
+                ],
+            ];
 
         $this->Controller->filters = $testSettings;
         $this->Controller->dispatchEvent('Controller.initialize');
         $this->assertFalse($this->Controller->Document->hasBehavior('Filtered'));
 
-        $testSettings = array
-            (
-                'index' => array
-                (
-                    'Document' => array
-                    (
-                        'Document.title' => array('type' => 'text')
-                    )
-                ),
-            );
+        $testSettings =
+            [
+                'index' =>
+                [
+                    'Document' =>
+                    [
+                        'Document.title' => ['type' => 'text'],
+                    ],
+                ],
+            ];
 
         $this->Controller->filters = $testSettings;
         $this->Controller->dispatchEvent('Controller.initialize');
@@ -113,22 +114,22 @@ class FilterComponentTest extends TestCase
      */
     public function testBasicFilters()
     {
-        $testSettings = array
-            (
-                'index' => array
-                (
-                    'Document' => array
-                    (
-                        'Document.title' => array('type' => 'text')
-                    )
-                )
-            );
+        $testSettings =
+            [
+                'index' =>
+                [
+                    'Document' =>
+                    [
+                        'Document.title' => ['type' => 'text'],
+                    ],
+                ],
+            ];
         $this->Controller->filters = $testSettings;
 
-        $expected = array
-            (
-                $this->Controller->getName() => $testSettings
-            );
+        $expected =
+            [
+                $this->Controller->getName() => $testSettings,
+            ];
         $this->Controller->dispatchEvent('Controller.initialize');
         $this->assertEquals($expected, $this->Controller->Filter->settings);
     }
@@ -140,16 +141,16 @@ class FilterComponentTest extends TestCase
      */
     public function testEmptyStartup()
     {
-        $testSettings = array
-            (
-                'index' => array
-                (
-                    'Document' => array
-                    (
-                        'Document.title' => array('type' => 'text')
-                    )
-                )
-            );
+        $testSettings =
+            [
+                'index' =>
+                [
+                    'Document' =>
+                    [
+                        'Document.title' => ['type' => 'text'],
+                    ],
+                ],
+            ];
         $this->Controller->filters = $testSettings;
 
         $this->Controller->dispatchEvent('Controller.initialize');
@@ -162,23 +163,23 @@ class FilterComponentTest extends TestCase
      */
     public function testSessionStartupDataFakeNonexistantModel()
     {
-        $testSettings = array
-        (
-            'index' => array
-            (
-                'FakeNonexistant' => array
-                (
-                    'drink' => array('type' => 'select')
-                )
-            )
-        );
+        $testSettings =
+        [
+            'index' =>
+            [
+                'FakeNonexistant' =>
+                [
+                    'drink' => ['type' => 'select'],
+                ],
+            ],
+        ];
         $this->Controller->filters = $testSettings;
         $sessionKey = sprintf(
             'FilterPlugin.Filters.%s.%s',
             $this->Controller->getName(),
             $this->Controller->getRequest()->getParam('action')
         );
-        $filterValues = array();
+        $filterValues = [];
         $this->Controller->getRequest()->getSession()->write($sessionKey, $filterValues);
         $this->expectException('PHPUnit\Framework\Error\Notice');
         $this->Controller->dispatchEvent('Controller.initialize');
@@ -191,16 +192,16 @@ class FilterComponentTest extends TestCase
      */
     public function testSessionStartupData()
     {
-        $testSettings = array
-            (
-                'index' => array
-                (
-                    'Document' => array
-                    (
-                        'Document.title' => array('type' => 'text')
-                    ),
-                )
-            );
+        $testSettings =
+            [
+                'index' =>
+                [
+                    'Document' =>
+                    [
+                        'Document.title' => ['type' => 'text'],
+                    ],
+                ],
+            ];
         $this->Controller->filters = $testSettings;
 
         $sessionKey = sprintf(
@@ -209,28 +210,26 @@ class FilterComponentTest extends TestCase
             $this->Controller->getRequest()->getParam('action')
         );
 
-        $filterValues = array();
+        $filterValues = [];
         $this->Controller->getRequest()->getSession()->write($sessionKey, $filterValues);
         $this->Controller->dispatchEvent('Controller.initialize');
 
         $this->Controller->dispatchEvent('Controller.startup');
         $actualFilterValues = $this->Controller->Document->getFilterValues();
-        $this->assertEquals
-            (
-                $filterValues,
-                $actualFilterValues[$this->Controller->Document->getAlias()]
-            );
+        $this->assertEquals(
+            $filterValues,
+            $actualFilterValues[$this->Controller->Document->getAlias()]
+        );
 
-        $filterValues = array('Document' => array('title' => 'in'));
+        $filterValues = ['Document' => ['title' => 'in']];
         $this->Controller->getRequest()->getSession()->write($sessionKey, $filterValues);
 
         $this->Controller->dispatchEvent('Controller.startup');
         $actualFilterValues = $this->Controller->Document->getFilterValues();
-        $this->assertEquals
-            (
-                $filterValues,
-                $actualFilterValues[$this->Controller->Document->getAlias()]
-            );
+        $this->assertEquals(
+            $filterValues,
+            $actualFilterValues[$this->Controller->Document->getAlias()]
+        );
 
         $this->Controller->getRequest()->getSession()->delete($sessionKey);
     }
@@ -252,20 +251,20 @@ class FilterComponentTest extends TestCase
             ],
         ]);
         $this->Controller = new DocumentTestsController($request);
-        $testSettings = array
-            (
-                'index' => array
-                (
-                    'Document' => array
-                    (
-                        'Document.title' => array('type' => 'text')
-                    ),
-                )
-            );
+        $testSettings =
+            [
+                'index' =>
+                [
+                    'Document' =>
+                    [
+                        'Document.title' => ['type' => 'text'],
+                    ],
+                ],
+            ];
 
         $this->Controller->filters = $testSettings;
 
-        $filterValues = array('Document' => array('title' => 'in'), 'Filter' => array('filterFormId' => 'Document'));
+        $filterValues = ['Document' => ['title' => 'in'], 'Filter' => ['filterFormId' => 'Document']];
         $this->Controller->request = $this->Controller->getRequest()->withParsedBody($filterValues);
 
         $this->Controller->dispatchEvent('Controller.initialize');
@@ -280,11 +279,10 @@ class FilterComponentTest extends TestCase
         $this->assertEquals($filterValues, $sessionData);
 
         $actualFilterValues = $this->Controller->Document->getFilterValues();
-        $this->assertEquals
-            (
-                $filterValues,
-                $actualFilterValues[$this->Controller->Document->getAlias()]
-            );
+        $this->assertEquals(
+            $filterValues,
+            $actualFilterValues[$this->Controller->Document->getAlias()]
+        );
     }
 
     /**
@@ -294,16 +292,16 @@ class FilterComponentTest extends TestCase
      */
     public function testBeforeRenderAbort()
     {
-        $testSettings = array
-            (
-                'veryMuchNotIndex' => array
-                (
-                    'Document' => array
-                    (
-                        'Document.title' => array('type' => 'text')
-                    )
-                )
-            );
+        $testSettings =
+            [
+                'veryMuchNotIndex' =>
+                [
+                    'Document' =>
+                    [
+                        'Document.title' => ['type' => 'text'],
+                    ],
+                ],
+            ];
         $this->Controller->filters = $testSettings;
 
         $this->Controller->dispatchEvent('Controller.initialize');
@@ -321,16 +319,16 @@ class FilterComponentTest extends TestCase
      */
     public function testNoModelFound()
     {
-        $testSettings = array
-            (
-                'index' => array
-                (
-                    'ThisModelDoesNotExist' => array
-                    (
-                        'ThisModelDoesNotExist.title' => array('type' => 'text')
-                    )
-                )
-            );
+        $testSettings =
+            [
+                'index' =>
+                [
+                    'ThisModelDoesNotExist' =>
+                    [
+                        'ThisModelDoesNotExist.title' => ['type' => 'text'],
+                    ],
+                ],
+            ];
         $this->Controller->filters = $testSettings;
         $this->expectException('PHPUnit\Framework\Error\Notice');
         $this->Controller->dispatchEvent('Controller.initialize');
@@ -344,49 +342,49 @@ class FilterComponentTest extends TestCase
      */
     public function testBasicViewInfo()
     {
-        $testSettings = array
-            (
-                'index' => array
-                (
-                    'Document' => array
-                    (
+        $testSettings =
+            [
+                'index' =>
+                [
+                    'Document' =>
+                    [
                         'title',
-                        'DocumentCategory.id' => array(
+                        'DocumentCategory.id' => [
                             'type' => 'select',
                             'label' => 'Category',
                             'className' => DocumentCategoriesTable::class,
-                        ),
-                    )
-                )
-            );
+                        ],
+                    ],
+                ],
+            ];
         $this->Controller->filters = $testSettings;
 
         $this->Controller->dispatchEvent('Controller.initialize');
         $this->Controller->dispatchEvent('Controller.startup');
         $this->Controller->dispatchEvent('Controller.beforeRender');
 
-        $expected = array
-            (
-                array('name' => 'Document.title', 'options' => array('type' => 'text')),
-                array
-                (
+        $expected =
+            [
+                ['name' => 'Document.title', 'options' => ['type' => 'text']],
+
+                [
                     'name' => 'DocumentCategory.id',
-                    'options' => array
-                    (
+                    'options' =>
+                    [
                         'type' => 'select',
-                        'options' => array
-                        (
+                        'options' =>
+                        [
                             1 => 'Testing Doc',
                             2 => 'Imaginary Spec',
                             3 => 'Nonexistant data',
                             4 => 'Illegal explosives DIY',
                             5 => 'Father Ted',
-                        ),
+                        ],
                         'empty' => false,
                         'label' => 'Category',
-                    )
-                ),
-            );
+                    ],
+                ],
+            ];
 
         $this->assertEquals($expected, $this->Controller->viewVars['viewFilterParams']);
     }
@@ -399,60 +397,60 @@ class FilterComponentTest extends TestCase
      */
     public function testAdditionalInputOptions()
     {
-        $testSettings = array
-            (
-                'index' => array
-                (
-                    'Document' => array
-                    (
-                        'title' => array('inputOptions' => 'disabled'),
-                        'DocumentCategory.id' => array
-                        (
+        $testSettings =
+            [
+                'index' =>
+                [
+                    'Document' =>
+                    [
+                        'title' => ['inputOptions' => 'disabled'],
+                        'DocumentCategory.id' =>
+                        [
                             'type' => 'select',
                             'label' => 'Category',
-                            'inputOptions' => array('class' => 'important'),
+                            'inputOptions' => ['class' => 'important'],
                             'className' => DocumentCategoriesTable::class,
-                        ),
-                    )
-                )
-            );
+                        ],
+                    ],
+                ],
+            ];
         $this->Controller->filters = $testSettings;
 
         $this->Controller->dispatchEvent('Controller.initialize');
         $this->Controller->dispatchEvent('Controller.startup');
         $this->Controller->dispatchEvent('Controller.beforeRender');
 
-        $expected = array
-            (
-                array
-                (
+        $expected =
+            [
+
+                [
                     'name' => 'Document.title',
-                    'options' => array
-                    (
+                    'options' =>
+                    [
                         'type' => 'text',
-                        'disabled'
-                    )
-                ),
-                array
-                (
+                        'disabled',
+                    ],
+                ],
+
+                [
                     'name' => 'DocumentCategory.id',
-                    'options' => array
-                    (
+                    'options' =>
+                    [
                         'type' => 'select',
-                        'options' => array
-                        (
+                        'options' =>
+                        [
                             1 => 'Testing Doc',
                             2 => 'Imaginary Spec',
                             3 => 'Nonexistant data',
                             4 => 'Illegal explosives DIY',
                             5 => 'Father Ted',
-                        ),
+                        ],
                         'empty' => false,
                         'label' => 'Category',
                         'class' => 'important',
-                    )
-                ),
-            );
+                    ],
+                ],
+            ];
 
         $this->assertEquals($expected, $this->Controller->viewVars['viewFilterParams']);
     }
@@ -465,49 +463,49 @@ class FilterComponentTest extends TestCase
      */
     public function testCustomSelector()
     {
-        $testSettings = array
-            (
-                'index' => array
-                (
-                    'Document' => array
-                    (
-                        'DocumentCategory.id' => array
-                        (
+        $testSettings =
+            [
+                'index' =>
+                [
+                    'Document' =>
+                    [
+                        'DocumentCategory.id' =>
+                        [
                             'type' => 'select',
                             'label' => 'Category',
                             'selector' => 'customSelector',
-                            'selectOptions' => array(
-                                'conditions' => array('DocumentCategory.description LIKE' => '%!%'),
-                            ),
+                            'selectOptions' => [
+                                'conditions' => ['DocumentCategory.description LIKE' => '%!%'],
+                            ],
                             'className' => DocumentCategoriesTable::class,
-                        ),
-                    )
-                )
-            );
+                        ],
+                    ],
+                ],
+            ];
         $this->Controller->filters = $testSettings;
 
         $this->Controller->dispatchEvent('Controller.initialize');
         $this->Controller->dispatchEvent('Controller.startup');
         $this->Controller->dispatchEvent('Controller.beforeRender');
 
-        $expected = array
-            (
-                array
-                (
+        $expected =
+            [
+
+                [
                     'name' => 'DocumentCategory.id',
-                    'options' => array
-                    (
+                    'options' =>
+                    [
                         'type' => 'select',
-                        'options' => array
-                        (
+                        'options' =>
+                        [
                             1 => 'Testing Doc',
                             5 => 'Father Ted',
-                        ),
+                        ],
                         'empty' => false,
                         'label' => 'Category',
-                    )
-                ),
-            );
+                    ],
+                ],
+            ];
 
         $this->assertEquals($expected, $this->Controller->viewVars['viewFilterParams']);
     }
@@ -519,40 +517,40 @@ class FilterComponentTest extends TestCase
      */
     public function testCheckboxOptions()
     {
-        $testSettings = array
-            (
-                'index' => array
-                (
-                    'Document' => array
-                    (
-                        'Document.is_private' => array
-                        (
+        $testSettings =
+            [
+                'index' =>
+                [
+                    'Document' =>
+                    [
+                        'Document.is_private' =>
+                        [
                             'type' => 'checkbox',
                             'label' => 'Private?',
                             'default' => true,
-                        ),
-                    )
-                )
-            );
+                        ],
+                    ],
+                ],
+            ];
         $this->Controller->filters = $testSettings;
 
         $this->Controller->dispatchEvent('Controller.initialize');
         $this->Controller->dispatchEvent('Controller.startup');
         $this->Controller->dispatchEvent('Controller.beforeRender');
 
-        $expected = array
-            (
-                array
-                (
+        $expected =
+            [
+
+                [
                     'name' => 'Document.is_private',
-                    'options' => array
-                    (
+                    'options' =>
+                    [
                         'type' => 'checkbox',
                         'checked' => true,
                         'label' => 'Private?',
-                    )
-                ),
-            );
+                    ],
+                ],
+            ];
 
         $this->assertEquals($expected, $this->Controller->viewVars['viewFilterParams']);
     }
@@ -564,26 +562,26 @@ class FilterComponentTest extends TestCase
      */
     public function testSelectMultiple()
     {
-        $testSettings = array
-            (
-                'index' => array
-                (
-                    'Document' => array
-                    (
-                        'DocumentCategory.id' => array
-                        (
+        $testSettings =
+            [
+                'index' =>
+                [
+                    'Document' =>
+                    [
+                        'DocumentCategory.id' =>
+                        [
                             'type' => 'select',
                             'multiple' => true,
-                        )
-                    )
-                )
-            );
+                        ],
+                    ],
+                ],
+            ];
         $this->Controller->filters = $testSettings;
 
-        $expected = array
-            (
-                $this->Controller->getName() => $testSettings
-            );
+        $expected =
+            [
+                $this->Controller->getName() => $testSettings,
+            ];
 
         $this->Controller->dispatchEvent('Controller.initialize');
         $this->assertEquals($expected, $this->Controller->Filter->settings);
@@ -596,47 +594,47 @@ class FilterComponentTest extends TestCase
      */
     public function testSelectInputFromSameModel()
     {
-        $testSettings = array
-            (
-                'index' => array
-                (
-                    'Document' => array
-                    (
-                        'Document.title' => array
-                        (
+        $testSettings =
+            [
+                'index' =>
+                [
+                    'Document' =>
+                    [
+                        'Document.title' =>
+                        [
                             'type' => 'select',
                             'className' => DocumentsTable::class,
-                        ),
-                    )
-                )
-            );
+                        ],
+                    ],
+                ],
+            ];
         $this->Controller->filters = $testSettings;
 
         $this->Controller->dispatchEvent('Controller.initialize');
         $this->Controller->dispatchEvent('Controller.startup');
         $this->Controller->dispatchEvent('Controller.beforeRender');
 
-        $expected = array
-            (
-                array
-                (
+        $expected =
+            [
+
+                [
                     'name' => 'Document.title',
-                    'options' => array
-                    (
+                    'options' =>
+                    [
                         'type' => 'select',
-                        'options' => array
-                        (
+                        'options' =>
+                        [
                             'Testing Doc' => 'Testing Doc',
                             'Imaginary Spec' => 'Imaginary Spec',
                             'Nonexistant data' => 'Nonexistant data',
                             'Illegal explosives DIY' => 'Illegal explosives DIY',
                             'Father Ted' => 'Father Ted',
                             'Duplicate title' => 'Duplicate title',
-                        ),
+                        ],
                         'empty' => '',
-                    )
-                ),
-            );
+                    ],
+                ],
+            ];
 
         $this->assertEquals($expected, $this->Controller->viewVars['viewFilterParams']);
     }
@@ -649,16 +647,16 @@ class FilterComponentTest extends TestCase
      */
     public function testPersistence()
     {
-        $testSettings = array
-            (
-                'index' => array
-                (
-                    'Document' => array
-                    (
-                        'Document.title' => array('type' => 'text')
-                    ),
-                ),
-            );
+        $testSettings =
+            [
+                'index' =>
+                [
+                    'Document' =>
+                    [
+                        'Document.title' => ['type' => 'text'],
+                    ],
+                ],
+            ];
         $this->Controller->filters = $testSettings;
         $this->Controller->components()->unload('Filter');
         $this->Controller->loadComponent('Filter.Filter', ['nopersist' => true]);
@@ -668,7 +666,7 @@ class FilterComponentTest extends TestCase
             'SomeOtherController',
             $this->Controller->getRequest()->getParam('action')
         );
-        $filterValues = array('Document' => array('title' => 'in'), 'Filter' => array('filterFormId' => 'Document'));
+        $filterValues = ['Document' => ['title' => 'in'], 'Filter' => ['filterFormId' => 'Document']];
         $this->Controller->getRequest()->getSession()->write($sessionKey, $filterValues);
 
         $sessionKey = sprintf(
@@ -676,21 +674,21 @@ class FilterComponentTest extends TestCase
             $this->Controller->getName(),
             $this->Controller->getRequest()->getParam('action')
         );
-        $filterValues = array('Document' => array('title' => 'in'), 'Filter' => array('filterFormId' => 'Document'));
+        $filterValues = ['Document' => ['title' => 'in'], 'Filter' => ['filterFormId' => 'Document']];
         $this->Controller->getRequest()->getSession()->write($sessionKey, $filterValues);
 
-        $this->Controller->Filter->nopersist = array();
+        $this->Controller->Filter->nopersist = [];
         $this->Controller->Filter->nopersist[$this->Controller->getName()] = true;
         $this->Controller->Filter->nopersist['SomeOtherController'] = true;
 
         $this->Controller->dispatchEvent('Controller.initialize');
         $this->Controller->dispatchEvent('Controller.startup');
 
-        $expected = array(
-            $this->Controller->getName() => array(
+        $expected = [
+            $this->Controller->getName() => [
                 $this->Controller->getRequest()->getParam('action') => $filterValues,
-            ),
-        );
+            ],
+        ];
         $this->assertEquals($expected, $this->Controller->getRequest()->getSession()->read('FilterPlugin.Filters'));
     }
 
@@ -702,33 +700,33 @@ class FilterComponentTest extends TestCase
      */
     public function testBelongsToFilteringByText()
     {
-        $testSettings = array
-            (
-                'index' => array
-                (
-                    'Document' => array
-                    (
-                        'DocumentCategory.title' => array('type' => 'text')
-                    ),
-                )
-            );
+        $testSettings =
+            [
+                'index' =>
+                [
+                    'Document' =>
+                    [
+                        'DocumentCategory.title' => ['type' => 'text'],
+                    ],
+                ],
+            ];
         $this->Controller->filters = $testSettings;
 
         $this->Controller->dispatchEvent('Controller.initialize');
         $this->Controller->dispatchEvent('Controller.startup');
         $this->Controller->dispatchEvent('Controller.beforeRender');
 
-        $expected = array
-            (
-                array
-                (
+        $expected =
+            [
+
+                [
                     'name' => 'DocumentCategory.title',
-                    'options' => array
-                    (
+                    'options' =>
+                    [
                         'type' => 'text',
-                    )
-                ),
-            );
+                    ],
+                ],
+            ];
 
         $this->assertEquals($expected, $this->Controller->viewVars['viewFilterParams']);
     }
