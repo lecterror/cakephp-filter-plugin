@@ -170,7 +170,7 @@ class FilterComponentTest extends TestCase
 		$sessionKey = sprintf(
 			'FilterPlugin.Filters.%s.%s',
 			$this->Controller->getName(),
-			$this->Controller->getRequest()->getParam('action'),
+			$this->Controller->getRequest()->getParam('action')
 		);
 		$filterValues = array();
 		$this->Controller->getRequest()->getSession()->write($sessionKey, $filterValues);
@@ -200,7 +200,7 @@ class FilterComponentTest extends TestCase
 		$sessionKey = sprintf(
 			'FilterPlugin.Filters.%s.%s',
 			$this->Controller->getName(),
-			$this->Controller->getRequest()->getParam('action'),
+			$this->Controller->getRequest()->getParam('action')
 		);
 
 		$filterValues = array();
@@ -268,7 +268,7 @@ class FilterComponentTest extends TestCase
 		$sessionKey = sprintf(
 			'FilterPlugin.Filters.%s.%s',
 			$this->Controller->getName(),
-			$this->Controller->getRequest()->getParam('action'),
+			$this->Controller->getRequest()->getParam('action')
 		);
 		$sessionData = $this->Controller->getRequest()->getSession()->read($sessionKey);
 		$this->assertEquals($filterValues, $sessionData);
@@ -660,7 +660,7 @@ class FilterComponentTest extends TestCase
 		$sessionKey = sprintf(
 			'FilterPlugin.Filters.%s.%s',
 			'SomeOtherController',
-			$this->Controller->getRequest()->getParam('action'),
+			$this->Controller->getRequest()->getParam('action')
 		);
 		$filterValues = array('Document' => array('title' => 'in'), 'Filter' => array('filterFormId' => 'Document'));
 		$this->Controller->getRequest()->getSession()->write($sessionKey, $filterValues);
@@ -668,7 +668,7 @@ class FilterComponentTest extends TestCase
 		$sessionKey = sprintf(
 			'FilterPlugin.Filters.%s.%s',
 			$this->Controller->getName(),
-			$this->Controller->getRequest()->getParam('action'),
+			$this->Controller->getRequest()->getParam('action')
 		);
 		$filterValues = array('Document' => array('title' => 'in'), 'Filter' => array('filterFormId' => 'Document'));
 		$this->Controller->getRequest()->getSession()->write($sessionKey, $filterValues);
