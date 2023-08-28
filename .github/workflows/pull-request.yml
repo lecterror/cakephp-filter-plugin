@@ -23,7 +23,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Install dependencies
-        run: composer install
+        run: composer install cakephp/cakephp
         shell: bash
       #- name: Setup CakePHP
       #  uses: ./.github/actions/setup-cakephp
@@ -32,7 +32,8 @@ jobs:
       - name: Create test database
         run: mysql -u root -e "CREATE DATABASE cakephp_test"
         shell: bash
-      #- name: Install PHPUnit
+      - name: Install PHPUnit
+        run: composer require 'phpunit/phpunit=5.7'
       #  run: |
       #    cd ./cakephp
       #    composer require 'phpunit/phpunit=5.7'
@@ -50,6 +51,8 @@ jobs:
           php-version: 7.4
       - name: Check out repository code
         uses: actions/checkout@v3
+      - name: Install PHPLint
+        run: composer require --dev overtrue/phplint
       - name: Run PHPLint
         run: vendor/bin/phplint
 
@@ -71,4 +74,4 @@ jobs:
           composer require --dev phpstan/phpstan
           composer require --dev phpstan/phpstan-phpunit
       - name: PHPStan
-        run: vendor/bin/phpstan analyse --level=8 ./src
+        run: vendor/bin/phpstan analyse --level=8 ./src ./tests
