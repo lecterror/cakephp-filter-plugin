@@ -12,32 +12,32 @@ use Cake\ORM\Table;
  */
 class Documents2Table extends Table
 {
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @param mixed[] $config
-	 * @see \Cake\ORM\Table::initialize()
-	 */
-	public function initialize(array $config)
-	{
-		$this->setAlias('Document');
-		$this->setTable('documents');
-		$this->belongsTo('DocumentCategories');
-		$this->hasMany('Items');
-	}
+    /**
+     * {@inheritDoc}
+     *
+     * @param mixed[] $config
+     * @see \Cake\ORM\Table::initialize()
+     */
+    public function initialize(array $config)
+    {
+        $this->setAlias('Document');
+        $this->setTable('documents');
+        $this->belongsTo('DocumentCategories');
+        $this->hasMany('Items');
+    }
 
-	/**
-	 * @var bool
-	 */
-	public $returnValue = false;
+    /**
+     * @var bool
+     */
+    public $returnValue = false;
 
-	/**
-	 * @param \Cake\ORM\Query $query Query.
-	 * @param mixed[] $options
-	 * @return mixed[]|bool
-	 */
-	public function beforeDataFilter($query, $options)
-	{
-		return $this->returnValue;
-	}
+    /**
+     * @param \Cake\ORM\Query $query Query.
+     * @param mixed[] $options
+     * @return mixed[]|bool
+     */
+    public function beforeDataFilter($query, $options)
+    {
+        return $this->returnValue;
+    }
 }
