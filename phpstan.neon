@@ -6,6 +6,9 @@ parameters:
       - phpstan-bootstrap.php
     scanDirectories:
       - ./
+    fileExtensions:
+        - php
+        - ctp
     ignoreErrors:
       # False positive as __() function can accept more than 2 parameters.
       - '/Cannot call method enableHydration\(\) on array\|Cake\\ORM\\Query./'
