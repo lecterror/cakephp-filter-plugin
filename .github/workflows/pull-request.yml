@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Install Dependencies
         run: |
-          composer remove --dev phpstan/phpstan cakephp/cakephp-codesniffer --no-update
+          composer remove --dev phpstan/phpstan cakephp/cakephp-codesniffer overtrue/phplint --no-update
           composer require 'cakephp/cakephp=3.10.5' 'phpunit/phpunit=5.7.0' --with-all-dependencies
         shell: bash
       - name: Create test database
@@ -72,6 +72,8 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Install PHPCS
-        run: composer require --dev cakephp/cakephp-codesniffer
+        run: | 
+          composer remove --dev phpstan/phpstan phpunit/phpunit overtrue/phplint --no-update
+          composer require cakephp/cakephp-codesniffer
       - name: Run PHPCS
         run: vendor/bin/phpcs --colors --parallel=16 -p --standard=CakePHP src/ tests/
