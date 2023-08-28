@@ -8,8 +8,8 @@
         "cakephp/cakephp": "^3.10"
     },
     "require-dev": {
-        "overtrue/phplint": "^3.4",
-        "phpstan/phpstan": "^1.10",
+        "overtrue/phplint": "^2.0|^3.4",
+        "phpstan/phpstan": "^0.1|^1.10",
         "phpunit/phpunit": "^5.7.14|^6.0"
     },
     "autoload": {
