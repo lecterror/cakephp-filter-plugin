@@ -1,4 +1,13 @@
 <?php
+
+namespace Filter\Test\TestCase\Controller\Component;
+
+use Cake\Http\ServerRequest;
+use Cake\TestSuite\TestCase;
+use Filter\Test\TestCase\MockObjects\DocumentTestsController;
+use Filter\Test\TestCase\MockObjects\DocumentCategoriesTable;
+use Filter\Test\TestCase\MockObjects\DocumentsTable;
+
 /**
 	CakePHP Filter Plugin
 
@@ -11,67 +20,40 @@
 		GPL <http://www.gnu.org/licenses/gpl.html>
 */
 
-App::uses('Router', 'Routing');
-App::uses('Component', 'Filter.Filter');
-App::uses('Document', 'Filter.Test/Case/MockObjects');
-App::uses('Document2', 'Filter.Test/Case/MockObjects');
-App::uses('Document3', 'Filter.Test/Case/MockObjects');
-App::uses('DocumentCategory', 'Filter.Test/Case/MockObjects');
-App::uses('DocumentTestsController', 'Filter.Test/Case/MockObjects');
-App::uses('Item', 'Filter.Test/Case/MockObjects');
-App::uses('Metadata', 'Filter.Test/Case/MockObjects');
-
-class FilterComponentTest extends CakeTestCase
+class FilterComponentTest extends TestCase
 {
 	/**
 	 * @var string[]
 	 */
 	public $fixtures = array
 		(
-			'plugin.filter.document_category',
-			'plugin.filter.document',
-			'plugin.filter.item',
-			'plugin.filter.metadata',
+			'plugin.Filter.DocumentCategories',
+			'plugin.Filter.Documents',
+			'plugin.Filter.Items',
+			'plugin.Filter.Metadata',
 		);
 
 	/**
-	 * @var \DocumentTestsController
+	 * @var \Filter\Test\TestCase\MockObjects\DocumentTestsController
 	 */
 	public $Controller = null;
 
-	public function startTest($method)
+	public function setUp()
 	{
-		Router::connect('/', array('controller' => 'document_tests', 'action' => 'index'));
-		$request = new CakeRequest('/');
-		$request->addParams(Router::parse('/'));
+		parent::setUp();
+		$request = new ServerRequest([
+			'params' => [
+				'controller' => 'DocumentTests',
+				'action' => 'index',
+			],
+		]);
 		$this->Controller = new DocumentTestsController($request);
-		$this->Controller->uses = array('Document');
-
-		if (array_search($method, array('testPersistence')) !== false)
-		{
-			$this->Controller->components = array
-				(
-					'Session',
-					'Filter.Filter' => array('nopersist' => true)
-				);
-		}
-		else
-		{
-			$this->Controller->components = array
-				(
-					'Session',
-					'Filter.Filter'
-				);
-		}
-
-		$this->Controller->constructClasses();
-		$this->Controller->Session->destroy();
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
 	}
 
-	public function endTest($method)
+	public function tearDown()
 	{
-		$this->Controller->Session->destroy();
+		parent::tearDown();
+		$this->Controller->getRequest()->getSession()->destroy();
 		unset($this->Controller);
 	}
 
@@ -82,37 +64,14 @@ class FilterComponentTest extends CakeTestCase
 	 */
 	public function testNoFilters()
 	{
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
 		$this->assertEmpty($this->Controller->Filter->settings);
-		$this->assertFalse($this->Controller->Document->Behaviors->enabled('Filtered'));
+		$this->assertFalse($this->Controller->Document->hasBehavior('Filtered'));
 
-		$this->Controller->Components->trigger('startup', array($this->Controller));
-		$this->assertFalse(in_array('Filter.Filter', $this->Controller->helpers));
+		$this->assertFalse(in_array('Filter.Filter', $this->Controller->viewBuilder()->getHelpers()));
 	}
 
-	/**
-	 * Test bailing out when a filter model can't be found
-	 * or when the current action has no filters.
-	 *
-	 * @return void
-	 */
-	public function testNoModelPresentOrNoActionFilters()
+	public function testNoActionFilters()
 	{
-		$testSettings = array
-			(
-				'index' => array
-				(
-					'DocumentArse' => array
-					(
-						'DocumentFeck.drink' => array('type' => 'irrelevant')
-					)
-				)
-			);
-
-		$this->expectException('PHPUnit_Framework_Error_Notice');
-		$this->Controller->filters = $testSettings;
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
-
 		$testSettings = array
 			(
 				'someotheraction' => array
@@ -124,10 +83,9 @@ class FilterComponentTest extends CakeTestCase
 				)
 			);
 
-
 		$this->Controller->filters = $testSettings;
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->assertFalse($this->Controller->Document->Behaviors->enabled('Filtered'));
+		$this->Controller->dispatchEvent('Controller.initialize');
+		$this->assertFalse($this->Controller->Document->hasBehavior('Filtered'));
 
 		$testSettings = array
 			(
@@ -141,8 +99,8 @@ class FilterComponentTest extends CakeTestCase
 			);
 
 		$this->Controller->filters = $testSettings;
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->assertTrue($this->Controller->Document->Behaviors->enabled('Filtered'));
+		$this->Controller->dispatchEvent('Controller.initialize');
+		$this->assertTrue($this->Controller->Document->hasBehavior('Filtered'));
 	}
 
 	/**
@@ -166,10 +124,9 @@ class FilterComponentTest extends CakeTestCase
 
 		$expected = array
 			(
-				$this->Controller->name => $testSettings
+				$this->Controller->getName() => $testSettings
 			);
-
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
+		$this->Controller->dispatchEvent('Controller.initialize');
 		$this->assertEquals($expected, $this->Controller->Filter->settings);
 	}
 
@@ -192,9 +149,33 @@ class FilterComponentTest extends CakeTestCase
 			);
 		$this->Controller->filters = $testSettings;
 
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->Controller->Components->trigger('startup', array($this->Controller));
-		$this->assertTrue(in_array('Filter.Filter', $this->Controller->helpers));
+		$this->Controller->dispatchEvent('Controller.initialize');
+		$this->Controller->dispatchEvent('Controller.startup');
+		$this->assertTrue(in_array('Filter.Filter', $this->Controller->viewBuilder()->getHelpers()));
+	}
+
+	public function testSessionStartupDataFakeNonexistantModel()
+	{
+		$testSettings = array
+		(
+			'index' => array
+			(
+				'FakeNonexistant' => array
+				(
+					'drink' => array('type' => 'select')
+				)
+			)
+		);
+		$this->Controller->filters = $testSettings;
+		$sessionKey = sprintf(
+			'FilterPlugin.Filters.%s.%s',
+			$this->Controller->getName(),
+			$this->Controller->getRequest()->getParam('action'),
+		);
+		$filterValues = array();
+		$this->Controller->getRequest()->getSession()->write($sessionKey, $filterValues);
+		$this->expectException('PHPUnit\Framework\Error\Notice');
+		$this->Controller->dispatchEvent('Controller.initialize');
 	}
 
 	/**
@@ -212,42 +193,40 @@ class FilterComponentTest extends CakeTestCase
 					(
 						'Document.title' => array('type' => 'text')
 					),
-					'FakeNonexistant' => array
-					(
-						'drink' => array('type' => 'select')
-					)
 				)
 			);
 		$this->Controller->filters = $testSettings;
 
-		$sessionKey = sprintf('FilterPlugin.Filters.%s.%s', $this->Controller->name, $this->Controller->action);
+		$sessionKey = sprintf(
+			'FilterPlugin.Filters.%s.%s',
+			$this->Controller->getName(),
+			$this->Controller->getRequest()->getParam('action'),
+		);
 
 		$filterValues = array();
-		$this->Controller->Session->write($sessionKey, $filterValues);
-		$this->expectException('PHPUnit_Framework_Error_Notice');
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
+		$this->Controller->getRequest()->getSession()->write($sessionKey, $filterValues);
+		$this->Controller->dispatchEvent('Controller.initialize');
 
-		$this->expectException('PHPUnit_Framework_Error_Notice');
-		$this->Controller->Components->trigger('startup', array($this->Controller));
+		$this->Controller->dispatchEvent('Controller.startup');
 		$actualFilterValues = $this->Controller->Document->getFilterValues();
 		$this->assertEquals
 			(
 				$filterValues,
-				$actualFilterValues[$this->Controller->Document->alias]
+				$actualFilterValues[$this->Controller->Document->getAlias()]
 			);
 
 		$filterValues = array('Document' => array('title' => 'in'));
-		$this->Controller->Session->write($sessionKey, $filterValues);
+		$this->Controller->getRequest()->getSession()->write($sessionKey, $filterValues);
 
-		$this->Controller->Components->trigger('startup', array($this->Controller));
+		$this->Controller->dispatchEvent('Controller.startup');
 		$actualFilterValues = $this->Controller->Document->getFilterValues();
 		$this->assertEquals
 			(
 				$filterValues,
-				$actualFilterValues[$this->Controller->Document->alias]
+				$actualFilterValues[$this->Controller->Document->getAlias()]
 			);
 
-		$this->Controller->Session->delete($sessionKey);
+		$this->Controller->getRequest()->getSession()->delete($sessionKey);
 	}
 
 	/**
@@ -257,8 +236,16 @@ class FilterComponentTest extends CakeTestCase
 	 */
 	public function testPostStartupData()
 	{
-		$_SERVER['REQUEST_METHOD'] = 'POST';
-
+		$request = new ServerRequest([
+			'params' => [
+				'controller' => 'DocumentTests',
+				'action' => 'index',
+			],
+			'environment' => [
+				'REQUEST_METHOD' => 'POST',
+			],
+		]);
+		$this->Controller = new DocumentTestsController($request);
 		$testSettings = array
 			(
 				'index' => array
@@ -273,20 +260,24 @@ class FilterComponentTest extends CakeTestCase
 		$this->Controller->filters = $testSettings;
 
 		$filterValues = array('Document' => array('title' => 'in'), 'Filter' => array('filterFormId' => 'Document'));
-		$this->Controller->data = $filterValues;
+		$this->Controller->request = $this->Controller->getRequest()->withParsedBody($filterValues);
 
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->Controller->Components->trigger('startup', array($this->Controller));
+		$this->Controller->dispatchEvent('Controller.initialize');
+		$this->Controller->dispatchEvent('Controller.startup');
 
-		$sessionKey = sprintf('FilterPlugin.Filters.%s.%s', $this->Controller->name, $this->Controller->action);
-		$sessionData = $this->Controller->Session->read($sessionKey);
+		$sessionKey = sprintf(
+			'FilterPlugin.Filters.%s.%s',
+			$this->Controller->getName(),
+			$this->Controller->getRequest()->getParam('action'),
+		);
+		$sessionData = $this->Controller->getRequest()->getSession()->read($sessionKey);
 		$this->assertEquals($filterValues, $sessionData);
 
 		$actualFilterValues = $this->Controller->Document->getFilterValues();
 		$this->assertEquals
 			(
 				$filterValues,
-				$actualFilterValues[$this->Controller->Document->alias]
+				$actualFilterValues[$this->Controller->Document->getAlias()]
 			);
 	}
 
@@ -309,9 +300,9 @@ class FilterComponentTest extends CakeTestCase
 			);
 		$this->Controller->filters = $testSettings;
 
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->Controller->Components->trigger('startup', array($this->Controller));
-		$this->Controller->Components->trigger('beforeRender', array($this->Controller));
+		$this->Controller->dispatchEvent('Controller.initialize');
+		$this->Controller->dispatchEvent('Controller.startup');
+		$this->Controller->dispatchEvent('Controller.beforeRender');
 
 		$this->assertFalse(isset($this->Controller->viewVars['viewFilterParams']));
 	}
@@ -335,15 +326,8 @@ class FilterComponentTest extends CakeTestCase
 				)
 			);
 		$this->Controller->filters = $testSettings;
-
-		$this->expectException('PHPUnit_Framework_Error_Notice');
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
-
-		//$this->expectError();
-		$this->Controller->Components->trigger('startup', array($this->Controller));
-
-		$this->expectException('PHPUnit_Framework_Error_Notice');
-		$this->Controller->Components->trigger('beforeRender', array($this->Controller));
+		$this->expectException('PHPUnit\Framework\Error\Notice');
+		$this->Controller->dispatchEvent('Controller.initialize');
 	}
 
 	/**
@@ -361,15 +345,19 @@ class FilterComponentTest extends CakeTestCase
 					'Document' => array
 					(
 						'title',
-						'DocumentCategory.id' => array('type' => 'select', 'label' => 'Category'),
+						'DocumentCategory.id' => array(
+							'type' => 'select',
+							'label' => 'Category',
+							'className' => DocumentCategoriesTable::class,
+						),
 					)
 				)
 			);
 		$this->Controller->filters = $testSettings;
 
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->Controller->Components->trigger('startup', array($this->Controller));
-		$this->Controller->Components->trigger('beforeRender', array($this->Controller));
+		$this->Controller->dispatchEvent('Controller.initialize');
+		$this->Controller->dispatchEvent('Controller.startup');
+		$this->Controller->dispatchEvent('Controller.beforeRender');
 
 		$expected = array
 			(
@@ -416,16 +404,17 @@ class FilterComponentTest extends CakeTestCase
 						(
 							'type' => 'select',
 							'label' => 'Category',
-							'inputOptions' => array('class' => 'important')
+							'inputOptions' => array('class' => 'important'),
+							'className' => DocumentCategoriesTable::class,
 						),
 					)
 				)
 			);
 		$this->Controller->filters = $testSettings;
 
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->Controller->Components->trigger('startup', array($this->Controller));
-		$this->Controller->Components->trigger('beforeRender', array($this->Controller));
+		$this->Controller->dispatchEvent('Controller.initialize');
+		$this->Controller->dispatchEvent('Controller.startup');
+		$this->Controller->dispatchEvent('Controller.beforeRender');
 
 		$expected = array
 			(
@@ -481,16 +470,19 @@ class FilterComponentTest extends CakeTestCase
 							'type' => 'select',
 							'label' => 'Category',
 							'selector' => 'customSelector',
-							'selectOptions' => array('conditions' => array('DocumentCategory.description LIKE' => '%!%')),
+							'selectOptions' => array(
+								'conditions' => array('DocumentCategory.description LIKE' => '%!%'),
+							),
+							'className' => DocumentCategoriesTable::class,
 						),
 					)
 				)
 			);
 		$this->Controller->filters = $testSettings;
 
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->Controller->Components->trigger('startup', array($this->Controller));
-		$this->Controller->Components->trigger('beforeRender', array($this->Controller));
+		$this->Controller->dispatchEvent('Controller.initialize');
+		$this->Controller->dispatchEvent('Controller.startup');
+		$this->Controller->dispatchEvent('Controller.beforeRender');
 
 		$expected = array
 			(
@@ -538,9 +530,9 @@ class FilterComponentTest extends CakeTestCase
 			);
 		$this->Controller->filters = $testSettings;
 
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->Controller->Components->trigger('startup', array($this->Controller));
-		$this->Controller->Components->trigger('beforeRender', array($this->Controller));
+		$this->Controller->dispatchEvent('Controller.initialize');
+		$this->Controller->dispatchEvent('Controller.startup');
+		$this->Controller->dispatchEvent('Controller.beforeRender');
 
 		$expected = array
 			(
@@ -584,10 +576,10 @@ class FilterComponentTest extends CakeTestCase
 
 		$expected = array
 			(
-				$this->Controller->name => $testSettings
+				$this->Controller->getName() => $testSettings
 			);
 
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
+		$this->Controller->dispatchEvent('Controller.initialize');
 		$this->assertEquals($expected, $this->Controller->Filter->settings);
 	}
 
@@ -607,15 +599,16 @@ class FilterComponentTest extends CakeTestCase
 						'Document.title' => array
 						(
 							'type' => 'select',
+							'className' => DocumentsTable::class,
 						),
 					)
 				)
 			);
 		$this->Controller->filters = $testSettings;
 
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->Controller->Components->trigger('startup', array($this->Controller));
-		$this->Controller->Components->trigger('beforeRender', array($this->Controller));
+		$this->Controller->dispatchEvent('Controller.initialize');
+		$this->Controller->dispatchEvent('Controller.startup');
+		$this->Controller->dispatchEvent('Controller.beforeRender');
 
 		$expected = array
 			(
@@ -658,27 +651,41 @@ class FilterComponentTest extends CakeTestCase
 					(
 						'Document.title' => array('type' => 'text')
 					),
-				)
+				),
 			);
 		$this->Controller->filters = $testSettings;
+		$this->Controller->components()->unload('Filter');
+		$this->Controller->loadComponent('Filter.Filter', ['nopersist' => true]);
 
-		$sessionKey = sprintf('FilterPlugin.Filters.%s.%s', 'SomeOtherController', $this->Controller->action);
+		$sessionKey = sprintf(
+			'FilterPlugin.Filters.%s.%s',
+			'SomeOtherController',
+			$this->Controller->getRequest()->getParam('action'),
+		);
 		$filterValues = array('Document' => array('title' => 'in'), 'Filter' => array('filterFormId' => 'Document'));
-		$this->Controller->Session->write($sessionKey, $filterValues);
+		$this->Controller->getRequest()->getSession()->write($sessionKey, $filterValues);
 
-		$sessionKey = sprintf('FilterPlugin.Filters.%s.%s', $this->Controller->name, $this->Controller->action);
+		$sessionKey = sprintf(
+			'FilterPlugin.Filters.%s.%s',
+			$this->Controller->getName(),
+			$this->Controller->getRequest()->getParam('action'),
+		);
 		$filterValues = array('Document' => array('title' => 'in'), 'Filter' => array('filterFormId' => 'Document'));
-		$this->Controller->Session->write($sessionKey, $filterValues);
+		$this->Controller->getRequest()->getSession()->write($sessionKey, $filterValues);
 
 		$this->Controller->Filter->nopersist = array();
-		$this->Controller->Filter->nopersist[$this->Controller->name] = true;
+		$this->Controller->Filter->nopersist[$this->Controller->getName()] = true;
 		$this->Controller->Filter->nopersist['SomeOtherController'] = true;
 
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->Controller->Components->trigger('startup', array($this->Controller));
+		$this->Controller->dispatchEvent('Controller.initialize');
+		$this->Controller->dispatchEvent('Controller.startup');
 
-		$expected = array($this->Controller->name => array($this->Controller->action => $filterValues));
-		$this->assertEquals($expected, $this->Controller->Session->read('FilterPlugin.Filters'));
+		$expected = array(
+			$this->Controller->getName() => array(
+				$this->Controller->getRequest()->getParam('action') => $filterValues,
+			),
+		);
+		$this->assertEquals($expected, $this->Controller->getRequest()->getSession()->read('FilterPlugin.Filters'));
 	}
 
 	/**
@@ -701,9 +708,9 @@ class FilterComponentTest extends CakeTestCase
 			);
 		$this->Controller->filters = $testSettings;
 
-		$this->Controller->Components->trigger('initialize', array($this->Controller));
-		$this->Controller->Components->trigger('startup', array($this->Controller));
-		$this->Controller->Components->trigger('beforeRender', array($this->Controller));
+		$this->Controller->dispatchEvent('Controller.initialize');
+		$this->Controller->dispatchEvent('Controller.startup');
+		$this->Controller->dispatchEvent('Controller.beforeRender');
 
 		$expected = array
 			(

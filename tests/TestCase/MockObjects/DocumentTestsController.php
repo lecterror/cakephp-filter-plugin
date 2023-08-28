@@ -1,19 +1,33 @@
 <?php
 
-App::uses('Controller', 'Controller');
+namespace Filter\Test\TestCase\MockObjects;
+
+use Cake\Controller\Controller;
 
 /**
- * @property \Document $Document
+ * @property \Filter\Test\TestCase\MockObjects\DocumentsTable $Documents
  * @property \FilterComponent $Filter
  */
 class DocumentTestsController extends Controller
 {
-	public $name = 'DocumentTests';
-
 	/**
 	 * @var mixed[]
 	 */
 	public $filters;
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @see \Cake\Controller\Controller::initialize()
+	 */
+	public function initialize()
+	{
+		parent::initialize();
+		$this->Document = $this->getTableLocator()->get('Documents', [
+			'className' => DocumentsTable::class,
+		]);
+		$this->loadComponent('Filter.Filter');
+	}
 
 	/**
 	 * @return void
@@ -30,7 +44,7 @@ class DocumentTestsController extends Controller
 	 * @param string|mixed[] $url
 	 * @param int|mixed[]|null|string $status
 	 * @param bool $exit
-	 * @return \CakeResponse|null
+	 * @return \Cake\Http\Response|null
 	 */
 	public function redirect($url, $status = null, $exit = true)
 	{

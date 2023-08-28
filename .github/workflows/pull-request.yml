@@ -22,18 +22,21 @@ jobs:
           mysql-version: '5.6'
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: Setup CakePHP
-        uses: ./.github/actions/setup-cakephp
-      - name: Setup database
-        uses: ./.github/actions/setup-database
-      - name: Install PHPUnit
-        run: |
-          cd ./cakephp
-          composer require 'phpunit/phpunit=5.7'
-          cd ../
+      #- name: Setup CakePHP
+      #  uses: ./.github/actions/setup-cakephp
+      #- name: Setup database
+      #  uses: ./.github/actions/setup-database
+      - name: Create test database
+        run: mysql -u root -e "CREATE DATABASE cakephp_test"
+        shell: bash
+      #- name: Install PHPUnit
+      #  run: |
+      #    cd ./cakephp
+      #    composer require 'phpunit/phpunit=5.7'
+      #    cd ../
 
       - name: Unit Tests
-        run: ./cakephp/lib/Cake/Console/cake test Filter All --stderr -app ./cakephp/app
+        run: ./vendor/bin/phpunit ./tests
 
   PHP-Lint:
     runs-on: ubuntu-latest
@@ -44,8 +47,6 @@ jobs:
           php-version: 7.4
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: Install PHPLint
-        run: composer require --dev overtrue/phplint
       - name: Run PHPLint
         run: vendor/bin/phplint
 
@@ -67,4 +68,4 @@ jobs:
           composer require --dev phpstan/phpstan
           composer require --dev phpstan/phpstan-phpunit
       - name: PHPStan
-        run: vendor/bin/phpstan analyse --level=8 ./cakephp/plugins/Filter
+        run: vendor/bin/phpstan analyse --level=8 ./src
