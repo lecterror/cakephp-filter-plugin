@@ -22,9 +22,9 @@ jobs:
           mysql-version: '5.6'
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
-          composer remove phpstan/phpstan
+          composer remove --dev phpstan/phpstan
           composer require 'cakephp/cakephp=3.10.5' 'phpunit/phpunit=5.7.0' --with-all-dependencies
         shell: bash
       - name: Create test database
@@ -57,13 +57,7 @@ jobs:
           php-version: 7.4
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: Install CakePHP
-        run: composer require 'cakephp/cakephp=3.10.5'
-      - name: Install PHPUnit
-        run: composer require 'phpunit/phpunit=7.0'
-      - name: Install PHPStan
-        run: |
-          composer require --dev phpstan/phpstan
-          composer require --dev phpstan/phpstan-phpunit
+      - name: Install Dependencies
+        run: composer require 'cakephp/cakephp=3.10.5' 'phpunit/phpunit=7.0' phpstan/phpstan phpstan/phpstan-phpunit
       - name: PHPStan
         run: vendor/bin/phpstan analyse --level=8 ./src ./tests
