@@ -15,6 +15,7 @@ class Documents3Table extends Table
 	/**
 	 * {@inheritDoc}
 	 *
+	 * @param mixed[] $config
 	 * @see \Cake\ORM\Table::initialize()
 	 */
 	public function initialize(array $config)
@@ -33,7 +34,7 @@ class Documents3Table extends Table
 	/**
 	 * @param \Cake\ORM\Query $query Query.
 	 * @param mixed[] $options
-	 * @return mixed[]
+	 * @return \Cake\ORM\Query
 	 */
 	public function afterDataFilter($query, $options)
 	{

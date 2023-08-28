@@ -18,10 +18,8 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 class MetadataFixture extends TestFixture
 {
-	public $name = 'Metadata';
-
 	/**
-	 * @var (bool|int|string)[][]
+	 * @var mixed[]
 	 */
 	public $fields = array
 		(

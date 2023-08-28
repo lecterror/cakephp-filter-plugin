@@ -9,6 +9,7 @@ class MetadataTable extends Table
 	/**
 	 * {@inheritDoc}
 	 *
+	 * @param mixed[] $config
 	 * @see \Cake\ORM\Table::initialize()
 	 */
 	public function initialize(array $config)

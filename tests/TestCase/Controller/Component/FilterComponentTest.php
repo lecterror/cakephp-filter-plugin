@@ -70,6 +70,9 @@ class FilterComponentTest extends TestCase
 		$this->assertFalse(in_array('Filter.Filter', $this->Controller->viewBuilder()->getHelpers()));
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testNoActionFilters()
 	{
 		$testSettings = array
@@ -154,6 +157,9 @@ class FilterComponentTest extends TestCase
 		$this->assertTrue(in_array('Filter.Filter', $this->Controller->viewBuilder()->getHelpers()));
 	}
 
+	/**
+	 * @return void
+	 */
 	public function testSessionStartupDataFakeNonexistantModel()
 	{
 		$testSettings = array

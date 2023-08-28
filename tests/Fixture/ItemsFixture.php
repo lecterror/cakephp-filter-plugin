@@ -18,10 +18,8 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 class ItemsFixture extends TestFixture
 {
-	public $name = 'Item';
-
 	/**
-	 * @var (bool|int|string)[][]
+	 * @var mixed[]
 	 */
 	public $fields = array
 		(

@@ -58,6 +58,6 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Install Dependencies
-        run: composer require 'cakephp/cakephp=3.10.5' 'phpunit/phpunit=7.0' phpstan/phpstan phpstan/phpstan-phpunit
+        run: composer require 'cakephp/cakephp=3.10.5' 'phpunit/phpunit=7.0' phpstan/phpstan phpstan/phpstan-phpunit --with-all-dependencies
       - name: PHPStan
         run: vendor/bin/phpstan analyse --level=8 ./src ./tests

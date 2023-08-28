@@ -7,6 +7,7 @@ use Filter\Test\TestCase\MockObjects\Documents3Table;
 use Filter\Test\TestCase\MockObjects\DocumentsTable;
 use Cake\TestSuite\TestCase;
 use Filter\Test\TestCase\MockObjects\Documents2Table;
+use Cake\ORM\Association;
 
 /**
 	CakePHP Filter Plugin
@@ -40,6 +41,7 @@ class FilteredBehaviorTest extends TestCase
 
 	public function setUp()
 	{
+		parent::setUp();
 		$Document = $this->getTableLocator()->get('Documents', ['className' => DocumentsTable::class]);
 		$this->assertInstanceOf(DocumentsTable::class, $Document);
 		$this->Document = $Document;
@@ -47,6 +49,7 @@ class FilteredBehaviorTest extends TestCase
 
 	public function tearDown()
 	{
+		parent::tearDown();
 		unset($this->Document);
 	}
 
@@ -486,9 +489,10 @@ class FilteredBehaviorTest extends TestCase
 					'metadata' => array('id' => 5, 'document_id' => 5, 'weight' => 4, 'size' => 790, 'permissions' => 'rw-rw-r--'),
 				)
 			);
-
-		$oldConditions = $this->Document->associations()->get('Metadata')->getConditions();
-		$this->Document->associations()->get('Metadata')->setConditions(['Metadata.size > 500']);
+		$Metadata = $this->Document->associations()->get('Metadata');
+		$this->assertInstanceOf(Association::class, $Metadata);
+		$oldConditions = $Metadata->getConditions();
+		$Metadata->setConditions(['Metadata.size > 500']);
 
 		$result = $this->Document->find()
 			->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])
@@ -501,7 +505,7 @@ class FilteredBehaviorTest extends TestCase
 			->toArray();
 		$this->assertEquals($expected, $result);
 
-		$this->Document->associations()->get('Metadata')->setConditions(['Metadata.size > 500']);
+		$Metadata->setConditions(['Metadata.size > 500']);
 		$result = $this->Document->find()
 			->select(['id', 'title', 'document_category_id', 'owner_id', 'is_private'])
 			->contain([
@@ -513,7 +517,7 @@ class FilteredBehaviorTest extends TestCase
 			->toArray();
 		$this->assertEquals($expected, $result);
 
-		$this->Document->associations()->get('Metadata')->setConditions($oldConditions);
+		$Metadata->setConditions($oldConditions);
 	}
 
 	/**

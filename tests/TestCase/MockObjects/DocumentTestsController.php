@@ -5,8 +5,8 @@ namespace Filter\Test\TestCase\MockObjects;
 use Cake\Controller\Controller;
 
 /**
- * @property \Filter\Test\TestCase\MockObjects\DocumentsTable $Documents
- * @property \FilterComponent $Filter
+ * @property \Filter\Test\TestCase\MockObjects\DocumentsTable $Document
+ * @property \Filter\Controller\Component\FilterComponent $Filter
  */
 class DocumentTestsController extends Controller
 {
@@ -23,9 +23,11 @@ class DocumentTestsController extends Controller
 	public function initialize()
 	{
 		parent::initialize();
-		$this->Document = $this->getTableLocator()->get('Documents', [
+		/** @var \Filter\Test\TestCase\MockObjects\DocumentsTable $Table */
+		$Table = $this->getTableLocator()->get('Documents', [
 			'className' => DocumentsTable::class,
 		]);
+		$this->Document = $Table;
 		$this->loadComponent('Filter.Filter');
 	}
 
