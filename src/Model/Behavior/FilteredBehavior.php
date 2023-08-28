@@ -135,7 +135,6 @@ class FilteredBehavior extends Behavior
         }
 
         if ($fieldOptions['required'] && !isset($values[$configurationModelName][$configurationFieldName])) {
-            // TODO: implement a bit of a user friendly handling of this scenario..
             trigger_error(sprintf('No value present for required field "%s" and default value not present', $field));
 
             return;
