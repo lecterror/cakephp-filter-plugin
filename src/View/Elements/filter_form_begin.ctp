@@ -9,21 +9,25 @@
         MPL <http://www.mozilla.org/MPL/MPL-1.1.html>
         LGPL <http://www.gnu.org/licenses/lgpl.html>
         GPL <http://www.gnu.org/licenses/gpl.html>
-*/
+
+ @var mixed[] $options
+ @var string $modelName
+ @var \Cake\View\View $this
+ */
+
 ?>
 <div class="filterForm">
     <?php echo $this->Form->create(
         false,
         array(
             'url' => array(
-                'plugin' => $this->request->params['plugin'],
-                'controller' => $this->request->params['controller'],
-                'action' => $this->request->params['action'],
+                'plugin' => $this->getRequest()->getParam('plugin'),
+            	'controller' => $this->getRequest()->getParam('controller'),
+            	'action' => $this->getRequest()->getParam('action'),
             ),
             'id' => $modelName.'Filter',
         ) + $options
     ); ?>
-        <?php $this->Form->inputDefaults(array('required' => false)); ?>
         <fieldset>
             <?php
             if (isset($options['legend']))
@@ -31,4 +35,4 @@
                 ?><legend><?php echo $options['legend']; ?></legend><?php
             }
             ?>
-            <?php echo $this->Form->input('Filter.filterFormId', array('type' => 'hidden', 'value' => $modelName)); ?>
+            <?php echo $this->Form->control('Filter.filterFormId', array('type' => 'hidden', 'value' => $modelName)); ?>
