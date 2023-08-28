@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Install Dependencies
         run: |
-          composer remove --dev phpstan/phpstan --no-update
+          composer remove --dev phpstan/phpstan cakephp/cakephp-codesniffer --no-update
           composer require 'cakephp/cakephp=3.10.5' 'phpunit/phpunit=5.7.0' --with-all-dependencies
         shell: bash
       - name: Create test database
@@ -61,3 +61,17 @@ jobs:
         run: composer require 'cakephp/cakephp=3.10.5' 'phpunit/phpunit=7.0' phpstan/phpstan phpstan/phpstan-phpunit --with-all-dependencies
       - name: PHPStan
         run: vendor/bin/phpstan analyse --level=8 ./src ./tests
+
+  PHP-Code-Sniffer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 5.6
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Install PHPCS
+        run: composer require --dev cakephp/cakephp-codesniffer
+      - name: Run PHPCS
+        run: vendor/bin/phpcs --colors --parallel=16 -p --standard=CakePHP src/ tests/
