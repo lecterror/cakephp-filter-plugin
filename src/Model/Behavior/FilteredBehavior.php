@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Filter\Model\Behavior;
 
 use ArrayObject;
@@ -129,7 +127,7 @@ class FilteredBehavior extends Behavior
         $configurationFieldName = $field;
 
         if (strpos($field, '.') !== false) {
-            [$configurationModelName, $configurationFieldName] = explode('.', $field);
+            list($configurationModelName, $configurationFieldName) = explode('.', $field);
         }
 
         if (!isset($values[$configurationModelName][$configurationFieldName]) && isset($fieldOptions['default'])) {
@@ -173,7 +171,7 @@ class FilteredBehavior extends Behavior
 
         if (isset($fieldOptions['filterField'])) {
             if (strpos($fieldOptions['filterField'], '.') !== false) {
-                [$filterModelName, $filterFieldName] = explode('.', $fieldOptions['filterField']);
+                list($filterModelName, $filterFieldName) = explode('.', $fieldOptions['filterField']);
 
                 if ($filterModelName != $Table->getAlias()) {
                     $filterModelName = 'Filter' . $filterModelName;

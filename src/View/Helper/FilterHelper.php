@@ -14,88 +14,80 @@ use Cake\View\Helper;
         MPL <http://www.mozilla.org/MPL/MPL-1.1.html>
         LGPL <http://www.gnu.org/licenses/lgpl.html>
         GPL <http://www.gnu.org/licenses/gpl.html>
-*/
+ */
 
 class FilterHelper extends Helper
 {
     /**
      * @param string $modelName
-     * @param mixed[] $options
+     * @param array<mixed> $options
      * @return string
      */
     public function filterForm($modelName, $options)
     {
         $view =& $this->_View;
 
-        $output = $view->element
-            (
-                'filter_form_begin',
-                array
-                (
+        $output = $view->element(
+            'filter_form_begin',
+            [
                     'plugin' => 'Filter',
                     'modelName' => $modelName,
-                    'options' => $options
-                ),
-                array('plugin' => 'Filter')
-            );
+                    'options' => $options,
+                ],
+            ['plugin' => 'Filter']
+        );
 
-        $output .= $view->element
-            (
-                'filter_form_fields',
-                array('plugin' => 'Filter'),
-                array('plugin' => 'Filter')
-            );
+        $output .= $view->element(
+            'filter_form_fields',
+            ['plugin' => 'Filter'],
+            ['plugin' => 'Filter']
+        );
 
-        $output .= $view->element
-            (
-                'filter_form_end',
-                array('plugin' => 'Filter'),
-                array('plugin' => 'Filter')
-            );
+        $output .= $view->element(
+            'filter_form_end',
+            ['plugin' => 'Filter'],
+            ['plugin' => 'Filter']
+        );
 
         return $output;
     }
 
     /**
      * @param string $modelName
-     * @param mixed[] $options
+     * @param array<mixed> $options
      * @return string
      */
     public function beginForm($modelName, $options)
     {
         $view =& $this->_View;
-        $output = $view->element
-            (
-                'filter_form_begin',
-                array
-                (
+        $output = $view->element(
+            'filter_form_begin',
+            [
                     'plugin' => 'Filter',
                     'modelName' => $modelName,
-                    'options' => $options
-                ),
-                array('plugin' => 'Filter')
-            );
+                    'options' => $options,
+                ],
+            ['plugin' => 'Filter']
+        );
 
         return $output;
     }
 
     /**
-     * @param string[] $fields
+     * @param array<string> $fields
      * @return string
      */
-    public function inputFields($fields = array())
+    public function inputFields($fields = [])
     {
         $view =& $this->_View;
-        $output = $view->element
-            (
-                'filter_form_fields',
-                array
-                (
+        $output = $view->element(
+            'filter_form_fields',
+            [
                     'plugin' => 'Filter',
-                    'includeFields' => $fields
-                ),
-                array('plugin' => 'Filter')
-            );
+                    'includeFields' => $fields,
+                ],
+            ['plugin' => 'Filter']
+        );
 
         return $output;
     }
@@ -106,12 +98,11 @@ class FilterHelper extends Helper
     public function endForm()
     {
         $view = $this->_View;
-        $output = $view->element
-            (
-                'filter_form_end',
-                array(),
-                array('plugin' => 'Filter')
-            );
+        $output = $view->element(
+            'filter_form_end',
+            [],
+            ['plugin' => 'Filter']
+        );
 
         return $output;
     }
