@@ -14,37 +14,37 @@ use Cake\TestSuite\Fixture\TestFixture;
         MPL <http://www.mozilla.org/MPL/MPL-1.1.html>
         LGPL <http://www.gnu.org/licenses/lgpl.html>
         GPL <http://www.gnu.org/licenses/gpl.html>
-*/
+ */
 
 class ItemsFixture extends TestFixture
 {
     /**
      * @var mixed[]
      */
-    public $fields = array
-        (
-            'id'                    => array('type' => 'integer'),
-            'document_id'            => array('type' => 'integer', 'null' => false),
-            'code'                    => array('type' => 'string', 'length' => '20', 'null' => false),
+    public $fields =
+        [
+            'id' => ['type' => 'integer'],
+            'document_id' => ['type' => 'integer', 'null' => false],
+            'code' => ['type' => 'string', 'length' => '20', 'null' => false],
             '_constraints' => [
                 'primary' => ['type' => 'primary', 'columns' => ['id']],
             ],
-        );
+        ];
 
     /**
      * @var (int|string)[][]
      */
-    public $records = array
-        (
-            array('id' => 1, 'document_id' => 1, 'code' => 'The item #01'),
-            array('id' => 2, 'document_id' => 1, 'code' => 'The item #02'),
-            array('id' => 3, 'document_id' => 1, 'code' => 'The item #03'),
-            array('id' => 4, 'document_id' => 2, 'code' => 'The item #01'),
-            array('id' => 5, 'document_id' => 2, 'code' => 'The item #02'),
-            array('id' => 6, 'document_id' => 2, 'code' => 'The item #03'),
-            array('id' => 7, 'document_id' => 2, 'code' => 'The item #04'),
-            array('id' => 8, 'document_id' => 3, 'code' => 'The item #01'),
-            array('id' => 9, 'document_id' => 4, 'code' => 'The item #01'),
-            array('id' => 10, 'document_id' => 5, 'code' => 'The item #01')
-        );
+    public $records =
+        [
+            ['id' => 1, 'document_id' => 1, 'code' => 'The item #01'],
+            ['id' => 2, 'document_id' => 1, 'code' => 'The item #02'],
+            ['id' => 3, 'document_id' => 1, 'code' => 'The item #03'],
+            ['id' => 4, 'document_id' => 2, 'code' => 'The item #01'],
+            ['id' => 5, 'document_id' => 2, 'code' => 'The item #02'],
+            ['id' => 6, 'document_id' => 2, 'code' => 'The item #03'],
+            ['id' => 7, 'document_id' => 2, 'code' => 'The item #04'],
+            ['id' => 8, 'document_id' => 3, 'code' => 'The item #01'],
+            ['id' => 9, 'document_id' => 4, 'code' => 'The item #01'],
+            ['id' => 10, 'document_id' => 5, 'code' => 'The item #01'],
+        ];
 }
