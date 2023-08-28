@@ -12,44 +12,44 @@ use Cake\ORM\Table;
  */
 class Documents3Table extends Table
 {
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @param mixed[] $config
-	 * @see \Cake\ORM\Table::initialize()
-	 */
-	public function initialize(array $config)
-	{
-		$this->setAlias('Document');
-		$this->setTable('documents');
-		$this->belongsTo('DocumentCategories');
-		$this->hasMany('Items');
-	}
+    /**
+     * {@inheritDoc}
+     *
+     * @param mixed[] $config
+     * @see \Cake\ORM\Table::initialize()
+     */
+    public function initialize(array $config)
+    {
+        $this->setAlias('Document');
+        $this->setTable('documents');
+        $this->belongsTo('DocumentCategories');
+        $this->hasMany('Items');
+    }
 
-	/**
-	 * @var string|null
-	 */
-	public $itemToUnset = null;
+    /**
+     * @var string|null
+     */
+    public $itemToUnset = null;
 
-	/**
-	 * @param \Cake\ORM\Query $query Query.
-	 * @param mixed[] $options
-	 * @return \Cake\ORM\Query
-	 */
-	public function afterDataFilter($query, $options)
-	{
-		if (!is_string($this->itemToUnset))
-		{
-			return $query;
-		}
-		$query->clause('where')->iterateParts(function ($Comparison) {
-			/** @var \Cake\Database\Expression\Comparison $Comparison */
-			$field = $Comparison->getField();
-			if ($field == $this->itemToUnset) {
-				return null;
-			}
-			return $Comparison;
-		});
-		return $query;
-	}
+    /**
+     * @param \Cake\ORM\Query $query Query.
+     * @param mixed[] $options
+     * @return \Cake\ORM\Query
+     */
+    public function afterDataFilter($query, $options)
+    {
+        if (!is_string($this->itemToUnset))
+        {
+            return $query;
+        }
+        $query->clause('where')->iterateParts(function ($Comparison) {
+            /** @var \Cake\Database\Expression\Comparison $Comparison */
+            $field = $Comparison->getField();
+            if ($field == $this->itemToUnset) {
+                return null;
+            }
+            return $Comparison;
+        });
+        return $query;
+    }
 }

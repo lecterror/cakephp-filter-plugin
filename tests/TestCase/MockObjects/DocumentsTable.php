@@ -13,16 +13,16 @@ use Cake\ORM\Table;
  */
 class DocumentsTable extends Table
 {
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @param mixed[] $config
-	 * @see \Cake\ORM\Table::initialize()
-	 */
-	public function initialize(array $config)
-	{
-		$this->belongsTo('DocumentCategories');
-		$this->hasMany('Items');
-		$this->hasOne('Metadata');
-	}
+    /**
+     * {@inheritDoc}
+     *
+     * @param mixed[] $config
+     * @see \Cake\ORM\Table::initialize()
+     */
+    public function initialize(array $config)
+    {
+        $this->belongsTo('DocumentCategories');
+        $this->hasMany('Items');
+        $this->hasOne('Metadata');
+    }
 }
