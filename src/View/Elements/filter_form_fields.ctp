@@ -9,6 +9,8 @@
         MPL <http://www.mozilla.org/MPL/MPL-1.1.html>
         LGPL <http://www.gnu.org/licenses/lgpl.html>
         GPL <http://www.gnu.org/licenses/gpl.html>
+
+ @var \Cake\View\View $this
 */
 
 if (isset($viewFilterParams))
@@ -21,7 +23,10 @@ if (isset($viewFilterParams))
             if (count($fieldName) === 2) {
                 $field['options']['name'] = sprintf('data[%s][%s]', $fieldName[0], $fieldName[1]);
             }
-            echo $this->Form->input($field['name'], $field['options']);
+            if (!isset($field['required'])) {
+                $field['required'] = false;
+            }
+            echo $this->Form->control($field['name'], $field['options']);
         }
     }
 }
