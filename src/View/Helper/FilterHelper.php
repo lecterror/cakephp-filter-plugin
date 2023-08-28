@@ -19,8 +19,8 @@ use Cake\View\Helper;
 class FilterHelper extends Helper
 {
     /**
-     * @param string $modelName
-     * @param array<mixed> $options
+     * @param string $modelName Model name.
+     * @param array<mixed> $options Options.
      * @return string
      */
     public function filterForm($modelName, $options)
@@ -53,8 +53,8 @@ class FilterHelper extends Helper
     }
 
     /**
-     * @param string $modelName
-     * @param array<mixed> $options
+     * @param string $modelName Model name.
+     * @param array<mixed> $options Options.
      * @return string
      */
     public function beginForm($modelName, $options)
@@ -74,7 +74,7 @@ class FilterHelper extends Helper
     }
 
     /**
-     * @param array<string> $fields
+     * @param array<string> $fields Fileds to include.
      * @return string
      */
     public function inputFields($fields = [])
