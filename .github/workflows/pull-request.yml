@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Install Dependencies
         run: |
-          composer remove --dev phpstan/phpstan
+          composer remove --dev phpstan/phpstan --no-update
           composer require 'cakephp/cakephp=3.10.5' 'phpunit/phpunit=5.7.0' --with-all-dependencies
         shell: bash
       - name: Create test database
