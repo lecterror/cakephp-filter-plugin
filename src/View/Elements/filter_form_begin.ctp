@@ -10,7 +10,7 @@
         LGPL <http://www.gnu.org/licenses/lgpl.html>
         GPL <http://www.gnu.org/licenses/gpl.html>
 
- @var mixed[] $options
+ @var array<mixed> $options
  @var string $modelName
  @var \Cake\View\View $this
  */
@@ -19,20 +19,19 @@
 <div class="filterForm">
     <?php echo $this->Form->create(
         false,
-        array(
-            'url' => array(
+        [
+            'url' => [
                 'plugin' => $this->getRequest()->getParam('plugin'),
-            	'controller' => $this->getRequest()->getParam('controller'),
-            	'action' => $this->getRequest()->getParam('action'),
-            ),
-            'id' => $modelName.'Filter',
-        ) + $options
+                'controller' => $this->getRequest()->getParam('controller'),
+                'action' => $this->getRequest()->getParam('action'),
+            ],
+            'id' => $modelName . 'Filter',
+        ] + $options
     ); ?>
         <fieldset>
             <?php
-            if (isset($options['legend']))
-            {
+            if (isset($options['legend'])) {
                 ?><legend><?php echo $options['legend']; ?></legend><?php
             }
             ?>
-            <?php echo $this->Form->control('Filter.filterFormId', array('type' => 'hidden', 'value' => $modelName)); ?>
+            <?php echo $this->Form->control('Filter.filterFormId', ['type' => 'hidden', 'value' => $modelName]); ?>
