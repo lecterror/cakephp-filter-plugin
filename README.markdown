@@ -9,7 +9,9 @@ session, but this can be turned off if undesirable.
 
 It also features callback methods for further search refinement where necessary.
 
-**IMPORTANT**: These instructions are for CakePHP 2.0. If you're using CakePHP 1.3.x
+**IMPORTANT**: These instructions are for CakePHP 3.0. 
+If you are using CakePHP 2.x then go to https://github.com/lecterror/cakephp-filter-plugin/tree/2.x.
+If you're using CakePHP 1.3.x
 the correct path to unload the plugin is `app/plugins/filter/`. More importantly,
 **if you're using CakePHP 1.3.x you should use the 1.3.x version of this plugin**,
 not the latest version from GitHub.
@@ -23,7 +25,7 @@ First, obtain the plugin. If you're using Git, run this while in your app folder
 	git submodule update
 
 Or visit <http://github.com/lecterror/cakephp-filter-plugin> and download the
-plugin manually to your `app/Plugin/Filter/` folder.
+plugin manually to your `plugins/Filter/` folder.
 
 To use the plugin, you need to tell it which model to filter and which fields to use. For
 a quick tutorial, visit <https://github.com/lecterror/cakephp-filter-plugin/wiki/Basic-usage>
