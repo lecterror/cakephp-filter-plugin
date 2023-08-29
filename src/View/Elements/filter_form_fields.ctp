@@ -11,14 +11,11 @@
         GPL <http://www.gnu.org/licenses/gpl.html>
 
  @var \Cake\View\View $this
-*/
+ */
 
-if (isset($viewFilterParams))
-{
-    foreach ($viewFilterParams as $field)
-    {
-        if(empty($includeFields) || in_array($field['name'], $includeFields))
-        {
+if (isset($viewFilterParams)) {
+    foreach ($viewFilterParams as $field) {
+        if (empty($includeFields) || in_array($field['name'], $includeFields)) {
             $fieldName = explode('.', $field['name']);
             if (count($fieldName) === 2) {
                 $field['options']['name'] = sprintf('data[%s][%s]', $fieldName[0], $fieldName[1]);
