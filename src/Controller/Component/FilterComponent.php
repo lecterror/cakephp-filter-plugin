@@ -123,7 +123,13 @@ class FilterComponent extends Component
             /** @var array<mixed> $requestData */
             $requestData = $controller->request->getQuery('data', []);
             $this->formData = $requestData;
-        } elseif (!$controller->request->is('post') || $controller->request->getData('Filter.filterFormId') === null) {
+        } elseif (
+            !$controller->request->is('post') ||
+            (
+                $controller->request->getData('Filter.filterFormId') === null &&
+                $controller->request->getData('data.Filter.filterFormId') === null
+            )
+        ) {
             $persistedData = [];
 
             if ($Session->check($sessionKey)) {
@@ -138,6 +144,9 @@ class FilterComponent extends Component
         } else {
             /** @var array<mixed> $requestData */
             $requestData = $controller->request->getData();
+            if (array_key_exists('data', $requestData)) {
+                $requestData = $requestData['data'];
+            }
             $this->formData = $requestData;
             if ($Session->started()) {
                 $Session->write($sessionKey, $this->formData);
