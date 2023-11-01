@@ -123,7 +123,7 @@ class FilterComponent extends Component
             /** @var array<mixed> $requestData */
             $requestData = $controller->request->getQuery('data', []);
             if (empty($requestData)) {
-            	$requestData = $controller->request->getQuery();
+                $requestData = $controller->request->getQueryParams();
             }
             $this->formData = $requestData;
         } elseif (
