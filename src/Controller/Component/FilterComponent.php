@@ -122,6 +122,9 @@ class FilterComponent extends Component
         if ($controller->request->is('get') && !empty($filterFormId)) {
             /** @var array<mixed> $requestData */
             $requestData = $controller->request->getQuery('data', []);
+            if (empty($requestData)) {
+            	$requestData = $controller->request->getQuery();
+            }
             $this->formData = $requestData;
         } elseif (
             !$controller->request->is('post') ||
